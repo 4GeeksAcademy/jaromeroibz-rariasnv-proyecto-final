@@ -13,7 +13,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			]
+			],
+			petitioners: []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -46,6 +47,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
+			}, 
+			loadSomedata: async () => {
+				 fetch
 			}
 		}
 	};
