@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom"
 import { Context } from "../store/appContext";
-
+import { EditAddress } from "./editaddress";
 // import "../../styles.demo.css";
 
 export const AddressList = () => {
@@ -34,14 +34,19 @@ export const AddressList = () => {
                             <p className="info">{item.longitude}</p>
 
 						</div>
-						{/* <div className="pencontainer">
-                            <Link to={`/editaddress/${item.id}`}>
-                                <p className="pen"><FontAwesomeIcon icon={faPen} /></p>
+						<div className="container">
+                            <Link to={`/address/${item.id}`}>
+                                See details
                             </Link>
-						</div> */}
-						{/* <div className="trashcan px-5">
+						</div>
+						<div className="pencontainer">
+                            <Link to={`/editaddress/${item.id}`}>
+                                Edit
+                            </Link>
+						</div>
+						<div className="trashcan px-5">
 							<button onClick= { () => actions.saveToDelete(item.id) } type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-							<FontAwesomeIcon icon={faTrashCan} />
+							Delete
 							</button>
 
 							<div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -56,12 +61,12 @@ export const AddressList = () => {
 									</div>
 									<div className="modal-footer">
 										<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-										<button onClick={ () => actions.eliminarContacto(item)} type="button" data-bs-dismiss="modal" className="btn btn-primary">Delete</button>
+										<button onClick={ () => actions.deleteAddress(item)} type="button" data-bs-dismiss="modal" className="btn btn-primary">Delete</button>
 									</div>
 									</div>
 								</div>
 							</div>
-						</div>	 */}
+						</div>	
 					</li>
 			)}
 			</ul>
