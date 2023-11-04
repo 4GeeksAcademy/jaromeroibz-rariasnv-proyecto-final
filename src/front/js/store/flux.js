@@ -48,8 +48,40 @@ const getState = ({ getStore, getActions, setStore }) => {
 				//reset the global store
 				setStore({ demo: demo });
 			}, 
-			loadSomedata: async () => {
-				 fetch
+			getAllPetitioners: async () => {								
+				 try {
+					const store = getStore();
+					const response = await fetch('https://studious-waffle-69gggxgvv4653w69-3001.app.github.dev/api/petitioner/')	
+					const data = await response.json()
+					
+					if(response.ok){
+						setStore({ petitioners: data})
+					}
+				 } catch (error) {
+					console.log(error)
+				 }
+			},
+			getParticularPetitioner: async (theId) => {
+				const actions = getActions()
+				try {
+					const store = getStore()
+					const response = await fetch('https://studious-waffle-69gggxgvv4653w69-3001.app.github.dev/api/petitioner/'+theId)
+					const data = await response.json()
+
+					if(response.ok){
+						setStore({ petitioners: data})
+					}
+				} catch (error) {
+					console.log(error)
+					
+				}
+			},
+			deleteParticularPetitioner: async (petitionerToDelete) => {
+				try {
+					
+				} catch (error) {
+					
+				}
 			}
 		}
 	};
