@@ -1,3 +1,5 @@
+import { useParams } from "react-router-dom";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -64,12 +66,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			  
 			},
-			getAddress: async (theid) => {
+			getAddress: async (result) => {
 				const store = getStore();
-				let response = await fetch('https://cuddly-spoon-rjj9gv64w9w25x4q-3001.app.github.dev/api/address/' + theid)
-				console.log(theid)
+				const idToDelete = result.id
+				let response = await fetch(process.env.BACKEND_URL+'/api/address/'+ idToDelete)
 				let data = await response.json()
-
 				if (response.ok){
 				  setStore({
 					address: data
@@ -87,7 +88,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(data)
 				}
 				console.log('Add Address')
-				fetch('https://cuddly-spoon-rjj9gv64w9w25x4q-3001.app.github.dev/api/address/', requestOptions)
+				fetch(BACKEND_URL +'/api/address/', requestOptions)
 				.then( (response) => response.json() )
 				.then( (data) => { getActions().getAddresses()} )
 			
@@ -101,9 +102,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify( address )
 				};
-				fetch(`https://cuddly-spoon-rjj9gv64w9w25x4q-3001.app.github.dev/api/address/${theid}`, requestOptions)
+				fetch(BACKEND_URL +`/api/address/${theid}`, requestOptions)
 					.then((response) => response.json())
-					.then((data) =>  setStore({addresses: data}))
+					.then((data) =>  actions.getAddresses())
+					.catch((error) => {console.log(error)})
 			},
 			saveToDelete: (theid) =>{
 				setStore({
@@ -122,10 +124,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'DELETE'
 				};
 				
-				fetch("https://cuddly-spoon-rjj9gv64w9w25x4q-3001.app.github.dev/api/address/" + indexMap, requestOptions)
+				fetch(BACKEND_URL +"/api/address/" + indexMap, requestOptions)
 					.then(response => response.json())
 					.then( () => {
-						fetch('https://cuddly-spoon-rjj9gv64w9w25x4q-3001.app.github.dev/api/address/')
+						fetch(BACKEND_URL+ '/api/address/')
 						.then((response) => response.json())
 						.then((data) => setStore({addresses: data}))
 					})

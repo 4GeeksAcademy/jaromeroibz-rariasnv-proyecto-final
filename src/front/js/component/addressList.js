@@ -6,7 +6,6 @@ import { EditAddress } from "./editaddress";
 
 export const AddressList = () => {
     const { store, actions } = useContext(Context);
-
     useEffect(() => {
         actions.getAddresses()
     }, [])
@@ -71,6 +70,9 @@ export const AddressList = () => {
 			)}
 			</ul>
 			<br />
+			<Link to="/addressform">
+				<button className="btn btn-primary">Add address</button>
+			</Link>
 			<Link to="/">
 				<button className="btn btn-primary">Back home</button>
 			</Link>
