@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Address, Petitioner
+from api.models import db, User, Address, Petitioner, Services
 from api.utils import generate_sitemap, APIException
 
 api = Blueprint('api', __name__)
@@ -158,6 +158,64 @@ def update_one_particular_petitioner(petitioner_id):
 
     return jsonify(response_body), 200
     
+@api.route('/services', methods=['GET'])
+def get_services():
 
+    all_services = Services.query.all()
+    result = list(map(lambda item: item.serialize(), all_services))
+
+    return jsonify(result), 200
    
+@api.route('/services/<int:service_id>', methods =['GET'])
+def get_service(service_id):
+    service = Services.query.filter_by(id=service_id).first()
 
+    return jsonify(service.serialize()), 200
+
+@api.route('/service', methods =['POST'])
+def add_service():
+    body = request.get_json()
+    service = Services(
+        name = body['name'],
+        category = body['category'],
+        description = body['description']
+    )
+    db.session.add(service)
+    db.session.commit()
+
+    response_body = {
+        "message": "Service created"
+    }
+    
+    return jsonify(response_body), 200
+
+@api.route('/service/<int:service_id>', methods =['PUT'])
+def update_service(service_id):
+    
+    update_service = Services.query.filter_by(id=service_id).first()
+    print(update_service)
+
+    update_service.name = request.get_json()['name']
+    update_service.category = request.get_json()['category']
+    update_service.description = request.get_json()['description']
+    
+    db.session.commit()
+
+    response_body = {
+        "message": "Service updated"
+    }
+      
+    return jsonify(response_body), 200
+
+@api.route('/service/<int:service_id>', methods =['DELETE'])
+def delete_service(service_id):
+    delete_service = Services.query.filter_by(id=service_id).first()
+
+    db.session.delete(delete_service)
+    db.session.commit()
+
+    response_body = {
+        "message": "Service deleted"
+    }
+      
+    return jsonify(response_body), 200
