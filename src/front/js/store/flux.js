@@ -1,3 +1,5 @@
+import { useParams } from "react-router-dom";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -13,7 +15,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			]
+			],
+			addresses: [],
+			idToDelete: "",
+			address:[]
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -46,7 +51,90 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
-			}
+			},
+			getAddresses: async () => {
+				const store = getStore();
+				let response = await fetch('https://cuddly-spoon-rjj9gv64w9w25x4q-3001.app.github.dev/api/address/')
+			
+				let data = await response.json()
+
+				if (response.ok){
+				  setStore({
+					addresses: data
+				  })
+				  console.log('Address exists')
+				}
+			  
+			},
+			getAddress: async (result) => {
+				const store = getStore();
+				const idToDelete = result.id
+				let response = await fetch(process.env.BACKEND_URL+'/api/address/'+ idToDelete)
+				let data = await response.json()
+				if (response.ok){
+				  setStore({
+					address: data
+				  })
+				}
+
+			},
+			addAddress: (data) => {
+				
+				const store = getStore();
+
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(data)
+				}
+				console.log('Add Address')
+				fetch(BACKEND_URL +'/api/address/', requestOptions)
+				.then( (response) => response.json() )
+				.then( (data) => { getActions().getAddresses()} )
+			
+			},
+			editAddress: (address, theid) =>{
+				const store = getStore();
+				const actions = getActions();
+				
+			    const requestOptions = {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify( address )
+				};
+				fetch(BACKEND_URL +`/api/address/${theid}`, requestOptions)
+					.then((response) => response.json())
+					.then((data) =>  actions.getAddresses())
+					.catch((error) => {console.log(error)})
+			},
+			saveToDelete: (theid) =>{
+				setStore({
+					idToDelete: theid
+				})
+			},
+			deleteAddress: (item) => {
+				
+				console.log(item)
+				const store = getStore();
+				const actions = getActions();
+				const indexMap = getStore().idToDelete
+				console.log(indexMap)
+
+				var requestOptions = {
+					method: 'DELETE'
+				};
+				
+				fetch(BACKEND_URL +"/api/address/" + indexMap, requestOptions)
+					.then(response => response.json())
+					.then( () => {
+						fetch(BACKEND_URL+ '/api/address/')
+						.then((response) => response.json())
+						.then((data) => setStore({addresses: data}))
+					})
+					.catch(error => console.log('error', error));
+					
+				getActions().getAddresses();	
+			} 
 		}
 	};
 };
