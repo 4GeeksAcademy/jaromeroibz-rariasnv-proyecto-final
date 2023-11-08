@@ -54,7 +54,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getAddresses: async () => {
 				const store = getStore();
-				let response = await fetch('https://cuddly-spoon-rjj9gv64w9w25x4q-3001.app.github.dev/api/address/')
+				let response = await fetch(process.env.BACKEND_URL+'/api/address/')
 			
 				let data = await response.json()
 
@@ -69,8 +69,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getAddress: async (result) => {
 				const store = getStore();
 				const idToDelete = result.id
+				// var myHeaders = new Headers();
+				// myHeaders.append("Access-Control-Allow-Headers", "*");
+				// myHeaders.append("Content-Type", "application/json");
+
+				// var raw = JSON.stringify([]);
+
+				// var requestOptions = {
+				// method: 'GET',
+				// headers: myHeaders,
+				// body: raw,
+				// redirect: 'follow'
+				// };
+
 				let response = await fetch(process.env.BACKEND_URL+'/api/address/'+ idToDelete)
 				let data = await response.json()
+				console.log(response)
 				if (response.ok){
 				  setStore({
 					address: data
@@ -84,11 +98,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				const requestOptions = {
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json', 'Origin': '*',
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*' },
 					body: JSON.stringify(data)
 				}
 				console.log('Add Address')
-				fetch(BACKEND_URL +'/api/address/', requestOptions)
+				fetch(process.env.BACKEND_URL +'/api/address/', requestOptions)
 				.then( (response) => response.json() )
 				.then( (data) => { getActions().getAddresses()} )
 			
@@ -96,13 +112,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			editAddress: (address, theid) =>{
 				const store = getStore();
 				const actions = getActions();
-				
+				console.log(address)
+				console.log(theid)
 			    const requestOptions = {
 					method: 'PUT',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify( address )
 				};
-				fetch(BACKEND_URL +`/api/address/${theid}`, requestOptions)
+				fetch(process.env.BACKEND_URL +'/api/address/'+theid, requestOptions)
 					.then((response) => response.json())
 					.then((data) =>  actions.getAddresses())
 					.catch((error) => {console.log(error)})
@@ -124,10 +141,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'DELETE'
 				};
 				
-				fetch(BACKEND_URL +"/api/address/" + indexMap, requestOptions)
+				fetch(process.env.BACKEND_URL +"/api/address/" + indexMap, requestOptions)
 					.then(response => response.json())
 					.then( () => {
-						fetch(BACKEND_URL+ '/api/address/')
+						fetch(process.env.BACKEND_URL+ '/api/address/')
 						.then((response) => response.json())
 						.then((data) => setStore({addresses: data}))
 					})
