@@ -18,7 +18,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			],
 			addresses: [],
 			idToDelete: "",
-			address:[]
+			address:[],
+			services:[],
+			service:[],
+			auth: false
+
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -54,7 +58,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getAddresses: async () => {
 				const store = getStore();
-				let response = await fetch('https://cuddly-spoon-rjj9gv64w9w25x4q-3001.app.github.dev/api/address/')
+				let response = await fetch(process.env.BACKEND_URL+'/api/address/')
 			
 				let data = await response.json()
 
@@ -88,7 +92,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(data)
 				}
 				console.log('Add Address')
-				fetch(BACKEND_URL +'/api/address/', requestOptions)
+				fetch(process.env.BACKEND_URL +'/api/address/', requestOptions)
 				.then( (response) => response.json() )
 				.then( (data) => { getActions().getAddresses()} )
 			
@@ -102,7 +106,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify( address )
 				};
-				fetch(BACKEND_URL +`/api/address/${theid}`, requestOptions)
+				fetch(process.env.BACKEND_URL +`/api/address/${theid}`, requestOptions)
 					.then((response) => response.json())
 					.then((data) =>  actions.getAddresses())
 					.catch((error) => {console.log(error)})
@@ -124,17 +128,146 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'DELETE'
 				};
 				
-				fetch(BACKEND_URL +"/api/address/" + indexMap, requestOptions)
+				fetch(process.env.BACKEND_URL +"/api/address/" + indexMap, requestOptions)
 					.then(response => response.json())
 					.then( () => {
-						fetch(BACKEND_URL+ '/api/address/')
+						fetch(process.env.BACKEND_URL+ '/api/address/')
 						.then((response) => response.json())
 						.then((data) => setStore({addresses: data}))
 					})
 					.catch(error => console.log('error', error));
 					
 				getActions().getAddresses();	
-			} 
+			},
+			getServices: async () => {
+				const store = getStore();
+				let response = await fetch(process.env.BACKEND_URL+'/api/services/')
+			
+				let data = await response.json()
+
+				if (response.ok){
+				  setStore({
+					services: data
+				  })
+				}
+			},
+			getService: async (result) => {
+				const store = getStore();
+				const idService = result.id
+				let response = await fetch(process.env.BACKEND_URL+'/api/service/'+ idService)
+				let data = await response.json()
+				if (response.ok){
+				  setStore({
+					service: data
+				  })
+				}
+
+			},
+			addService: (data) => {
+				
+				const store = getStore();
+
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(data)
+				}
+				console.log('Add Service')
+				fetch(process.env.BACKEND_URL +'/api/service/', requestOptions)
+				.then( (response) => response.json() )
+				.then( (data) => { getActions().getServices()} )
+			},
+			editService: (service, theid) =>{
+				const store = getStore();
+				const actions = getActions();
+				
+			    const requestOptions = {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify( service )
+				};
+				fetch(process.env.BACKEND_URL +`/api/service/${theid}`, requestOptions)
+					.then((response) => response.json())
+					.then((data) =>  actions.getServices())
+					.catch((error) => {console.log(error)})
+			},
+			deleteService: (item) => {
+				
+				console.log(item)
+				const store = getStore();
+				const actions = getActions();
+				const indexMap = getStore().idToDelete
+				console.log(indexMap)
+
+				var requestOptions = {
+					method: 'DELETE'
+				};
+				
+				fetch(process.env.BACKEND_URL +"/api/service/" + indexMap, requestOptions)
+					.then(response => response.json())
+					.then( () => {
+						fetch(process.env.BACKEND_URL+ '/api/service/')
+						.then((response) => response.json())
+						.then((data) => setStore({services: data}))
+					})
+					.catch(error => console.log('error', error));
+					
+				getActions().getServices();	
+			},
+			loginOfferer: (email, password) => {
+				console.log('Login desde flux')
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-type': 'application/json' },
+					body: JSON.stringify(
+					{
+						"email": email,
+						"password": password
+					})
+				};
+				fetch(process.env.BACKEND_URL +"/api/login/", requestOptions)
+					.then(response => {
+						console.log(response.status)
+						if(response.status === 200){
+							setStore({auth: true});
+						}
+						return response.json()
+					})
+					.then(data =>{
+						localStorage.setItem("token", data.access_token)
+						console.log(data)
+						}
+					)
+			},
+			signUpOfferer: () => {
+				var myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				myHeaders.append("Cookie", ".Tunnels.Relay.WebForwarding.Cookies=CfDJ8M67rYfw57hCj5sJjtQyecE0yTE-lQI7zxGMWcXzykmDxDRsbxz74rXPtMIKU43XSFPKDMtorCZbzLlWjYmaNOkwrv3VNMpe77i8aQgdP00lctcz08WJ-9d1HPBPsBk8annUIuDp3HiqfSxvIO8cd7eaUuz8DqWboIBeEKk2T8RzmzYkdrrTH0MqaSCI4eZdS0WiA_PEe_NoZlVYCvNtK_xZfIPKEBGQA1Wixex2dmPDAwQK5FpATQIPkWKSLACoDGEk2rfajNV9TtgiVJ2GWbLF2QkpUTpceXGCLW7qYn6YKiBLoxFEgqCkm5Wl4a486Do83VbdG7kARup4P06Tv_-n-m_D-hd1Kq3XJZNm77KFtiv9wynqKZ4T0guRfNKgh-tgvF0I94BWnF2EKsvDCRZySUOvp-n9PzEiSQm1cp0Hmjsj6gx0nrM_F1h0_IRglUUXpk8A7ERgbagt1mWWQYIIyGpoF4OLhRGsG8pj2-HbcUHUMK_6gaOzJOO2_gdvxHnSRUvSAbJAWNGrFCvEL8D5sfbslW-xb7i77SQ_KL7l3bTzMSRGvKRqENuy0M8j4Ye-BsGvXGplYbfJl2Q76FEVZv1Cwroe1t5WniwkSp49-MBLj_lLnCm3uxNAMd439054o4pAy3DSdbxy07iLdvfaJVPOnZBFhkcmPbpjn9d3V_ES1ijOcIfMU4uRv28yq4MbNUs9YsGHRKKQrUKPp1MGXnkLYcMZk5P1r7FmKVnhQ0QD41JfpG3uMx9aYofNG6ju11YLuh0BleKt7VeiLoyGlkqCdlzuiPxqYMk0zwtUFbW-w4Otq8uUoZpIjBoIBsU-fiB_Vo0L4zEvCCzz0kpJjbFOVzhcz9I28AQdMGIsOP3iKfX8x6TZEQHE04u9HYTnvIw43OP4eQ8YJZha6WlttP2N-Luzpvzk14n5SkZWpZ2ipUlKv2iM7FCn0IPb7w");
+
+				var raw = JSON.stringify({
+				"email": email,
+				"password": password
+				});
+
+				var requestOptions = {
+				method: 'POST',
+				headers: myHeaders,
+				body: raw,
+				redirect: 'follow'
+				};
+
+				fetch(process.env.BACKEND_URL+"/api/signup", requestOptions)
+				.then(response => response.text())
+				.then(result => console.log(result))
+				.catch(error => console.log('error', error));
+			},
+			logout: () => {
+				console.log('Log out desde flux')
+				setStore({auth: false});
+				localStorage.removeItem("token");
+
+
+			}
 		}
 	};
 };

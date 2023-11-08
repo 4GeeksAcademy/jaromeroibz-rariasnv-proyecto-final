@@ -1,21 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom"
 import { Context } from "../store/appContext";
-import { EditAddress } from "./editaddress";
 // import "../../styles.demo.css";
 
-export const AddressList = () => {
+export const ServiceList = () => {
     const { store, actions } = useContext(Context);
     useEffect(() => {
-        actions.getAddresses()
+        actions.getServices()
     }, [])
 
     return (
     
         <div className="container">
 			<ul className="list-group py-5">
-			<h1 className="py-3">Address List</h1>
-			{store.addresses.map((item) => 
+			<h1 className="py-3">Service List</h1>
+			{store.services.map((item) => 
 				
 					<li key= {item.id}
 						className="list-group-item d-flex"
@@ -23,23 +22,17 @@ export const AddressList = () => {
 						<img src="https://picsum.photos/200" alt=""></img>
 						<div className="d-block px-5">
                             <h1>{item.name}</h1>
-                            <p className="info">{item.full_address}</p>
-                            <p className="info">{item.city}</p>
-                            <p className="info">{item.county}</p>
-                            <p className="info">{item.state}</p>
-                            <p className="info">{item.details}</p>
-                            <p className="info">{item.zipcode}</p>
-                            <p className="info">{item.latitude}</p>
-                            <p className="info">{item.longitude}</p>
+                            <p className="info">{item.category}</p>
+                            <p className="info">{item.description}</p>
 
 						</div>
 						<div className="container">
-                            <Link to={`/address/${item.id}`}>
+                            <Link to={`/service/${item.id}`}>
                                 See details
                             </Link>
 						</div>
 						<div className="pencontainer">
-                            <Link to={`/editaddress/${item.id}`}>
+                            <Link to={`/editservice/${item.id}`}>
                                 Edit
                             </Link>
 						</div>
@@ -52,15 +45,15 @@ export const AddressList = () => {
 								<div className="modal-dialog">
 									<div className="modal-content">
 									<div className="modal-header">
-										<h1 className="modal-title fs-5" id="exampleModalLabel">Delete contact</h1>
+										<h1 className="modal-title fs-5" id="exampleModalLabel">Delete service</h1>
 										<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
 									<div className="modal-body">
-										Are you sure to delete this contact?
+										Are you sure to delete this service?
 									</div>
 									<div className="modal-footer">
 										<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-										<button onClick={ () => actions.deleteAddress(item)} type="button" data-bs-dismiss="modal" className="btn btn-primary">Delete</button>
+										<button onClick={ () => actions.deleteService(item)} type="button" data-bs-dismiss="modal" className="btn btn-primary">Delete</button>
 									</div>
 									</div>
 								</div>
@@ -70,11 +63,8 @@ export const AddressList = () => {
 			)}
 			</ul>
 			<br />
-			<Link to="/addressform">
-				<button className="btn btn-primary">Add address</button>
-			</Link>
-			<Link to="/">
-				<button className="btn btn-primary">Back home</button>
+			<Link to="/serviceform">
+				<button className="btn btn-primary">Add service</button>
 			</Link>
 		</div>
     )
