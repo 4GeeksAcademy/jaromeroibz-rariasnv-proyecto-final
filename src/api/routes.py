@@ -126,14 +126,16 @@ def update_address(address_id):
     
     update_address = Address.query.filter_by(id=address_id).first()
     print(update_address)
-    update_address.full_address = request.get_json()['full_address']
-    update_address.state = request.get_json()['state']
-    update_address.city = request.get_json()['city']
-    update_address.county = request.get_json()['county']
-    update_address.details = request.get_json()['details']
-    update_address.zipcode = request.get_json()['zipcode']
-    update_address.latitude = request.get_json()['latitude']
-    update_address.longitude = request.get_json()['longitude']
+    print(request.get_json())
+    if request.get_json()['name']: update_address.name = request.get_json()['name']
+    if request.get_json()['full_address']: update_address.full_address = request.get_json()['full_address']
+    if request.get_json()['state']: update_address.state = request.get_json()['state']
+    if request.get_json()['city']: update_address.city = request.get_json()['city']
+    if request.get_json()['county']: update_address.county = request.get_json()['county']
+    if request.get_json()['details']: update_address.details = request.get_json()['details']
+    if request.get_json()['zipcode']: update_address.zipcode = request.get_json()['zipcode']
+    if request.get_json()['latitude']: update_address.latitude = request.get_json()['latitude']
+    if request.get_json()['longitude']: update_address.longitude = request.get_json()['longitude']
     
     db.session.commit()
 
