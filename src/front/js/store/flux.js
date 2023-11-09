@@ -21,7 +21,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			address:[],
 			services:[],
 			service:[],
-			auth: false
+			auth: false,
+			users:[]
 
 		},
 		actions: {
@@ -233,32 +234,54 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					.then(data =>{
 						localStorage.setItem("token", data.access_token)
+						setStore({ users: data })
 						console.log(data)
 						}
 					)
 			},
 			signUpOfferer: (name, email, password) => {
-				var myHeaders = new Headers();
-				myHeaders.append("Content-Type", "application/json");
-				myHeaders.append("Cookie", ".Tunnels.Relay.WebForwarding.Cookies=CfDJ8M67rYfw57hCj5sJjtQyecE0yTE-lQI7zxGMWcXzykmDxDRsbxz74rXPtMIKU43XSFPKDMtorCZbzLlWjYmaNOkwrv3VNMpe77i8aQgdP00lctcz08WJ-9d1HPBPsBk8annUIuDp3HiqfSxvIO8cd7eaUuz8DqWboIBeEKk2T8RzmzYkdrrTH0MqaSCI4eZdS0WiA_PEe_NoZlVYCvNtK_xZfIPKEBGQA1Wixex2dmPDAwQK5FpATQIPkWKSLACoDGEk2rfajNV9TtgiVJ2GWbLF2QkpUTpceXGCLW7qYn6YKiBLoxFEgqCkm5Wl4a486Do83VbdG7kARup4P06Tv_-n-m_D-hd1Kq3XJZNm77KFtiv9wynqKZ4T0guRfNKgh-tgvF0I94BWnF2EKsvDCRZySUOvp-n9PzEiSQm1cp0Hmjsj6gx0nrM_F1h0_IRglUUXpk8A7ERgbagt1mWWQYIIyGpoF4OLhRGsG8pj2-HbcUHUMK_6gaOzJOO2_gdvxHnSRUvSAbJAWNGrFCvEL8D5sfbslW-xb7i77SQ_KL7l3bTzMSRGvKRqENuy0M8j4Ye-BsGvXGplYbfJl2Q76FEVZv1Cwroe1t5WniwkSp49-MBLj_lLnCm3uxNAMd439054o4pAy3DSdbxy07iLdvfaJVPOnZBFhkcmPbpjn9d3V_ES1ijOcIfMU4uRv28yq4MbNUs9YsGHRKKQrUKPp1MGXnkLYcMZk5P1r7FmKVnhQ0QD41JfpG3uMx9aYofNG6ju11YLuh0BleKt7VeiLoyGlkqCdlzuiPxqYMk0zwtUFbW-w4Otq8uUoZpIjBoIBsU-fiB_Vo0L4zEvCCzz0kpJjbFOVzhcz9I28AQdMGIsOP3iKfX8x6TZEQHE04u9HYTnvIw43OP4eQ8YJZha6WlttP2N-Luzpvzk14n5SkZWpZ2ipUlKv2iM7FCn0IPb7w");
-
-				var raw = JSON.stringify({
-				"name": name,
-				"email": email,
-				"password": password
-				});
-
-				var requestOptions = {
-				method: 'POST',
-				headers: myHeaders,
-				body: raw,
-				redirect: 'follow'
+				console.log('Signup desde flux')
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-type': 'application/json' },
+					body: JSON.stringify(
+					{
+						"name": name,
+						"email": email,
+						"password": password
+					})
 				};
+				fetch(process.env.BACKEND_URL +"/api/signup/", requestOptions)
+					.then(response => response.json())
+					.then(data =>{
+						console.log(data)
+						setStore({ users: data })
+						}
+					)
 
-				fetch(process.env.BACKEND_URL+"/api/signup", requestOptions)
-				.then(response => response.text())
-				.then(result => console.log(result))
-				.catch(error => console.log('error', error));
+
+
+				// var myHeaders = new Headers();
+				// myHeaders.append("Content-Type", "application/json");
+				// myHeaders.append("Cookie", ".Tunnels.Relay.WebForwarding.Cookies=CfDJ8M67rYfw57hCj5sJjtQyecE0yTE-lQI7zxGMWcXzykmDxDRsbxz74rXPtMIKU43XSFPKDMtorCZbzLlWjYmaNOkwrv3VNMpe77i8aQgdP00lctcz08WJ-9d1HPBPsBk8annUIuDp3HiqfSxvIO8cd7eaUuz8DqWboIBeEKk2T8RzmzYkdrrTH0MqaSCI4eZdS0WiA_PEe_NoZlVYCvNtK_xZfIPKEBGQA1Wixex2dmPDAwQK5FpATQIPkWKSLACoDGEk2rfajNV9TtgiVJ2GWbLF2QkpUTpceXGCLW7qYn6YKiBLoxFEgqCkm5Wl4a486Do83VbdG7kARup4P06Tv_-n-m_D-hd1Kq3XJZNm77KFtiv9wynqKZ4T0guRfNKgh-tgvF0I94BWnF2EKsvDCRZySUOvp-n9PzEiSQm1cp0Hmjsj6gx0nrM_F1h0_IRglUUXpk8A7ERgbagt1mWWQYIIyGpoF4OLhRGsG8pj2-HbcUHUMK_6gaOzJOO2_gdvxHnSRUvSAbJAWNGrFCvEL8D5sfbslW-xb7i77SQ_KL7l3bTzMSRGvKRqENuy0M8j4Ye-BsGvXGplYbfJl2Q76FEVZv1Cwroe1t5WniwkSp49-MBLj_lLnCm3uxNAMd439054o4pAy3DSdbxy07iLdvfaJVPOnZBFhkcmPbpjn9d3V_ES1ijOcIfMU4uRv28yq4MbNUs9YsGHRKKQrUKPp1MGXnkLYcMZk5P1r7FmKVnhQ0QD41JfpG3uMx9aYofNG6ju11YLuh0BleKt7VeiLoyGlkqCdlzuiPxqYMk0zwtUFbW-w4Otq8uUoZpIjBoIBsU-fiB_Vo0L4zEvCCzz0kpJjbFOVzhcz9I28AQdMGIsOP3iKfX8x6TZEQHE04u9HYTnvIw43OP4eQ8YJZha6WlttP2N-Luzpvzk14n5SkZWpZ2ipUlKv2iM7FCn0IPb7w");
+
+				// var raw = JSON.stringify({
+				// "name": name,
+				// "email": email,
+				// "password": password
+				// });
+
+				// var requestOptions = {
+				// method: 'POST',
+				// headers: myHeaders,
+				// body: raw,
+				// redirect: 'follow'
+				// };
+
+				// fetch(process.env.BACKEND_URL+"/api/signup", requestOptions)
+				// .then(response => response.text())
+				// .then(result => console.log(result))
+				// .catch(error => console.log('error', error));
 			},
 			logout: () => {
 				console.log('Log out desde flux')

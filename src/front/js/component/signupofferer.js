@@ -14,7 +14,7 @@ export const SignupOfferer = () => {
         e.preventDefault()
         console.log('Send Data')
         console.log(name, email, password)
-        actions.signupOfferer(name, email, password)
+        actions.signUpOfferer(name, email, password)
     }
 
 return (

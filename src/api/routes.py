@@ -237,7 +237,11 @@ def login():
         return jsonify({"msg": "Bad username or password"}), 401
 
     access_token = create_access_token(identity=email)
-    return jsonify(access_token=access_token)
+    user_info = user.serialize()
+    user_info['access_token']=access_token
+    print(user_info)
+    return jsonify(user_info)
+
 
 # Protect a route with jwt_required, which will kick out requests
 # without a valid JWT present.
@@ -265,7 +269,7 @@ def signup():
     user = User.query.filter_by(email=body["email"]).first()
     print(user)
     if user == None:
-        user = User(email=body["email"], password=body["password"], is_active=True)
+        user = User(name=body["name"], email=body["email"], password=body["password"], is_active=True)
         db.session.add(user)
         db.session.commit()
         response_body = {
