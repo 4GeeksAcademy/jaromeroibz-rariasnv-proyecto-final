@@ -5,7 +5,12 @@ import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
 	const {store, actions} = useContext(Context);
+	const navigate = useNavigate();
 
+	function handleLogout(){
+		actions.logout()
+		navigate('/signinofferer')
+	}
 	
 	return (
 		<nav className="navbar navbar-light bg-light">
@@ -22,7 +27,7 @@ export const Navbar = () => {
 					<Link to="/signup">
 						<button className="btn btn-primary">Signup</button>
 					</Link>
-					{ store.auth === true ? <button onClick={() => actions.logout()} className="btn btn-primary">Logout</button> :null}
+					{ store.auth === true ? <button onClick={() => handleLogout()} className="btn btn-primary">Logout</button> :null}
 					
 
 

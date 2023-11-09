@@ -1,7 +1,7 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
-.signindiv, .signinofferer {
+.signindiv, .signinofferer, .signupdiv {
     position: absolute;
     top: 50%;
     left: 50%;

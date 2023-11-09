@@ -225,7 +225,7 @@ def delete_service(service_id):
       
     return jsonify(response_body), 200
 
-@api.route("/login", methods=["POST"])
+@api.route("/signin", methods=["POST"])
 def login():
 
     email = request.json.get("email", None)

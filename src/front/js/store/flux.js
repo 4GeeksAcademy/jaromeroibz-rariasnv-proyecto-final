@@ -205,14 +205,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				
 				fetch(process.env.BACKEND_URL +"/api/service/" + indexMap, requestOptions)
 					.then(response => response.json())
-					.then( () => {
-						fetch(process.env.BACKEND_URL+ '/api/service/')
-						.then((response) => response.json())
-						.then((data) => setStore({services: data}))
+					.then( (data) => {
+						getActions().getServices()
 					})
 					.catch(error => console.log('error', error));
-					
-				getActions().getServices();	
+		
 			},
 			loginOfferer: (email, password) => {
 				console.log('Login desde flux')
@@ -225,12 +222,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"password": password
 					})
 				};
-				fetch(process.env.BACKEND_URL +"/api/login/", requestOptions)
+				fetch(process.env.BACKEND_URL +"/api/signin/", requestOptions)
 					.then(response => {
 						console.log(response.status)
 						if(response.status === 200){
 							setStore({auth: true});
 						}
+						
 						return response.json()
 					})
 					.then(data =>{
@@ -239,12 +237,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 					)
 			},
-			signUpOfferer: () => {
+			signUpOfferer: (name, email, password) => {
 				var myHeaders = new Headers();
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("Cookie", ".Tunnels.Relay.WebForwarding.Cookies=CfDJ8M67rYfw57hCj5sJjtQyecE0yTE-lQI7zxGMWcXzykmDxDRsbxz74rXPtMIKU43XSFPKDMtorCZbzLlWjYmaNOkwrv3VNMpe77i8aQgdP00lctcz08WJ-9d1HPBPsBk8annUIuDp3HiqfSxvIO8cd7eaUuz8DqWboIBeEKk2T8RzmzYkdrrTH0MqaSCI4eZdS0WiA_PEe_NoZlVYCvNtK_xZfIPKEBGQA1Wixex2dmPDAwQK5FpATQIPkWKSLACoDGEk2rfajNV9TtgiVJ2GWbLF2QkpUTpceXGCLW7qYn6YKiBLoxFEgqCkm5Wl4a486Do83VbdG7kARup4P06Tv_-n-m_D-hd1Kq3XJZNm77KFtiv9wynqKZ4T0guRfNKgh-tgvF0I94BWnF2EKsvDCRZySUOvp-n9PzEiSQm1cp0Hmjsj6gx0nrM_F1h0_IRglUUXpk8A7ERgbagt1mWWQYIIyGpoF4OLhRGsG8pj2-HbcUHUMK_6gaOzJOO2_gdvxHnSRUvSAbJAWNGrFCvEL8D5sfbslW-xb7i77SQ_KL7l3bTzMSRGvKRqENuy0M8j4Ye-BsGvXGplYbfJl2Q76FEVZv1Cwroe1t5WniwkSp49-MBLj_lLnCm3uxNAMd439054o4pAy3DSdbxy07iLdvfaJVPOnZBFhkcmPbpjn9d3V_ES1ijOcIfMU4uRv28yq4MbNUs9YsGHRKKQrUKPp1MGXnkLYcMZk5P1r7FmKVnhQ0QD41JfpG3uMx9aYofNG6ju11YLuh0BleKt7VeiLoyGlkqCdlzuiPxqYMk0zwtUFbW-w4Otq8uUoZpIjBoIBsU-fiB_Vo0L4zEvCCzz0kpJjbFOVzhcz9I28AQdMGIsOP3iKfX8x6TZEQHE04u9HYTnvIw43OP4eQ8YJZha6WlttP2N-Luzpvzk14n5SkZWpZ2ipUlKv2iM7FCn0IPb7w");
 
 				var raw = JSON.stringify({
+				"name": name,
 				"email": email,
 				"password": password
 				});

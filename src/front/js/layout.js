@@ -21,6 +21,8 @@ import { EditService } from "./component/editService";
 import { Signin } from "./component/signin";
 import { SigninOfferer } from "./component/signinofferer";
 import { OffererProfile } from "./component/offererprofile";
+import { Signup } from "./component/signup";
+import { SignupOfferer } from "./component/signupofferer";
 
 //create your first component
 const Layout = () => {
@@ -46,7 +48,9 @@ const Layout = () => {
                         <Route element={<ServiceForm />} path="/serviceform" />
                         <Route element={<EditService />} path="/editservice/:editid" />
                         <Route element={<Signin />} path="/signin" />
+                        <Route element={<Signup />} path="/signup" />
                         <Route element={<SigninOfferer />} path="/signinofferer" />
+                        <Route element={<SignupOfferer />} path="/signupofferer" />
                         <Route element={<OffererProfile />} path="/offererprofile" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />

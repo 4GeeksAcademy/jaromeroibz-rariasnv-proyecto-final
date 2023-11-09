@@ -37,11 +37,11 @@ export const ServiceForm = (item) => {
 			<form>
                 <div className="form-group py-3">
     				<label>Name</label>
-   					<input value={service.name} onChange={handleChange} name='name' type="text" className="form-control" id="name" placeholder="ex: Fix a wall"></input>
+   					<input value={service.name} onChange={handleChange} name='name' type="text" className="form-control" id="name" placeholder="ex: Fix a wall" required />
   				</div>
                 <div className="form-group py-3">
                     <label>Select a category</label>
-                    <select value={service.category} onChange={handleChange} className="form-select" aria-label="Default select example">
+                    <select value={service.category} onChange={handleChange} name='category' className="form-select" aria-label="Default select example" required>
                         <option>Select a category</option>
                         <option value= "2">Category One</option>
                         <option value= "3">Category Two</option>
@@ -50,7 +50,7 @@ export const ServiceForm = (item) => {
                 </div>
                 <div className="form-group py-3">
                     <label htmlFor="description">Example textarea</label>
-                    <textarea value={service.description} onChange={handleChange} name='description' className="form-control" id="description" placeholder="Please describe the task" rows="3"></textarea>
+                    <textarea value={service.description} onChange={handleChange} name='description' className="form-control" id="description" placeholder="Please describe the task" rows="3" required/>
                 </div>
 		
 				<Link to="/servicelist">
