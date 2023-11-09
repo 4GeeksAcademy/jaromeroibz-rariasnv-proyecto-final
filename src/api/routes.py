@@ -2,8 +2,13 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Address, Petitioner
+from api.models import db, User, Address, Petitioner, Services
 from api.utils import generate_sitemap, APIException
+
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 
 api = Blueprint('api', __name__)
 
@@ -160,6 +165,114 @@ def update_one_particular_petitioner(petitioner_id):
 
     return jsonify(response_body), 200
     
+@api.route('/services', methods=['GET'])
+def get_services():
 
+    all_services = Services.query.all()
+    result = list(map(lambda item: item.serialize(), all_services))
+
+    return jsonify(result), 200
    
+@api.route('/services/<int:service_id>', methods =['GET'])
+def get_service(service_id):
+    service = Services.query.filter_by(id=service_id).first()
 
+    return jsonify(service.serialize()), 200
+
+@api.route('/service', methods =['POST'])
+def add_service():
+    body = request.get_json()
+    service = Services(
+        name = body['name'],
+        category = body['category'],
+        description = body['description']
+    )
+    db.session.add(service)
+    db.session.commit()
+
+    response_body = {
+        "message": "Service created"
+    }
+    
+    return jsonify(response_body), 200
+
+@api.route('/service/<int:service_id>', methods =['PUT'])
+def update_service(service_id):
+    
+    update_service = Services.query.filter_by(id=service_id).first()
+    print(update_service)
+
+    update_service.name = request.get_json()['name']
+    update_service.category = request.get_json()['category']
+    update_service.description = request.get_json()['description']
+    
+    db.session.commit()
+
+    response_body = {
+        "message": "Service updated"
+    }
+      
+    return jsonify(response_body), 200
+
+@api.route('/service/<int:service_id>', methods =['DELETE'])
+def delete_service(service_id):
+    delete_service = Services.query.filter_by(id=service_id).first()
+
+    db.session.delete(delete_service)
+    db.session.commit()
+
+    response_body = {
+        "message": "Service deleted"
+    }
+      
+    return jsonify(response_body), 200
+
+@api.route("/signin", methods=["POST"])
+def login():
+
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    user = User.query.filter_by(email=email).first()
+    print(user)
+    if email != user.email or password != user.password:
+        return jsonify({"msg": "Bad username or password"}), 401
+
+    access_token = create_access_token(identity=email)
+    return jsonify(access_token=access_token)
+
+# Protect a route with jwt_required, which will kick out requests
+# without a valid JWT present.
+@api.route("/profile", methods=["GET"])
+@jwt_required()
+def profile():
+    # Access the identity of the current user with get_jwt_identity
+    user_email = get_jwt_identity()
+    # return jsonify(logged_in_as=current_user), 200
+    user = User.query.filter_by(email=user_email).first()
+    print(user)
+    response_body = {
+        "msg": "User found",
+        "user": user.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+@api.route("/signup", methods=["POST"])
+def signup():
+    body = request.get_json()
+    print(body)
+
+    user = User.query.filter_by(email=body["email"]).first()
+    print(user)
+    if user == None:
+        user = User(email=body["email"], password=body["password"], is_active=True)
+        db.session.add(user)
+        db.session.commit()
+        response_body = {
+            "msg": "User created"
+        }
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "User already exists with this email address"}), 401
