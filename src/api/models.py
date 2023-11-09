@@ -26,10 +26,10 @@ class Address(db.Model):
     city = db.Column(db.String(80), unique=False, nullable=False)
     county = db.Column(db.String(80), unique=False, nullable=False)
     full_address = db.Column(db.String(80), unique=False, nullable=False)
-    details = db.Column(db.String(80), unique=False, nullable=False)
+    details = db.Column(db.String(80), unique=False)
     zipcode = db.Column(db.String(80), unique=False, nullable=False)
-    latitude = db.Column(db.String(80), unique=False, nullable=False)
-    longitude = db.Column(db.String(80), unique=False, nullable=False)
+    latitude = db.Column(db.String(80), unique=False)
+    longitude = db.Column(db.String(80), unique=False)
     
 
     def __repr__(self):
@@ -42,6 +42,11 @@ class Address(db.Model):
             "full_address": self.full_address,
             "state": self.state,
             "city": self.city,
+            "county": self.county,
+            "latitude": self.latitude,
+            "details": self.details,
+            "zipcode": self.zipcode,
+            "longitude": self.longitude
         }
             # do not serialize the password, its a security breach
 
