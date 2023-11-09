@@ -25,7 +25,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
-
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
@@ -107,7 +106,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				fetch(process.env.BACKEND_URL +'/api/address/', requestOptions)
 				.then( (response) => response.json() )
 				.then( (data) => { getActions().getAddresses()} )
-			
 			},
 			editAddress: (address, theid) =>{
 				const store = getStore();
@@ -121,7 +119,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				fetch(process.env.BACKEND_URL +'/api/address/'+theid, requestOptions)
 					.then((response) => response.json())
-					.then((data) =>  actions.getAddresses())
+					.then((data) =>  { getActions().getAddresses()
+									   console.log(data)
+									})
 					.catch((error) => {console.log(error)})
 			},
 			saveToDelete: (theid) =>{

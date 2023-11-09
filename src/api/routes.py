@@ -122,6 +122,7 @@ def update_address(address_id):
     update_address = Address.query.filter_by(id=address_id).first()
     print(update_address)
     print(request.get_json())
+    if request.get_json()['name']: update_address.name = request.get_json()['name']
     if request.get_json()['full_address']: update_address.full_address = request.get_json()['full_address']
     if request.get_json()['state']: update_address.state = request.get_json()['state']
     if request.get_json()['city']: update_address.city = request.get_json()['city']

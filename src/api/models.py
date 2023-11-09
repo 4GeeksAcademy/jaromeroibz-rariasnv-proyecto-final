@@ -41,7 +41,12 @@ class Address(db.Model):
             "name": self.name,
             "full_address": self.full_address,
             "state": self.state,
-            "city": self.city
+            "city": self.city,
+            "county": self.county,
+            "latitude": self.latitude,
+            "details": self.details,
+            "zipcode": self.zipcode,
+            "longitude": self.longitude
         }
 
             # do not serialize the password, its a security breach
