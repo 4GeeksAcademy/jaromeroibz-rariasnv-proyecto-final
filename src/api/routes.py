@@ -2,8 +2,13 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Petitioner
+from api.models import db, User, Address, Petitioner, Services
 from api.utils import generate_sitemap, APIException
+
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 
 api = Blueprint('api', __name__)
 
@@ -15,6 +20,43 @@ def handle_hello():
         "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
     }
 
+    return jsonify(response_body), 200
+
+@api.route('/address', methods=['GET'])
+def get_addresses():
+
+    all_addresses = Address.query.all()
+    result = list(map(lambda item: item.serialize(), all_addresses))
+
+    return jsonify(result), 200
+
+@api.route('/address/<int:address_id>', methods =['GET'])
+def get_address(address_id):
+    address = Address.query.filter_by(id=address_id).first()
+
+    return jsonify(address.serialize()), 200
+
+@api.route('/address', methods =['POST'])
+def add_address():
+    body = request.get_json()
+    address = Address(
+        name = body['name'],
+        full_address = body['full_address'],
+        state = body['state'],
+        city = body['city'],
+        county = body['county'],
+        details = body['details'],
+        zipcode = body['zipcode'],
+        latitude = body['latitude'],
+        longitude = body['longitude']
+    )
+    db.session.add(address)
+    db.session.commit()
+
+    response_body = {
+        "message": "Address created"
+    }
+    
     return jsonify(response_body), 200
 
 @api.route('/petitioner', methods=['GET'])
@@ -47,10 +89,25 @@ def create_petitioner():
 
     response_body = {
         "msg": "Petitioner created"
+
     }
 
     return jsonify(response_body), 200
 
+@api.route('/address/<int:address_id>', methods =['DELETE'])
+def delete_address(address_id):
+    delete_address = Address.query.filter_by(id=address_id).first()
+
+    db.session.delete(delete_address)
+    db.session.commit()
+
+    response_body = {
+        "message": "Address deleted"
+    }
+      
+    return jsonify(response_body), 200
+
+      
 @api.route('/petitioner/<int:petitioner_id>', methods=['DELETE'])
 def delete_one_particular_petitioner(petitioner_id):
     petitioner_to_delete = Petitioner.query.filter_by(id=petitioner_id).first()
@@ -62,6 +119,30 @@ def delete_one_particular_petitioner(petitioner_id):
         "msg": "Petitioner deleted"
     }
 
+    return jsonify(response_body), 200
+
+@api.route('/address/<int:address_id>', methods =['PUT'])
+def update_address(address_id):
+    
+    update_address = Address.query.filter_by(id=address_id).first()
+    print(update_address)
+    print(request.get_json())
+    if request.get_json()['name']: update_address.name = request.get_json()['name']
+    if request.get_json()['full_address']: update_address.full_address = request.get_json()['full_address']
+    if request.get_json()['state']: update_address.state = request.get_json()['state']
+    if request.get_json()['city']: update_address.city = request.get_json()['city']
+    if request.get_json()['county']: update_address.county = request.get_json()['county']
+    if request.get_json()['details']: update_address.details = request.get_json()['details']
+    if request.get_json()['zipcode']: update_address.zipcode = request.get_json()['zipcode']
+    if request.get_json()['latitude']: update_address.latitude = request.get_json()['latitude']
+    if request.get_json()['longitude']: update_address.longitude = request.get_json()['longitude']
+    
+    db.session.commit()
+
+    response_body = {
+        "message": "Address updated"
+    }
+      
     return jsonify(response_body), 200
 
 @api.route('/petitioner/<int:petitioner_id>', methods=['PUT'])
@@ -77,10 +158,134 @@ def update_one_particular_petitioner(petitioner_id):
     petitioner_to_update.rating = body['rating']
 
     db.session.commit()
-
+      
     response_body = {
         "msg": "Petitioner updated"
     }
 
     return jsonify(response_body), 200
+    
+@api.route('/services', methods=['GET'])
+def get_services():
 
+    all_services = Services.query.all()
+    result = list(map(lambda item: item.serialize(), all_services))
+
+    return jsonify(result), 200
+   
+@api.route('/services/<int:service_id>', methods =['GET'])
+def get_service(service_id):
+    service = Services.query.filter_by(id=service_id).first()
+
+    return jsonify(service.serialize()), 200
+
+@api.route('/service', methods =['POST'])
+def add_service():
+    body = request.get_json()
+    service = Services(
+        name = body['name'],
+        category = body['category'],
+        description = body['description']
+    )
+    db.session.add(service)
+    db.session.commit()
+
+    response_body = {
+        "message": "Service created"
+    }
+    
+    return jsonify(response_body), 200
+
+@api.route('/service/<int:service_id>', methods =['PUT'])
+def update_service(service_id):
+    
+    update_service = Services.query.filter_by(id=service_id).first()
+    print(update_service)
+
+    update_service.name = request.get_json()['name']
+    update_service.category = request.get_json()['category']
+    update_service.description = request.get_json()['description']
+    
+    db.session.commit()
+
+    response_body = {
+        "message": "Service updated"
+    }
+      
+    return jsonify(response_body), 200
+
+@api.route('/service/<int:service_id>', methods =['DELETE'])
+def delete_service(service_id):
+    delete_service = Services.query.filter_by(id=service_id).first()
+
+    db.session.delete(delete_service)
+    db.session.commit()
+
+    response_body = {
+        "message": "Service deleted"
+    }
+      
+    return jsonify(response_body), 200
+
+@api.route("/signin", methods=["POST"])
+def login():
+
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    user = User.query.filter_by(email=email).first()
+    print(user)
+    if email != user.email or password != user.password:
+        return jsonify({"msg": "Bad username or password"}), 401
+
+    access_token = create_access_token(identity=email)
+    user_info = user.serialize()
+    user_info['access_token']=access_token
+    print(user_info)
+    return jsonify(user_info)
+
+
+# Protect a route with jwt_required, which will kick out requests
+# without a valid JWT present.
+@api.route("/profile", methods=["GET"])
+@jwt_required()
+def profile():
+    # Access the identity of the current user with get_jwt_identity
+    user_email = get_jwt_identity()
+    # return jsonify(logged_in_as=current_user), 200
+    user = User.query.filter_by(email=user_email).first()
+    print(user)
+    response_body = {
+        "msg": "User found",
+        "user": user.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
+@api.route("/signup", methods=["POST"])
+def signup():
+    body = request.get_json()
+    print(body)
+    
+    user = User.query.filter_by(email=body["email"]).first()
+
+    email = request.json.get("email", None)
+    access_token = create_access_token(identity=email)
+
+    print(user)
+    if user == None:
+        user = User(name=body["name"], email=body["email"], password=body["password"], is_active=True)
+        print(user)
+        db.session.add(user)
+        db.session.commit()
+        user_info = user.serialize()
+        user_info['access_token']=access_token
+        response_body = {
+
+            "msg": "User created",
+            "token": user_info
+        }
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "User already exists with this email address"}), 401

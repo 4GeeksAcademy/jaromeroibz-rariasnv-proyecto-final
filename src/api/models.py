@@ -4,6 +4,7 @@ db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
@@ -14,9 +15,42 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "name": self.name,
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+
+
+class Address(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
+    state = db.Column(db.String(80), unique=False, nullable=False)
+    city = db.Column(db.String(80), unique=False, nullable=False)
+    county = db.Column(db.String(80), unique=False, nullable=False)
+    full_address = db.Column(db.String(80), unique=False, nullable=False)
+    details = db.Column(db.String(80), unique=False)
+    zipcode = db.Column(db.String(80), unique=False, nullable=False)
+    latitude = db.Column(db.String(80), unique=False)
+    longitude = db.Column(db.String(80), unique=False)
+    
+
+    def __repr__(self):
+        return f'<Address {self.name}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "full_address": self.full_address,
+            "state": self.state,
+            "city": self.city,
+            "county": self.county,
+            "latitude": self.latitude,
+            "details": self.details,
+            "zipcode": self.zipcode,
+            "longitude": self.longitude
+        }
+            # do not serialize the password, its a security breach
 
 class Petitioner (db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,4 +73,24 @@ class Petitioner (db.Model):
             "email_address": self.email_address,
             "offer_services": self.offer_services,
             "rating": self.rating
+
         }
+
+class Services(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
+    category = db.Column(db.String(80), unique=False, nullable=False)
+    description = db.Column(db.String(80), unique=False, nullable=False)
+    
+
+    def __repr__(self):
+        return f'<Services {self.name}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "category": self.category,
+            "description": self.description
+        }
+            # do not serialize the password, its a security breach

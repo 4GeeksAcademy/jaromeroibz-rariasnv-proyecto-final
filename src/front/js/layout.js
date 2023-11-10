@@ -14,6 +14,19 @@ import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import { AddressList } from "./component/addressList";
+import { AddressForm } from "./component/addressForm";
+import { EditAddress } from "./component/editaddress";
+import { Address } from "./component/address";
+import { Service } from "./component/service";
+import { ServiceForm } from "./component/serviceForm";
+import { ServiceList } from "./component/serviceList";
+import { EditService } from "./component/editService";
+import { Signin } from "./component/signin";
+import { SigninOfferer } from "./component/signinofferer";
+import { OffererProfile } from "./component/offererprofile";
+import { Signup } from "./component/signup";
+import { SignupOfferer } from "./component/signupofferer";
 
 //create your first component
 const Layout = () => {
@@ -30,6 +43,19 @@ const Layout = () => {
                     <Navbar />
                     <Routes>
                         <Route element={<Home />} path="/" />
+                        <Route element={<Address />} path="/address/:theid" />
+                        <Route element={<AddressList />} path="/addresslist" />
+                        <Route element={<AddressForm />} path="/addressform" />
+                        <Route element={<EditAddress />} path="/editaddress/:editid" />
+                        <Route element={<Service />} path="/service/:theid" />
+                        <Route element={<ServiceList />} path="/servicelist" />
+                        <Route element={<ServiceForm />} path="/serviceform" />
+                        <Route element={<EditService />} path="/editservice/:editid" />
+                        <Route element={<Signin />} path="/signin" />
+                        <Route element={<Signup />} path="/signup" />
+                        <Route element={<SigninOfferer />} path="/signinofferer" />
+                        <Route element={<SignupOfferer />} path="/signupofferer" />
+                        <Route element={<OffererProfile />} path="/offererprofile" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<SignupAsPetitioner />} path="/signup" />
                         <Route element={<RegisteredPetitioners />} path="/registeredPetitioners" />

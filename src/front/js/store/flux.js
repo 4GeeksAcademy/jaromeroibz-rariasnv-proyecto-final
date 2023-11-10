@@ -1,3 +1,5 @@
+import { Navigate, useParams } from "react-router-dom";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -16,7 +18,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			],
 			petitioners: [],	
 			petitionersDetail: [],		
-			IdToDelete: ""
+			IdToDelete: "",
+			addresses: [],
+			idToDelete: "",
+			address:[],
+			services:[],
+			service:[],
+			auth: false,
+			users:[]
 
 		},
 		actions: {
@@ -24,7 +33,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
-
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
@@ -64,7 +72,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				 }
 			},
-			// preguntar a deimian el por que colocar en arreglos separados la data de petitioners y de uno en detalle
 			getPetitioner: async (result) => {
 				try {
 					const store = getStore()	
@@ -150,6 +157,232 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.log(error)
 				}
+			},
+			getAddresses: async () => {
+				const store = getStore();
+				let response = await fetch(process.env.BACKEND_URL+'/api/address/')
+			
+				let data = await response.json()
+
+				if (response.ok){
+				  setStore({
+					addresses: data
+				  })
+				  console.log('Address exists')
+				}
+			  
+			},
+			getAddress: async (result) => {
+				const store = getStore();
+				const idToDelete = result.id
+				// var myHeaders = new Headers();
+				// myHeaders.append("Access-Control-Allow-Headers", "*");
+				// myHeaders.append("Content-Type", "application/json");
+
+				// var raw = JSON.stringify([]);
+
+				// var requestOptions = {
+				// method: 'GET',
+				// headers: myHeaders,
+				// body: raw,
+				// redirect: 'follow'
+				// };
+
+				let response = await fetch(process.env.BACKEND_URL+'/api/address/'+ idToDelete)
+				let data = await response.json()
+				console.log(response)
+				if (response.ok){
+				  setStore({
+					address: data
+				  })
+				}
+
+			},
+			addAddress: (data) => {
+				
+				const store = getStore();
+
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', 'Origin': '*',
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*' },
+					body: JSON.stringify(data)
+				}
+				console.log('Add Address')
+				fetch(process.env.BACKEND_URL +'/api/address/', requestOptions)
+				.then( (response) => response.json() )
+				.then( (data) => { getActions().getAddresses()} )
+			},
+			editAddress: (address, theid) =>{
+				const store = getStore();
+				const actions = getActions();
+				console.log(address)
+				console.log(theid)
+			    const requestOptions = {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify( address )
+				};
+				fetch(process.env.BACKEND_URL +'/api/address/'+theid, requestOptions)
+					.then((response) => response.json())
+					.then((data) =>  { getActions().getAddresses()
+									   console.log(data)
+									})
+					.catch((error) => {console.log(error)})
+			},
+			saveToDelete: (theid) =>{
+				setStore({
+					idToDelete: theid
+				})
+			},
+			deleteAddress: (item) => {
+				
+				console.log(item)
+				const store = getStore();
+				const actions = getActions();
+				const indexMap = getStore().idToDelete
+				console.log(indexMap)
+
+				var requestOptions = {
+					method: 'DELETE'
+				};
+				
+				fetch(process.env.BACKEND_URL +"/api/address/" + indexMap, requestOptions)
+					.then(response => response.json())
+					.then( () => {
+						fetch(process.env.BACKEND_URL+ '/api/address/')
+						.then((response) => response.json())
+						.then((data) => setStore({addresses: data}))
+					})
+					.catch(error => console.log('error', error));
+					
+				getActions().getAddresses();	
+			},
+			getServices: async () => {
+				const store = getStore();
+				let response = await fetch(process.env.BACKEND_URL+'/api/services/')
+			
+				let data = await response.json()
+
+				if (response.ok){
+				  setStore({
+					services: data
+				  })
+				}
+			},
+			getService: async (result) => {
+				const store = getStore();
+				const idService = result.id
+				let response = await fetch(process.env.BACKEND_URL+'/api/service/'+ idService)
+				let data = await response.json()
+				if (response.ok){
+				  setStore({
+					service: data
+				  })
+				}
+
+			},
+			addService: (data) => {
+				
+				const store = getStore();
+
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(data)
+				}
+				console.log('Add Service')
+				fetch(process.env.BACKEND_URL +'/api/service/', requestOptions)
+				.then( (response) => response.json() )
+				.then( (data) => { getActions().getServices()} )
+			},
+			editService: (service, theid) =>{
+				const store = getStore();
+				const actions = getActions();
+				
+			    const requestOptions = {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify( service )
+				};
+				fetch(process.env.BACKEND_URL +`/api/service/${theid}`, requestOptions)
+					.then((response) => response.json())
+					.then((data) =>  actions.getServices())
+					.catch((error) => {console.log(error)})
+			},
+			deleteService: (item) => {
+				
+				console.log(item)
+				const store = getStore();
+				const actions = getActions();
+				const indexMap = getStore().idToDelete
+				console.log(indexMap)
+
+				var requestOptions = {
+					method: 'DELETE'
+				};
+				
+				fetch(process.env.BACKEND_URL +"/api/service/" + indexMap, requestOptions)
+					.then(response => response.json())
+					.then( (data) => {
+						getActions().getServices()
+					})
+					.catch(error => console.log('error', error));
+		
+			},
+			loginOfferer: (email, password) => {
+				console.log('Login desde flux')
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-type': 'application/json' },
+					body: JSON.stringify(
+					{
+						"email": email,
+						"password": password
+					})
+				};
+				fetch(process.env.BACKEND_URL +"/api/signin/", requestOptions)
+					.then(response => {
+						console.log(response.status)
+						if(response.status === 200){
+							setStore({auth: true});
+						}
+						
+						return response.json()
+					})
+					.then(data =>{
+						localStorage.setItem("token", data.access_token)
+						setStore({ users: data })
+						console.log(data)
+						}
+					)
+			},
+			signUpOfferer: (name, email, password) => {
+				console.log('Signup desde flux')
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-type': 'application/json' },
+					body: JSON.stringify(
+					{
+						"name": name,
+						"email": email,
+						"password": password
+					})
+				};
+				fetch(process.env.BACKEND_URL +"/api/signup/", requestOptions)
+					.then(response => response.json())
+					.then(data =>{
+						console.log(data)
+						setStore({ users: data })
+						}
+					)
+
+			},
+			logout: () => {
+				console.log('Log out desde flux')
+				setStore({auth: false});
+				localStorage.removeItem("token");
 			}
 		}
 	};
