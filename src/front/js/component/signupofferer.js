@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { Context } from "../store/appContext";
 
@@ -9,13 +9,17 @@ export const SignupOfferer = () => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const navigate = useNavigate()
+
 
     function sendData(e){
         e.preventDefault()
         console.log('Send Data')
         console.log(name, email, password)
-        actions.signupOfferer(name, email, password)
+        actions.signUpOfferer(name, email, password)
+        navigate('/offererprofile')
     }
+
 
 return (
     <>
