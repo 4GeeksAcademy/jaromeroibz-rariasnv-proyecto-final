@@ -3,7 +3,7 @@ import { Link} from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 
-export const Signup = (petitionerToBeAdded) => {
+export const SignupAsPetitioner = (petitionerToBeAdded) => {
     const navigate = useNavigate()
     const {store, actions} = useContext(Context)
     const [petitionerToAdd, setpetitionerToAdd ] = useState({

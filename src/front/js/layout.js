@@ -5,7 +5,7 @@ import { BackendURL } from "./component/backendURL";
 
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
-import { Signup } from "./pages/signup";
+import { SignupAsPetitioner } from "./pages/signupAsPetitioner";
 import {RegisteredPetitioners} from "./pages/registeredPetitioners"
 import {RegisteredPetitionerDetail} from "./pages/registeredPetitionerDetail"
 import { EditPetitioner } from "./pages/editPetitioner";
@@ -31,7 +31,7 @@ const Layout = () => {
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<Demo />} path="/demo" />
-                        <Route element={<Signup />} path="/signup" />
+                        <Route element={<SignupAsPetitioner />} path="/signup" />
                         <Route element={<RegisteredPetitioners />} path="/registeredPetitioners" />
                         <Route element={<RegisteredPetitionerDetail />} path="/registeredPetitioners/:theId" />
                         <Route element={<EditPetitioner />} path="/editPetitioner/:idToEdit" />
