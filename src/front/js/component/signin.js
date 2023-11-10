@@ -14,7 +14,7 @@ return (
                     <h5 className="card-title">Sign in as petitioner</h5>
                     <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     <Link to="/signinpetitioner">
-                    <a href="#" className="btn btn-primary">Sign in as petitioner</a>
+                    <button className="btn btn-primary">Sign in as petitioner</button>
                     </Link>
                 </div>
             </div>
@@ -24,7 +24,7 @@ return (
                     <h5 className="card-title">Sign in as offerer</h5>
                     <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     <Link to="/signinofferer">
-                    <a href="#" className="btn btn-primary">Sign in as offerer</a>
+                    <button className="btn btn-primary">Sign in as offerer</button>
                     </Link>
                 </div>
             </div>

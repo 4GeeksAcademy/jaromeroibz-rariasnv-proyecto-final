@@ -267,15 +267,24 @@ def profile():
 def signup():
     body = request.get_json()
     print(body)
-
+    
     user = User.query.filter_by(email=body["email"]).first()
+
+    email = request.json.get("email", None)
+    access_token = create_access_token(identity=email)
+
     print(user)
     if user == None:
         user = User(name=body["name"], email=body["email"], password=body["password"], is_active=True)
+        print(user)
         db.session.add(user)
         db.session.commit()
+        user_info = user.serialize()
+        user_info['access_token']=access_token
         response_body = {
-            "msg": "User created"
+
+            "msg": "User created",
+            "token": user_info
         }
         return jsonify(response_body), 200
     else:
