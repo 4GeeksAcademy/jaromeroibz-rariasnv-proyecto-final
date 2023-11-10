@@ -7,27 +7,29 @@ export const RegisteredPetitionerDetail = () => {
     const navigate = useNavigate()
     const {store, actions} = useContext(Context)
     const [detail, setDetail] = useState({})
-    const {theId} = useParams()
+    const params = useParams()
 
-    const getPetitioner = (item) => {
-        let result = store.petitioners.find( (petitioner) => petitioner.id == theId )        
+    const findPetitioner = () => {
+        let result = store.petitioners.find( (petitioner) => petitioner.id == params.theId )  
         setDetail(result)
-    }
-    
+        actions.getPetitioner(result)
+    }       
+        
     useEffect( () => {
-        getPetitioner()
-    },[])
+        findPetitioner()        
+    },[store.petitioners])
+
     return (
         <div className="body m-5">            
             <div className="card" style={{width: "18rem"}}>
             <img src="..." className="card-img-top" alt="..."/>
             <div className="card-body">
-                <h6 className="card-subtitle mb-2 text-body-secondary">Full Name: {detail.full_name}</h6>
-                <p className="card-text">Phone number: {detail.phone_number}</p>
-                <p className="card-text">Address: {detail.address}</p>
-                <p className="card-text">Email address: {detail.email_address}</p>
-                <p className="card-text">Offer: {detail.offer_services}</p>
-                <p className="card-text">Rating: {detail.rating}</p>
+                <h6 className="card-subtitle mb-2 text-body-secondary">Full Name: {detail?.full_name}</h6>
+                <p className="card-text">Phone number: {detail?.phone_number}</p>
+                <p className="card-text">Address: {detail?.address}</p>
+                <p className="card-text">Email address: {detail?.email_address}</p>
+                <p className="card-text">Offer: {detail?.offer_services}</p>
+                <p className="card-text">Rating: {detail?.rating}</p>
 
                 
                 <button className="btn btn-primary" onClick={ () => navigate('/registeredPetitioners')}>Back</button>                    

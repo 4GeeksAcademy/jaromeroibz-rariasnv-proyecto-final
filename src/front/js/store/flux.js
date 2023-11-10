@@ -14,7 +14,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					initial: "white"
 				}
 			],
-			petitioners: []
+			petitioners: [],	
+			petitionersDetail: [],		
+			IdToDelete: ""
+
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -51,7 +54,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getAllPetitioners: async () => {								
 				 try {
 					const store = getStore();
-					const response = await fetch('https://studious-waffle-69gggxgvv4653w69-3001.app.github.dev/api/petitioner/')	
+					const response = await fetch(process.env.BACKEND_URL+'api/petitioner')	
 					const data = await response.json()
 					
 					if(response.ok){
@@ -61,26 +64,91 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				 }
 			},
-			getParticularPetitioner: async (theId) => {
-				const actions = getActions()
+			// preguntar a deimian el por que colocar en arreglos separados la data de petitioners y de uno en detalle
+			getPetitioner: async (result) => {
 				try {
-					const store = getStore()
-					const response = await fetch('https://studious-waffle-69gggxgvv4653w69-3001.app.github.dev/api/petitioner/'+theId)
+					const store = getStore()	
+					const idToDisplay = result.id				
+					const response = await fetch(process.env.BACKEND_URL+'api/petitioner/'+idToDisplay)
 					const data = await response.json()
 
 					if(response.ok){
-						setStore({ petitioners: data})
+						setStore({ petitionersDetail: data})
 					}
 				} catch (error) {
 					console.log(error)
 					
 				}
 			},
-			deleteParticularPetitioner: async (petitionerToDelete) => {
+			deleteParticularPetitioner: async (petitioner) => {
 				try {
+					const store = getStore()					
+					const indexToDelete = petitioner.id
+					const requestOptions = {
+						method: 'DELETE'
+					}
+					const response = await fetch(process.env.BACKEND_URL+'api/petitioner/'+indexToDelete, requestOptions) 	
 					
+					if(response.ok){
+						try {
+							const response = await fetch(process.env.BACKEND_URL+'api/petitioner')
+							const data = await response.json()
+
+							if(response.ok){
+								setStore({ petitioners: data })
+								const res = await response.json()
+							}
+						} catch (error) {
+							console.log(error)
+						}
+					}
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			addPetitioner: async (item) => {
+				try {
+					const store = getStore()
+					const requestOptions = {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(item)
+					}
+					const response = await fetch(process.env.BACKEND_URL+'api/petitioner', requestOptions)
+					const data = await response.json()
+
+					if(response.ok){
+						setStore({ petitioners: data })
+					}
 				} catch (error) {
 					
+				}
+			},
+
+			editPetitioner: async (item, idToEdit) => {
+				try {
+					const store = getStore()
+					const requestOptions = {
+						method: 'PUT',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(item)
+					}
+					const response = await fetch(process.env.BACKEND_URL+'api/petitioner/'+idToEdit, requestOptions)
+					if(response.ok){
+						try {
+							const response = await fetch(process.env.BACKEND_URL+'api/petitioner')
+							const data = await response.json()
+
+							if(response.ok){
+								setStore({ petitioners: data })
+								const res = await response.json()
+							}
+						} catch (error) {
+							console.log(error)
+						}
+					}
+				} catch (error) {
+					console.log(error)
 				}
 			}
 		}

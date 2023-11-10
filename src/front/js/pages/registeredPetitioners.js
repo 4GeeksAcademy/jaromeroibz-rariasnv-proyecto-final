@@ -17,7 +17,8 @@ export const RegisteredPetitioners = () => {
                     <p className="card-text">Email address: {petitioner.email_address}</p>
                     
                     <button className="btn btn-primary" onClick={ () => navigate(`/registeredPetitioners/${petitioner.id}`) }>Petitioner details</button>
-                    <button className="btn btn-danger mx-2">Delete</button>
+                    <button className="btn btn-primary" onClick={ () => navigate(`/editPetitioner/${petitioner.id}`) }>Edit</button>
+                    <button className="btn btn-danger mx-2" onClick={ () => actions.deleteParticularPetitioner(petitioner)}>Delete</button>
                 </div>
             </div>
             )}
