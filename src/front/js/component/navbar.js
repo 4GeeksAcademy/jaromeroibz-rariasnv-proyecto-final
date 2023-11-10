@@ -11,13 +11,14 @@ export const Navbar = () => {
 		actions.logout()
 		navigate('/signinofferer')
 	}
-	
+
 	return (
 		<nav className="navbar navbar-light bg-light">
 			<div className="container">
 				<Link to="/">
 					<span className="navbar-brand mb-0 h1">App name</span>
 				</Link>
+				<div className="ml-auto">					
 				<div className="ml-auto">
 					<Link to="/signin">
 						<button className="btn btn-primary">Sign in</button>
@@ -28,8 +29,6 @@ export const Navbar = () => {
 						<button className="btn btn-primary">Signup</button>
 					</Link>
 					{ store.auth === true ? <button onClick={() => handleLogout()} className="btn btn-primary">Logout</button> :null}
-					
-
 
 				</div>
 			</div>
