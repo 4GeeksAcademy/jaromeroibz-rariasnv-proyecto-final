@@ -94,3 +94,27 @@ class Services(db.Model):
             "description": self.description
         }
             # do not serialize the password, its a security breach
+
+class Offerer(db.Model):
+    id= db.Column(db.Integer, primary_key=True)
+    full_name = db.Column(db.String(120), unique=False, nullable=False)
+    phone_number = db.Column(db.Integer, unique=True, nullable=False)
+    address = db.Column(db.String(120), unique=False, nullable=False)
+    email_address = db.Column(db.String(120), unique=True, nullable=False)
+    tasks_offer = db.Column(db.String(120), unique=False, nullable=False)
+    rating = db.Column(db.String(120), unique=False, nullable=False)
+    password = db.Column(db.String(120), unique=False, nullable=False)
+
+    def __repr__(self):
+        return f'<Offerer {self.email_address}>'
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "full_name": self.full_name,
+            "phone_number": self.phone_number,
+            "address": self.address,
+            "email_address": self.email_address,
+            "tasks_offer": self.tasks_offer,
+            "rating": self.rating
+        }

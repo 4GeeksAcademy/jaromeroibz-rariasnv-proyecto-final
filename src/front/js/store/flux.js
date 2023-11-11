@@ -25,8 +25,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			services:[],
 			service:[],
 			auth: false,
-			users:[]
-
+			users:[],
+			offerers: [],
+			offerersDetail: []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -383,6 +384,103 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log('Log out desde flux')
 				setStore({auth: false});
 				localStorage.removeItem("token");
+			},
+			getAllOfferers: async () => {
+				try {
+					const store = getStore()
+					const response = await fetch(process.env.BACKEND_URL+'/api/offerer')
+					const data = await response.json()
+
+					if(response.ok){
+						setStore({ offerers: data})
+					}
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			getOfferer: async (result) => {
+				try {
+					const store = getStore()
+					const idToDisplay = result.id
+					const response = await fetch(process.env.BACKEND_URL+'/api/offerer/'+idToDisplay)
+					const data = await response.json()
+
+					if(response.ok){
+						setStore({ offerersDetail: data })
+					}
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			deleteParticularOfferer: async (offerer) => {
+				try {
+					const store = getStore()
+					const indexToDelete = offerer.id
+					const requestOptions = {
+						method: 'DELETE'
+					}
+					const response = await fetch(process.env.BACKEND_URL+'/api/offerer/'+indexToDelete, requestOptions)
+
+					if(response.ok){
+						try {
+							const response = await fetch(process.env.BACKEND_URL+'/api/offerer')
+							const data = await response.json()
+
+							if(response.ok){
+								setStore( {offerers: data} )
+							}
+						} catch (error) {
+							console.log(error)
+						}
+					}
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			addOfferer: async (item) => {
+				try {
+					const store = getStore()
+					const requestOptions = {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(item)
+					}
+
+					const response = await fetch(process.env.BACKEND_URL+'/api/offerer', requestOptions)
+					const data = await response.json()
+
+					if(response.ok){
+						setStore({ offerers: data })
+					}
+				} catch (error) {
+					
+				}
+			},
+			editOfferer: async (item, offererIdToEdit) => {
+				try {
+					const store = getStore()
+					const requestOptions = {
+						method: 'PUT',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(item)
+					}
+					const response = await fetch(process.env.BACKEND_URL+'/api/offerer/'+offererIdToEdit, requestOptions)
+
+					if(response.ok){
+						try {
+							const response = await fetch(process.env.BACKEND_URL+'/api/offerer')
+							const data = await response.json()
+
+							if(response.ok){
+								setStore({ offerers: data })
+							}
+						} catch (error) {
+							console.log(error)
+						}
+					}
+				} catch (error) {
+					console.log(error)
+				}
 			}
 		}
 	};

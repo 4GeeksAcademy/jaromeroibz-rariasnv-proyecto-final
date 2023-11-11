@@ -17,8 +17,7 @@ export const Navbar = () => {
 			<div className="container">
 				<Link to="/">
 					<span className="navbar-brand mb-0 h1">App name</span>
-				</Link>
-				<div className="ml-auto">					
+				</Link>					
 				<div className="ml-auto">
 					<Link to="/signin">
 						<button className="btn btn-primary">Sign in</button>
