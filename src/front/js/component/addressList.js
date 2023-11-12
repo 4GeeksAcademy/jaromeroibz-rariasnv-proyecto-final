@@ -24,13 +24,14 @@ export const AddressList = () => {
 						<div className="d-block px-5">
                             <h1>{item.name}</h1>
                             <p className="info">{item.full_address}</p>
-                            <p className="info">{item.city}</p>
+							
+                            {/* <p className="info">{item.city}</p>
                             <p className="info">{item.county}</p>
                             <p className="info">{item.state}</p>
                             <p className="info">{item.details}</p>
                             <p className="info">{item.zipcode}</p>
                             <p className="info">{item.latitude}</p>
-                            <p className="info">{item.longitude}</p>
+                            <p className="info">{item.longitude}</p> */}
 
 						</div>
 						<div className="container">

@@ -24,8 +24,8 @@ export const Address = () => {
                 <div className="d-block px-5">
                     <h1>{result.name}</h1>
                     <p className="info">{result.full_address}</p>
-                    <p className="info">{result.city}</p>
-                    {/* <p className="info">{result.county}</p>
+                    {/*<p className="info">{result.city}</p>
+                    <p className="info">{result.county}</p>
                     <p className="info">{item.state}</p>
                     <p className="info">{item.details}</p>
                     <p className="info">{item.zipcode}</p>

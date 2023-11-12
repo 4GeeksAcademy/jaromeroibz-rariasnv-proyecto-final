@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Address, Petitioner, Services
+from api.models import db, User, Address, Petitioner, Services, AddressDetails
 from api.utils import generate_sitemap, APIException
 
 from flask_jwt_extended import create_access_token
@@ -32,7 +32,7 @@ def get_addresses():
 
 @api.route('/address/<int:address_id>', methods =['GET'])
 def get_address(address_id):
-    address = Address.query.filter_by(id=address_id).first()
+    address = AddressDetails.query.filter_by(id=address_id).first()
 
     return jsonify(address.serialize()), 200
 
@@ -42,13 +42,6 @@ def add_address():
     address = Address(
         name = body['name'],
         full_address = body['full_address'],
-        state = body['state'],
-        city = body['city'],
-        county = body['county'],
-        details = body['details'],
-        zipcode = body['zipcode'],
-        latitude = body['latitude'],
-        longitude = body['longitude']
     )
     db.session.add(address)
     db.session.commit()
@@ -58,6 +51,31 @@ def add_address():
     }
     
     return jsonify(response_body), 200
+
+@api.route('/addressdetails', methods =['POST'])
+def add_address_details():
+    body = request.get_json()
+    address_details = AddressDetails(
+        name = body['name'],
+        full_address = body['full_address'],
+        county = body['county'],
+        city = body['city'],
+        state = body['state'],
+        country = body['country'],
+        zipcode = body['zipcode'],
+        latitude = body['latitude'],
+        longitude = body['longitude']
+    )
+    
+    db.session.add(address_details)
+    db.session.commit()
+
+    response_body = {
+        "message": "Address created"
+    }
+    
+    return jsonify(response_body), 200
+
 
 @api.route('/petitioner', methods=['GET'])
 def get_all_petitioner():
@@ -128,15 +146,7 @@ def update_address(address_id):
     print(update_address)
     print(request.get_json())
     if request.get_json()['name']: update_address.name = request.get_json()['name']
-    if request.get_json()['full_address']: update_address.full_address = request.get_json()['full_address']
-    if request.get_json()['state']: update_address.state = request.get_json()['state']
-    if request.get_json()['city']: update_address.city = request.get_json()['city']
-    if request.get_json()['county']: update_address.county = request.get_json()['county']
-    if request.get_json()['details']: update_address.details = request.get_json()['details']
-    if request.get_json()['zipcode']: update_address.zipcode = request.get_json()['zipcode']
-    if request.get_json()['latitude']: update_address.latitude = request.get_json()['latitude']
-    if request.get_json()['longitude']: update_address.longitude = request.get_json()['longitude']
-    
+    if request.get_json()['full_address']: update_address.full_address = request.get_json()['full_address'] 
     db.session.commit()
 
     response_body = {

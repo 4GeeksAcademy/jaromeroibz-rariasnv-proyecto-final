@@ -22,7 +22,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			services:[],
 			service:[],
 			auth: false,
-			users:[]
+			users:[],
+			addressDetails: []
 
 		},
 		actions: {
@@ -107,7 +108,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					'Access-Control-Allow-Origin': '*' },
 					body: JSON.stringify(data)
 				}
-				console.log('Add Address')
+				console.log(data)
 				fetch(process.env.BACKEND_URL +'/api/address/', requestOptions)
 				.then( (response) => response.json() )
 				.then( (data) => { getActions().getAddresses()} )
@@ -304,6 +305,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 				localStorage.removeItem("token");
 
 
+			},
+			getAddressesDetails: async () => {
+				const store = getStore();
+				let response = await fetch(process.env.BACKEND_URL+'/api/addressdetails/')
+			
+				let data = await response.json()
+
+				if (response.ok){
+				  setStore({
+					addressDetails: data
+				  })
+				} 
+			},
+			addAddressDetails: (data) => {
+				const store = getStore();
+				console.log(data)
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', 'Origin': '*',
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*' },
+					body: JSON.stringify(data)
+				}
+				console.log(data)
+				fetch(process.env.BACKEND_URL +'/api/addressdetails/', requestOptions)
+				.then( (response) => response.json() )
+				.then( (data) => getActions().getAddressesDetails())
 			}
 		}
 	};

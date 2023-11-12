@@ -11,38 +11,66 @@ export const AddressForm = (item) => {
 	const navigate = useNavigate()
 	const [address,setAddress] = useState({
 		"name": "",
-    	"state": "",
-    	"city": "",
-    	"county":"",
-    	"full_address":"",
-        "details": "",
-    	"zipcode": "",
-    	"latitude": "",
-    	"longitude":""
+    	"full_address":""
 	});
+
+	var getLocation = function (location) {
+
+		var geocoder = new google.maps.Geocoder();
+		geocoder.geocode({ 'address': location }, function (results, status) {
+	
+		  if (status == google.maps.GeocoderStatus.OK) {
+			var latitude = results[0].geometry.location.lat();
+			var longitude = results[0].geometry.location.lng();
+			var full_address = results[0].formatted_address;
+			var county = results[0].address_components[3].long_name;
+			var city = results[0].address_components[4].long_name;
+			var state = results[0].address_components[5].long_name;
+			var country = results[0].address_components[6].long_name;
+			var zipcode = results[0].address_components[7].long_name;
+
+			console.log(results)
+			console.log(county)
+			console.log(city)
+			console.log(state)
+			console.log(country)
+			console.log(zipcode)
+			console.log(full_address)
+			console.log(latitude, longitude);
+
+			var address_details = {
+				"name": address.name,
+				"county": county,
+				"city": city,
+				"state": state,
+				"country": country,
+				"zipcode": zipcode,
+				"full_address": full_address,
+				"latitude": latitude,
+				"longitude": longitude
+			}
+			
+			console.log(address_details)
+			actions.addAddressDetails(address_details)
+		  }
+		});
+	  }
 
 	function handleChange (event){
 		setAddress({
 			...address,
 			[event.target.name]:event.target.value
 		}) 
-		console.log(address)
 	}
 
 	function saveAddress (e) {
 		e.preventDefault()
 		actions.addAddress(address)
+		getLocation(address.full_address);
 		setAddress(
 			{
                 "name": "",
-                "state": "",
-                "city": "",
-                "county":"",
-                "full_address":"",
-                "details": "",
-                "zipcode": "",
-                "latitude": "",
-                "longitude":""
+                "full_address":""
 			}
 		)
 		navigate('/addresslist')
@@ -59,7 +87,7 @@ export const AddressForm = (item) => {
     				<label>Full Address</label>
    					<input value={address.full_address} onChange={handleChange} name='full_address' type="text" className="form-control" id="full_address" placeholder="Enter Full Address" required/>
   				</div>
-                <div className="form-group py-3">
+                {/* <div className="form-group py-3">
                     <label>Select your state</label>
                     <select value={address.state} onChange={handleChange} name='state' className="form-select" aria-label="Default select example" required>
                         <option>Select your state</option>
@@ -67,7 +95,7 @@ export const AddressForm = (item) => {
                         <option value= "3">State Two</option>
                         <option value= "4">State Three</option>
                     </select>
-                </div>
+                </div> 
 				<div className="form-group py-3">
     				<label>City</label>
    					<input value={address.city} onChange={handleChange} name='city' type="text" className="form-control" id="city" placeholder="Enter your city" required/>
@@ -92,6 +120,7 @@ export const AddressForm = (item) => {
     				<label>Longitude</label>
    					<input value={address.longitude} onChange={handleChange} name='longitude' type="text" className="form-control" id="longitude" placeholder="Enter the longitude"></input>
   				</div>
+				*/}
 				<button type="submit" className="btn btn-primary py-3">Save Address</button>
 			</form>
 			<br />

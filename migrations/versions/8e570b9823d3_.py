@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 2f011d53d3e2
+Revision ID: 8e570b9823d3
 Revises: 
-Create Date: 2023-11-10 17:37:25.291554
+Create Date: 2023-11-12 01:49:56.040954
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2f011d53d3e2'
+revision = '8e570b9823d3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,11 +21,18 @@ def upgrade():
     op.create_table('address',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=120), nullable=False),
+    sa.Column('full_address', sa.String(length=200), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
+    )
+    op.create_table('address_details',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=120), nullable=False),
     sa.Column('state', sa.String(length=80), nullable=False),
     sa.Column('city', sa.String(length=80), nullable=False),
     sa.Column('county', sa.String(length=80), nullable=False),
-    sa.Column('full_address', sa.String(length=80), nullable=False),
-    sa.Column('details', sa.String(length=80), nullable=True),
+    sa.Column('country', sa.String(length=80), nullable=False),
+    sa.Column('full_address', sa.String(length=200), nullable=False),
     sa.Column('zipcode', sa.String(length=80), nullable=False),
     sa.Column('latitude', sa.String(length=80), nullable=True),
     sa.Column('longitude', sa.String(length=80), nullable=True),
@@ -70,5 +77,6 @@ def downgrade():
     op.drop_table('user')
     op.drop_table('services')
     op.drop_table('petitioner')
+    op.drop_table('address_details')
     op.drop_table('address')
     # ### end Alembic commands ###
