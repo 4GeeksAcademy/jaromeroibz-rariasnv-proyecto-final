@@ -1,5 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 
+import os
+import sys
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy import create_engine
+
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -77,11 +83,12 @@ class Petitioner (db.Model):
         }
 
 class Services(db.Model):
+    # __tablename__ = 'services'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
     category = db.Column(db.String(80), unique=False, nullable=False)
     description = db.Column(db.String(80), unique=False, nullable=False)
-    
+
 
     def __repr__(self):
         return f'<Services {self.name}>'
@@ -93,4 +100,18 @@ class Services(db.Model):
             "category": self.category,
             "description": self.description
         }
-            # do not serialize the password, its a security breach
+
+class ServiceCategory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(80), unique=False, nullable=False)
+    # service_id = db.Column(Integer, ForeignKey('services.id'))
+    # service = relationship(Services)
+
+    def __repr__(self):
+        return f'<ServiceCategory {self.category}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "category": self.category
+        }

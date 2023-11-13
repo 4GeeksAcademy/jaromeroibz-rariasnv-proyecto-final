@@ -57,14 +57,14 @@ const Layout = () => {
                         <Route element={<SignupOfferer />} path="/signupofferer" />
                         <Route element={<OffererProfile />} path="/offererprofile" />
                         <Route element={<Demo />} path="/demo" />
-                        <Route element={<SignupAsPetitioner />} path="/signup" />
+                        <Route element={<SignupAsPetitioner />} path="/signuppetitioner" />
                         <Route element={<RegisteredPetitioners />} path="/registeredPetitioners" />
                         <Route element={<RegisteredPetitionerDetail />} path="/registeredPetitioners/:theId" />
                         <Route element={<EditPetitioner />} path="/editPetitioner/:idToEdit" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
-                    <Footer />
+                    <Footer/>
                 </ScrollToTop>
             </BrowserRouter>
         </div>

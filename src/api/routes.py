@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Address, Petitioner, Services
+from api.models import db, User, Address, Petitioner, Services, ServiceCategory
 from api.utils import generate_sitemap, APIException
 
 from flask_jwt_extended import create_access_token
@@ -178,6 +178,29 @@ def get_service(service_id):
     service = Services.query.filter_by(id=service_id).first()
 
     return jsonify(service.serialize()), 200
+
+@api.route('/servicescategory', methods=['GET'])
+def get_services_category():
+
+    all_categories = ServiceCategory.query.all()
+    result = list(map(lambda item: item.serialize(), all_categories))
+
+    return jsonify(result), 200
+
+@api.route('/servicecategory', methods =['POST'])
+def add_service_category():
+    body = request.get_json()
+    service_category = ServiceCategory(
+        category = body['category']
+    )
+    db.session.add(service_category)
+    db.session.commit()
+
+    response_body = {
+        "message": "Service category created"
+    }
+    
+    return jsonify(response_body), 200
 
 @api.route('/service', methods =['POST'])
 def add_service():
