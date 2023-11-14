@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom"
 import { Context } from "../store/appContext";
-import { EditAddress } from "./editaddress";
+import locationImageUrl from "../../img/location-icon.png"
 // import "../../styles.demo.css";
 
 export const AddressList = () => {
     const { store, actions } = useContext(Context);
     useEffect(() => {
         actions.getAddresses()
+		actions.getAddressesDetails()
     }, [])
 
     return (
@@ -20,7 +21,7 @@ export const AddressList = () => {
 					<li key= {item.id}
 						className="list-group-item d-flex"
 						>
-						<img src="https://picsum.photos/200" alt=""></img>
+						<img src={locationImageUrl} width="100" height="100" />
 						<div className="d-block px-5">
                             <h1>{item.name}</h1>
                             <p className="info">{item.full_address}</p>
@@ -61,7 +62,10 @@ export const AddressList = () => {
 									</div>
 									<div className="modal-footer">
 										<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-										<button onClick={ () => actions.deleteAddress(item)} type="button" data-bs-dismiss="modal" className="btn btn-primary">Delete</button>
+										<button onClick={ () => {
+											actions.deleteAddress(item)
+											actions.deleteAddressDetail(item)
+											}} type="button" data-bs-dismiss="modal" className="btn btn-primary">Delete</button>
 									</div>
 									</div>
 								</div>

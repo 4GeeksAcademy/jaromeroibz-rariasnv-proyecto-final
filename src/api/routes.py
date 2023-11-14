@@ -30,11 +30,11 @@ def get_addresses():
 
     return jsonify(result), 200
 
-@api.route('/address/<int:address_id>', methods =['GET'])
-def get_address(address_id):
-    address = AddressDetails.query.filter_by(id=address_id).first()
+# @api.route('/address/<int:address_id>', methods =['GET'])
+# def get_address(address_id):
+#     address = AddressDetails.query.filter_by(id=address_id).first()
 
-    return jsonify(address.serialize()), 200
+#     return jsonify(address.serialize()), 200
 
 @api.route('/address', methods =['POST'])
 def add_address():
@@ -51,6 +51,20 @@ def add_address():
     }
     
     return jsonify(response_body), 200
+
+@api.route('/addressdetails/', methods =['GET'])
+def get_addresses_details():
+
+    all_addresses_details = AddressDetails.query.all()
+    result = list(map(lambda item: item.serialize(), all_addresses_details))
+
+    return jsonify(result), 200
+
+@api.route('/addressdetails/<int:address_details_id>', methods =['GET'])
+def get_address(address_details_id):
+    address_details = AddressDetails.query.filter_by(id=address_details_id).first()
+
+    return jsonify(address_details.serialize()), 200
 
 @api.route('/addressdetails', methods =['POST'])
 def add_address_details():
@@ -69,13 +83,21 @@ def add_address_details():
     
     db.session.add(address_details)
     db.session.commit()
+    
+    return jsonify(address_details.serialize()), 200
+
+@api.route('/addressdetails/<int:address_details_id>', methods =['DELETE'])
+def delete_address_details(address_details_id):
+    delete_address_details = AddressDetails.query.filter_by(id=address_details_id).first()
+
+    db.session.delete(delete_address_details)
+    db.session.commit()
 
     response_body = {
-        "message": "Address created"
+        "message": "Address details deleted"
     }
-    
+      
     return jsonify(response_body), 200
-
 
 @api.route('/petitioner', methods=['GET'])
 def get_all_petitioner():

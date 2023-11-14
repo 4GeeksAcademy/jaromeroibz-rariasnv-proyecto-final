@@ -23,7 +23,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			service:[],
 			auth: false,
 			users:[],
-			addressDetails: []
+			addressDetails:[]
 
 		},
 		actions: {
@@ -74,19 +74,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getAddress: async (result) => {
 				const store = getStore();
 				const idToDelete = result.id
-				// var myHeaders = new Headers();
-				// myHeaders.append("Access-Control-Allow-Headers", "*");
-				// myHeaders.append("Content-Type", "application/json");
-
-				// var raw = JSON.stringify([]);
-
-				// var requestOptions = {
-				// method: 'GET',
-				// headers: myHeaders,
-				// body: raw,
-				// redirect: 'follow'
-				// };
-
+		
 				let response = await fetch(process.env.BACKEND_URL+'/api/address/'+ idToDelete)
 				let data = await response.json()
 				console.log(response)
@@ -331,7 +319,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log(data)
 				fetch(process.env.BACKEND_URL +'/api/addressdetails/', requestOptions)
 				.then( (response) => response.json() )
-				.then( (data) => getActions().getAddressesDetails())
+				.then( (data) => { getActions().getAddressesDetails()})
+			},
+			deleteAddressDetail: (item) => {
+				console.log(item)
+				const indexMap = getStore().idToDelete
+				console.log(indexMap)
+
+				var requestOptions = {
+					method: 'DELETE'
+				};
+				
+				fetch(process.env.BACKEND_URL +"/api/addressdetails/" + indexMap, requestOptions)
+					.then(response => response.json())
+					.then( () => {
+						fetch(process.env.BACKEND_URL+ '/api/addressdetails/')
+						.then((response) => response.json())
+						.then((data) => setStore({addressDetails: data}))
+					})
+					.catch(error => console.log('error', error));
+					
+				getActions().getAddressesDetails();
 			}
 		}
 	};

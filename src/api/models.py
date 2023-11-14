@@ -61,7 +61,6 @@ class AddressDetails(db.Model):
             "city": self.city,
             "county": self.county,
             "latitude": self.latitude,
-            "details": self.details,
             "zipcode": self.zipcode,
             "longitude": self.longitude
         }
