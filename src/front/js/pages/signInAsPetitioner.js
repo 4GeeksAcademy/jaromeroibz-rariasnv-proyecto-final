@@ -1,22 +1,31 @@
 import React, {useState, useEffect, useContext} from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 
 export const SignInAsPetitioner = () => {
     const {store, actions} = useContext(Context);
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const navigate = useNavigate()
+
+    function sendData(e){
+        e.preventDefault()
+        actions.signInAsAPetitioner(email,password)
+        navigate('/')
+    }
+
 
     return(
             <div className="signInAsPetitioner m-5">
                  <h1>Sign in</h1>
-                <form>
+                <form onSubmit={sendData}>
                     <div className="form-group">
-                    <label htmlFor="exampleInputEmail1">Email address</label>
-                        <input type="email" className="form-control" id="exampleInputEmail1" placeholder="Enter email"></input>
-                        <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
+                        <label htmlFor="exampleInputEmail1">Email address</label>
+                        <input type="email" className="form-control" id="email" placeholder="Enter email" onChange={ (e) => setEmail(e.target.value) }></input>
                     </div>
                     <div className="form-group">
                         <label htmlFor="exampleInputPassword1">Password</label>
-                        <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"></input>
+                        <input type="password" className="form-control" id="password" placeholder="Password" onChange={ (e) => setPassword(e.target.value) }></input>
                     </div>
                     <button type="submit" className="btn btn-primary my-3">Submit</button>
                 </form>

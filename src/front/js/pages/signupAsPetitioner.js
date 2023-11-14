@@ -12,7 +12,8 @@ export const SignupAsPetitioner = (petitionerToBeAdded) => {
         "address": "",
         "email_address": "",
         "offer_services": "",
-        "rating": ""
+        "rating": "",
+        "password": ""
     });    
 
     function savePetitionerToAdd(e) {
@@ -24,7 +25,8 @@ export const SignupAsPetitioner = (petitionerToBeAdded) => {
             "address": "",
             "email_address": "",
             "offer_services": "",
-            "rating": ""
+            "rating": "",
+            "password": ""
         })
     };
 
@@ -61,6 +63,12 @@ export const SignupAsPetitioner = (petitionerToBeAdded) => {
                 <input type="email" className="form-control" id="email_address"
                 value={petitionerToAdd.email_address} onChange={handleChange} name='email_address'
                 placeholder="Enter email address"/>
+            </div>
+            <div className="mb-3">
+                <label className="form-label">Password</label>
+                <input type="password" className="form-control" id="password"
+                value={petitionerToAdd.password} onChange={handleChange} name='password'
+                placeholder="Enter password"/>
             </div>
             <div className="mb-3">
                 <label className="form-label">Services you offer</label>

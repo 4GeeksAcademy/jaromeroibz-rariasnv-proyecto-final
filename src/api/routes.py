@@ -75,24 +75,31 @@ def get_one_particular_petitioner(petitioner_id):
 @api.route('/petitioner', methods=['POST'])
 def create_petitioner():
     body = request.get_json()
-    petitioner = Petitioner(
-        full_name = body['full_name'],
-        phone_number = body['phone_number'],
-        address = body['address'],
-        email_address = body['email_address'],
-        offer_services = body['offer_services'],
-        rating = body['rating']
-    )    
+    petitioner = Petitioner.query.filter_by(email_address=body['email_address']).first()
 
-    db.session.add(petitioner)
-    db.session.commit()
+    if petitioner == None:
+        petitioner = Petitioner(
+            full_name = body['full_name'],
+            phone_number = body['phone_number'],
+            address = body['address'],
+            email_address = body['email_address'],
+            offer_services = body['offer_services'],
+            rating = body['rating'],
+            password = body['password']
+        )    
 
-    response_body = {
-        "msg": "Petitioner created"
+        db.session.add(petitioner)
+        db.session.commit()
 
-    }
+        response_body = {
+            "msg": "Petitioner created"
 
-    return jsonify(response_body), 200
+        }
+
+        return jsonify(response_body), 200
+
+    else:
+        return jsonify({ "msg": "Email address already exists" }), 401
 
 @api.route('/address/<int:address_id>', methods =['DELETE'])
 def delete_address(address_id):
@@ -155,7 +162,8 @@ def update_one_particular_petitioner(petitioner_id):
     petitioner_to_update.address = body['address']
     petitioner_to_update.email_address = body['email_address']
     petitioner_to_update.offer_services = body['offer_services']
-    petitioner_to_update.rating = body['rating']
+    petitioner_to_update.rating = body['rating'],
+    petitioner_to_update.password = body['password']
 
     db.session.commit()
       
@@ -307,24 +315,30 @@ def get_one_particular_offerer(offerer_id):
 @api.route('/offerer', methods=['POST'])
 def create_offerer():
     body = request.get_json()
-    offerer = Offerer(
-        full_name= body['full_name'],
-        phone_number= body['phone_number'],
-        address= body['address'],
-        email_address= body['email_address'],
-        tasks_offer= body['tasks_offer'],
-        rating= body['rating'],
-        password= body['password']
-    )
+    offerer = Offerer.query.filter_by(email_address=body['email_address']).first()
 
-    db.session.add(offerer)
-    db.session.commit()
+    if offerer == None:
+        offerer = Offerer(
+            full_name= body['full_name'],
+            phone_number= body['phone_number'],
+            address= body['address'],
+            email_address= body['email_address'],
+            tasks_offer= body['tasks_offer'],
+            rating= body['rating'],
+            password= body['password']
+        )
 
-    response_body = {
-        "msg": "Offerer created"
-    }
+        db.session.add(offerer)
+        db.session.commit()
 
-    return jsonify(response_body), 200
+        response_body = {
+            "msg": "Offerer created"
+        }
+
+        return jsonify(response_body), 200
+    
+    else:
+        return jsonify({ "msg": "Email address already exists" }), 401
 
 @api.route('/offerer/<int:offerer_id>', methods=['DELETE'])
 def delete_one_particular_offerer(offerer_id):
@@ -360,3 +374,27 @@ def update_one_particular_offerer(offerer_id):
 
     return jsonify(response_body), 200
 
+@api.route('/sign_in_as_petitioner', methods=['POST'])
+def sign_in_as_petitioner():
+    email_address = request.json.get("email_address", None)
+    password = request.json.get("password", None)
+
+    user = Petitioner.query.filter_by(email_address=email_address).first()
+    
+    if email_address != user.email_address or password != user.password:
+        return jsonify({"msg": "Bad email or password"}), 401
+    
+    access_token = create_access_token(identity=email_address)
+    return jsonify(access_token=access_token)
+
+@api.route('/petitioner_profile', methods=['GET'])
+@jwt_required()
+def petitioner_profile():
+    petitioner_profile = get_jwt_identity()
+    petitioner = Petitioner.query.filter_by(email_address=petitioner_profile).first()
+    response_body = {
+        "msg": "User found",
+        "petitioner": petitioner.serialize()
+    }
+
+    return jsonify(response_body), 200

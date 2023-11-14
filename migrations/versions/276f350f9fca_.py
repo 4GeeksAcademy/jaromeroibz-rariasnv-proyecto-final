@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 2f011d53d3e2
+Revision ID: 276f350f9fca
 Revises: 
-Create Date: 2023-11-10 17:37:25.291554
+Create Date: 2023-11-12 13:52:33.803494
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2f011d53d3e2'
+revision = '276f350f9fca'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,6 +31,19 @@ def upgrade():
     sa.Column('longitude', sa.String(length=80), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
+    )
+    op.create_table('offerer',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('full_name', sa.String(length=120), nullable=False),
+    sa.Column('phone_number', sa.Integer(), nullable=False),
+    sa.Column('address', sa.String(length=120), nullable=False),
+    sa.Column('email_address', sa.String(length=120), nullable=False),
+    sa.Column('tasks_offer', sa.String(length=120), nullable=False),
+    sa.Column('rating', sa.String(length=120), nullable=False),
+    sa.Column('password', sa.String(length=120), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email_address'),
+    sa.UniqueConstraint('phone_number')
     )
     op.create_table('petitioner',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -70,5 +83,6 @@ def downgrade():
     op.drop_table('user')
     op.drop_table('services')
     op.drop_table('petitioner')
+    op.drop_table('offerer')
     op.drop_table('address')
     # ### end Alembic commands ###

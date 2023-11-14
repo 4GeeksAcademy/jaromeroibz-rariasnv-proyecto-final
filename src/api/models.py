@@ -60,6 +60,7 @@ class Petitioner (db.Model):
     email_address = db.Column(db.String(120), unique=True, nullable=False)
     offer_services = db.Column(db.String(120), unique=False, nullable=False)
     rating = db.Column(db.Integer, unique=False, nullable=False)
+    password = db.Column(db.String(120), unique=False, nullable=False)
 
     def __repr__(self):
         return f'<Petitioner {self.email_address}>'

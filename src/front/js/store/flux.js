@@ -141,10 +141,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify(item)
 					}
-					const response = await fetch(process.env.BACKEND_URL+'api/petitioner/'+idToEdit, requestOptions)
+					const response = await fetch(process.env.BACKEND_URL+'/api/petitioner/'+idToEdit, requestOptions)
 					if(response.ok){
 						try {
-							const response = await fetch(process.env.BACKEND_URL+'api/petitioner')
+							const response = await fetch(process.env.BACKEND_URL+'/api/petitioner')
 							const data = await response.json()
 
 							if(response.ok){
@@ -480,6 +480,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				} catch (error) {
 					console.log(error)
+				}
+			},
+			signInAsAPetitioner: async (email, password) => {
+				try {
+					const store = getStore()
+					const requestOptions = {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							"email_address": email,
+							"password": password
+						})
+					}
+
+					const response = await fetch(process.env.BACKEND_URL+'api/sign_in_as_petitioner/', requestOptions)
+					const data = await response.json()
+					console.log(data)
+				} catch (error) {
+					
 				}
 			}
 		}
