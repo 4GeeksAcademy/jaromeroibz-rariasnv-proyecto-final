@@ -27,7 +27,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 			auth: false,
 			users:[],
 			offerers: [],
-			offerersDetail: []
+			offerersDetail: [],
+			categories: [{
+				"category": "Category1",
+				"category": "Category2",
+				"category": "Category3",
+			}]
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -132,7 +137,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					
 				}
 			},
-
 			editPetitioner: async (item, idToEdit) => {
 				try {
 					const store = getStore()
@@ -385,6 +389,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({auth: false});
 				localStorage.removeItem("token");
 			},
+
 			getAllOfferers: async () => {
 				try {
 					const store = getStore()
@@ -501,6 +506,36 @@ const getState = ({ getStore, getActions, setStore }) => {
 					
 				}
 			}
+
+			getServiceCategory: async () => {
+				const store = getStore();
+				let response = await fetch(process.env.BACKEND_URL+'/api/servicescategory')
+				let data = await response.json()
+				if (response.ok){
+				  setStore({categories: data})
+				  }
+			},
+			// addServiceCategory: async () => {
+			// 	console.log('add cat desde flux')
+			// 	const requestOptions = {
+			// 		method: 'POST',
+			// 		headers: { 'Content-type': 'application/json' },
+			// 		body: JSON.stringify(
+			// 		{
+			// 			"category": store.categories,
+			// 			"email": email,
+			// 			"password": password
+			// 		})
+			// 	};
+			// 	fetch(process.env.BACKEND_URL +"/api/signup/", requestOptions)
+			// 		.then(response => response.json())
+			// 		.then(data =>{
+			// 			console.log(data)
+			// 			setStore({ users: data })
+			// 			}
+			// 		)
+			// }
+
 		}
 	};
 };
