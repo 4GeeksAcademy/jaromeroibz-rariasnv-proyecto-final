@@ -13,7 +13,8 @@ export const EditPetitioner = () => {
         "address": "",
         "email_address": "",
         "offer_services": "",
-        "rating": ""
+        "rating": "",
+        "password": ""
     });
 
     function handleChange(event) {
@@ -32,7 +33,8 @@ export const EditPetitioner = () => {
                 "address": result.address,
                 "email_address": result.email_address,
                 "offer_services": result.offer_services,
-                "rating": result.rating
+                "rating": result.rating,
+                "password": result.password
             }
         )
     }   console.log(setpetitionerToEdit)
@@ -65,6 +67,12 @@ export const EditPetitioner = () => {
                 <input type="email" className="form-control" id="email_address"
                 value={petitionerToEdit.email_address} onChange={handleChange} name="email_address"
                 placeholder="Enter email address" required/>
+            </div>
+            <div className="mb-3">
+                <label className="form-label">Password</label>
+                <input type="password" className="form-control" id="password"
+                value={petitionerToEdit.password} onChange={handleChange} name="password"
+                placeholder="Enter password" required/>
             </div>
             <div className="mb-3">
                 <label className="form-label">Services you offer</label>

@@ -6,9 +6,14 @@ import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { SignupAsPetitioner } from "./pages/signupAsPetitioner";
-import {RegisteredPetitioners} from "./pages/registeredPetitioners"
-import {RegisteredPetitionerDetail} from "./pages/registeredPetitionerDetail"
+import { RegisteredPetitioners} from "./pages/registeredPetitioners"
+import { RegisteredPetitionerDetail} from "./pages/registeredPetitionerDetail"
 import { EditPetitioner } from "./pages/editPetitioner";
+import { SignInAsPetitioner} from "./pages/signInAsPetitioner"
+import { RegisteredOfferers } from "./pages/registeredOfferers";
+import { RegisteredOffererDetail } from "./pages/registeredOffererDetail";
+import { SignUpAsOfferer } from "./pages/signUpAsOfferer";
+import { EditOfferer } from "./pages/editOfferer";
 import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 
@@ -57,10 +62,15 @@ const Layout = () => {
                         <Route element={<SignupOfferer />} path="/signupofferer" />
                         <Route element={<OffererProfile />} path="/offererprofile" />
                         <Route element={<Demo />} path="/demo" />
-                        <Route element={<SignupAsPetitioner />} path="/signuppetitioner" />
+                        <Route element={<SignupAsPetitioner />} path="/signUpAsPetitioner" />
                         <Route element={<RegisteredPetitioners />} path="/registeredPetitioners" />
                         <Route element={<RegisteredPetitionerDetail />} path="/registeredPetitioners/:theId" />
                         <Route element={<EditPetitioner />} path="/editPetitioner/:idToEdit" />
+                        <Route element={<SignInAsPetitioner />} path="/signInAsPetitioner" />
+                        <Route element={<RegisteredOfferers />} path="/registeredOfferers" />
+                        <Route element={<RegisteredOffererDetail />} path="/registeredOfferers/:offererId" />
+                        <Route element={<SignUpAsOfferer />} path="/signUpAsOfferer" />
+                        <Route element={<EditOfferer />} path="/editOfferer/:offererIdToEdit" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>

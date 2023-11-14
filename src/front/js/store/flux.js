@@ -26,13 +26,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			service:[],
 			auth: false,
 			users:[],
+			offerers: [],
+			offerersDetail: [],
 			categories: [{
-
 				"category": "Category1",
 				"category": "Category2",
 				"category": "Category3",
 			}]
-
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -145,10 +145,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify(item)
 					}
-					const response = await fetch(process.env.BACKEND_URL+'api/petitioner/'+idToEdit, requestOptions)
+					const response = await fetch(process.env.BACKEND_URL+'/api/petitioner/'+idToEdit, requestOptions)
 					if(response.ok){
 						try {
-							const response = await fetch(process.env.BACKEND_URL+'api/petitioner')
+							const response = await fetch(process.env.BACKEND_URL+'/api/petitioner')
 							const data = await response.json()
 
 							if(response.ok){
@@ -389,6 +389,124 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({auth: false});
 				localStorage.removeItem("token");
 			},
+
+			getAllOfferers: async () => {
+				try {
+					const store = getStore()
+					const response = await fetch(process.env.BACKEND_URL+'/api/offerer')
+					const data = await response.json()
+
+					if(response.ok){
+						setStore({ offerers: data})
+					}
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			getOfferer: async (result) => {
+				try {
+					const store = getStore()
+					const idToDisplay = result.id
+					const response = await fetch(process.env.BACKEND_URL+'/api/offerer/'+idToDisplay)
+					const data = await response.json()
+
+					if(response.ok){
+						setStore({ offerersDetail: data })
+					}
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			deleteParticularOfferer: async (offerer) => {
+				try {
+					const store = getStore()
+					const indexToDelete = offerer.id
+					const requestOptions = {
+						method: 'DELETE'
+					}
+					const response = await fetch(process.env.BACKEND_URL+'/api/offerer/'+indexToDelete, requestOptions)
+
+					if(response.ok){
+						try {
+							const response = await fetch(process.env.BACKEND_URL+'/api/offerer')
+							const data = await response.json()
+
+							if(response.ok){
+								setStore( {offerers: data} )
+							}
+						} catch (error) {
+							console.log(error)
+						}
+					}
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			addOfferer: async (item) => {
+				try {
+					const store = getStore()
+					const requestOptions = {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(item)
+					}
+
+					const response = await fetch(process.env.BACKEND_URL+'/api/offerer', requestOptions)
+					const data = await response.json()
+
+					if(response.ok){
+						setStore({ offerers: data })
+					}
+				} catch (error) {
+					
+				}
+			},
+			editOfferer: async (item, offererIdToEdit) => {
+				try {
+					const store = getStore()
+					const requestOptions = {
+						method: 'PUT',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(item)
+					}
+					const response = await fetch(process.env.BACKEND_URL+'/api/offerer/'+offererIdToEdit, requestOptions)
+
+					if(response.ok){
+						try {
+							const response = await fetch(process.env.BACKEND_URL+'/api/offerer')
+							const data = await response.json()
+
+							if(response.ok){
+								setStore({ offerers: data })
+							}
+						} catch (error) {
+							console.log(error)
+						}
+					}
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			signInAsAPetitioner: async (email, password) => {
+				try {
+					const store = getStore()
+					const requestOptions = {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							"email_address": email,
+							"password": password
+						})
+					}
+
+					const response = await fetch(process.env.BACKEND_URL+'api/sign_in_as_petitioner/', requestOptions)
+					const data = await response.json()
+					console.log(data)
+				} catch (error) {
+					
+				}
+			}
+
 			getServiceCategory: async () => {
 				const store = getStore();
 				let response = await fetch(process.env.BACKEND_URL+'/api/servicescategory')
@@ -417,6 +535,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 			}
 			// 		)
 			// }
+
 		}
 	};
 };

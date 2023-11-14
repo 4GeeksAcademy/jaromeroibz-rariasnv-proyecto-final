@@ -2,7 +2,8 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Address, Petitioner, Services, ServiceCategory
+
+from api.models import db, User, Address, Petitioner, Services, ServiceCategory, Offerer
 from api.utils import generate_sitemap, APIException
 
 from flask_jwt_extended import create_access_token
@@ -75,24 +76,31 @@ def get_one_particular_petitioner(petitioner_id):
 @api.route('/petitioner', methods=['POST'])
 def create_petitioner():
     body = request.get_json()
-    petitioner = Petitioner(
-        full_name = body['full_name'],
-        phone_number = body['phone_number'],
-        address = body['address'],
-        email_address = body['email_address'],
-        offer_services = body['offer_services'],
-        rating = body['rating']
-    )    
+    petitioner = Petitioner.query.filter_by(email_address=body['email_address']).first()
 
-    db.session.add(petitioner)
-    db.session.commit()
+    if petitioner == None:
+        petitioner = Petitioner(
+            full_name = body['full_name'],
+            phone_number = body['phone_number'],
+            address = body['address'],
+            email_address = body['email_address'],
+            offer_services = body['offer_services'],
+            rating = body['rating'],
+            password = body['password']
+        )    
 
-    response_body = {
-        "msg": "Petitioner created"
+        db.session.add(petitioner)
+        db.session.commit()
 
-    }
+        response_body = {
+            "msg": "Petitioner created"
 
-    return jsonify(response_body), 200
+        }
+
+        return jsonify(response_body), 200
+
+    else:
+        return jsonify({ "msg": "Email address already exists" }), 401
 
 @api.route('/address/<int:address_id>', methods =['DELETE'])
 def delete_address(address_id):
@@ -155,7 +163,8 @@ def update_one_particular_petitioner(petitioner_id):
     petitioner_to_update.address = body['address']
     petitioner_to_update.email_address = body['email_address']
     petitioner_to_update.offer_services = body['offer_services']
-    petitioner_to_update.rating = body['rating']
+    petitioner_to_update.rating = body['rating'],
+    petitioner_to_update.password = body['password']
 
     db.session.commit()
       
@@ -312,3 +321,104 @@ def signup():
         return jsonify(response_body), 200
     else:
         return jsonify({"msg": "User already exists with this email address"}), 401
+    
+
+@api.route('/offerer', methods=['GET'])
+def get_all_offerer():
+    all_offerer = Offerer.query.all()
+    result = list(map( lambda offerer: offerer.serialize(), all_offerer ))
+
+    return jsonify(result), 200
+
+@api.route('/offerer/<int:offerer_id>', methods=['GET'])
+def get_one_particular_offerer(offerer_id):
+    particular_oferer = Offerer.query.filter_by(id=offerer_id).first()
+
+    return jsonify(particular_oferer.serialize()), 200
+
+@api.route('/offerer', methods=['POST'])
+def create_offerer():
+    body = request.get_json()
+    offerer = Offerer.query.filter_by(email_address=body['email_address']).first()
+
+    if offerer == None:
+        offerer = Offerer(
+            full_name= body['full_name'],
+            phone_number= body['phone_number'],
+            address= body['address'],
+            email_address= body['email_address'],
+            tasks_offer= body['tasks_offer'],
+            rating= body['rating'],
+            password= body['password']
+        )
+
+        db.session.add(offerer)
+        db.session.commit()
+
+        response_body = {
+            "msg": "Offerer created"
+        }
+
+        return jsonify(response_body), 200
+    
+    else:
+        return jsonify({ "msg": "Email address already exists" }), 401
+
+@api.route('/offerer/<int:offerer_id>', methods=['DELETE'])
+def delete_one_particular_offerer(offerer_id):
+    offerer_to_delete = Offerer.query.filter_by(id=offerer_id).first()
+
+    db.session.delete(offerer_to_delete)
+    db.session.commit()
+
+    response_body = {
+        "msg": "Offerer deleted"
+    }
+
+    return jsonify(response_body), 200
+
+@api.route('/offerer/<int:offerer_id>', methods=['PUT'])
+def update_one_particular_offerer(offerer_id):
+    offerer_to_update = Offerer.query.filter_by(id=offerer_id).first()
+    body = request.get_json()
+
+    offerer_to_update.full_name= body['full_name'],
+    offerer_to_update.phone_number= body['phone_number'],
+    offerer_to_update.address= body['address'],
+    offerer_to_update.email_address= body['email_address'],
+    offerer_to_update.tasks_offer= body['tasks_offer'],
+    offerer_to_update.rating= body['rating'],
+    offerer_to_update.password= body['password']
+
+    db.session.commit()
+
+    response_body = {
+        "msg": "Offerer updated"
+    }
+
+    return jsonify(response_body), 200
+
+@api.route('/sign_in_as_petitioner', methods=['POST'])
+def sign_in_as_petitioner():
+    email_address = request.json.get("email_address", None)
+    password = request.json.get("password", None)
+
+    user = Petitioner.query.filter_by(email_address=email_address).first()
+    
+    if email_address != user.email_address or password != user.password:
+        return jsonify({"msg": "Bad email or password"}), 401
+    
+    access_token = create_access_token(identity=email_address)
+    return jsonify(access_token=access_token)
+
+@api.route('/petitioner_profile', methods=['GET'])
+@jwt_required()
+def petitioner_profile():
+    petitioner_profile = get_jwt_identity()
+    petitioner = Petitioner.query.filter_by(email_address=petitioner_profile).first()
+    response_body = {
+        "msg": "User found",
+        "petitioner": petitioner.serialize()
+    }
+
+    return jsonify(response_body), 200

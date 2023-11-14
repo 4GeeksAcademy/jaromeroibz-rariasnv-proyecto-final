@@ -30,7 +30,6 @@ export const Navbar = () => {
 							<button className="btn btn-light">Signup</button>
 						</Link>
 						{ store.auth === true ? <button onClick={() => handleLogout()} className="btn btn-primary">Logout</button> :null}
-
 					</div>
 				</div>
 			</div>
