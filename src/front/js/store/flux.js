@@ -121,13 +121,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			addPetitioner: async (item) => {
 				try {
+					console.log(item)
 					const store = getStore()
 					const requestOptions = {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify(item)
 					}
-					const response = await fetch(process.env.BACKEND_URL+'api/petitioner', requestOptions)
+					const response = await fetch(process.env.BACKEND_URL+'/api/petitioner', requestOptions)
 					const data = await response.json()
 
 					if(response.ok){
@@ -389,7 +390,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({auth: false});
 				localStorage.removeItem("token");
 			},
-
 			getAllOfferers: async () => {
 				try {
 					const store = getStore()
@@ -505,8 +505,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					
 				}
-			}
-
+			},
 			getServiceCategory: async () => {
 				const store = getStore();
 				let response = await fetch(process.env.BACKEND_URL+'/api/servicescategory')
