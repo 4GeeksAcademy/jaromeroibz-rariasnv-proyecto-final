@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from "react";
 import { Link} from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 
 export const SignupAsPetitioner = () => {
@@ -13,11 +13,13 @@ export const SignupAsPetitioner = () => {
     function savePetitionerToAdd(e) {
         e.preventDefault()
         actions.signUp(name,email,password)
-        navigate('/servicelist')
+        navigate('/serviceform')
     };
 
     return(
         <div className="signuppetitioner">
+            { store.auth === true ? <Navigate to= '/serviceform'/> :
+            <>
             <h1>Sign up</h1>
             <form>
             <div className="py-3">
@@ -40,6 +42,8 @@ export const SignupAsPetitioner = () => {
             </div>
             <button className="btn btn-primary" onClick={ (e) => savePetitionerToAdd(e) }>Signup</button>
             </form>
+            </>
+        }
         </div>
     )
 }
