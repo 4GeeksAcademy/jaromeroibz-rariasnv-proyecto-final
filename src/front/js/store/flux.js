@@ -28,11 +28,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 			users:[],
 			offerers: [],
 			offerersDetail: [],
-			categories: [{
-				"category": "Category1",
-				"category": "Category2",
-				"category": "Category3",
-			}]
+			categories: [
+				{
+					category: "Category1",
+					id: 1
+				},
+				{
+					category: "Category2",
+					id: 2
+				},
+				{
+					category: "Category3",
+					id: 3
+				},
+			]
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -358,11 +367,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return response.json()
 					})
 					.then(data =>{
-						localStorage.setItem("token", data.access_token)
 						setStore({ users: data })
 						console.log(data)
 						}
 					)
+					localStorage.setItem("token", data.access_token)
+
 			},
 			signUp: (name,email,password) => {
 				console.log('Signup desde flux')
@@ -380,12 +390,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 				}
 				fetch(process.env.BACKEND_URL +'api/signup', requestOptions)
-					.then((response) => response.json())
+					.then((response) => {
+						if(response.status === 200){
+							setStore({auth: true});
+						}
+						return response.json()
+					})
 					.then((data) =>{
 						console.log(data)
 						setStore({ users: data })
 						}
 					)
+					localStorage.setItem("token", data.access_token)
 			},
 			logout: () => {
 				console.log('Log out desde flux')

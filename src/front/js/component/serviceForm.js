@@ -19,7 +19,7 @@ export const ServiceForm = (item) => {
 			...service,
 			[event.target.name]:event.target.value
 		})
-		actions.getServiceCategory()
+		// actions.getServiceCategory()
  
 	}
 
@@ -44,11 +44,12 @@ export const ServiceForm = (item) => {
   				</div>
                 <div className="form-group py-3">
                     <label>Select a category</label>
-						<select value={service.category} onChange={handleChange} name='category' className="form-select" aria-label="Default select example" required>   
+						<select value={service.category} onChange={handleChange} name='category' className="form-select" aria-label="Default select example" required>
 							{store.categories.map((item) => 
-								<option value= {item.category}>{item.category}</option>
+							<option value= {item.category}>{item.category}</option>
 								)}
 						</select>
+				
                 </div>
                 <div className="form-group py-3">
                     <label htmlFor="description">Example textarea</label>
