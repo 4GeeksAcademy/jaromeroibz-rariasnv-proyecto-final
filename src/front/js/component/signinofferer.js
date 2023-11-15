@@ -13,7 +13,7 @@ export const SigninOfferer = () => {
         e.preventDefault()
         console.log('Send Data')
         console.log(email, password)
-        actions.loginOfferer(email, password)
+        actions.login(email, password)
     }
 
 return (

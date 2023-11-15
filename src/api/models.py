@@ -124,7 +124,8 @@ class Offerer(db.Model):
             "email_address": self.email_address,
             "tasks_offer": self.tasks_offer,
             "rating": self.rating
-
+        }
+    
 class ServiceCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(80), unique=False, nullable=False)

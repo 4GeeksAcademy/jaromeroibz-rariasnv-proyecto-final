@@ -3,87 +3,42 @@ import { Link} from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 
-export const SignupAsPetitioner = (petitionerToBeAdded) => {
+export const SignupAsPetitioner = () => {
     const navigate = useNavigate()
     const {store, actions} = useContext(Context)
-    const [petitionerToAdd, setpetitionerToAdd ] = useState({
-        "full_name": "", 
-        "phone_number": "",
-        "address": "",
-        "email_address": "",
-        "offer_services": "",
-        "rating": "",
-        "password": ""
-    });    
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
 
     function savePetitionerToAdd(e) {
         e.preventDefault()
-        actions.addPetitioner(petitionerToAdd)
-        setpetitionerToAdd({            
-            "full_name": "", 
-            "phone_number": "",
-            "address": "",
-            "email_address": "",
-            "offer_services": "",
-            "rating": "",
-            "password": ""
-        })
+        actions.signUp(name,email,password)
+        navigate('/servicelist')
     };
 
-    function handleChange(event){
-        setpetitionerToAdd({
-            ...petitionerToAdd,
-            [event.target.name]: event.target.value            
-        })
-    }
-
     return(
-        <div className="body m-5">
+        <div className="signuppetitioner">
+            <h1>Sign up</h1>
             <form>
-            <div className="mb-3">
+            <div className="py-3">
                 <label className="form-label">Full Name</label>
-                <input type="text" className="form-control" id="fullName"
-                value={petitionerToAdd.full_name} onChange={handleChange} name='full_name'
+                <input type="text" className="form-control" id="name"
+                value={name} onChange={(e) => setName(e.target.value)} name='name'
                 placeholder="Enter full name"/>
             </div>
-            <div className="mb-3">
-                <label className="form-label">Phone number</label>
-                <input type="number" className="form-control" id="phoneNumber"
-                value={petitionerToAdd.phone_number} onChange={handleChange} name='phone_number'
-                placeholder="Enter phone number"/>
-            </div>
-            <div className="mb-3">
-                <label className="form-label">Address</label>
-                <input type="text" className="form-control" id="address"
-                value={petitionerToAdd.address} onChange={handleChange} name='address'
-                placeholder="Enter address"/>
-            </div>
-            <div className="mb-3">
+            <div className="py-3">
                 <label className="form-label">Email address</label>
-                <input type="email" className="form-control" id="email_address"
-                value={petitionerToAdd.email_address} onChange={handleChange} name='email_address'
+                <input type="email" className="form-control" id="email"
+                value={email} onChange={(e) => setEmail(e.target.value)} name='email'
                 placeholder="Enter email address"/>
             </div>
-            <div className="mb-3">
+            <div className="py-3">
                 <label className="form-label">Password</label>
                 <input type="password" className="form-control" id="password"
-                value={petitionerToAdd.password} onChange={handleChange} name='password'
+                value={password} onChange={(e) => setPassword(e.target.value)} name='password'
                 placeholder="Enter password"/>
             </div>
-            <div className="mb-3">
-                <label className="form-label">Services you offer</label>
-                <input type="text" className="form-control" id="offer_services"
-                value={petitionerToAdd.offer_services} onChange={handleChange} name='offer_services'
-                placeholder="Enter the services you offer"/>
-            </div>
-            <div className="mb-3">
-                <label className="form-label">Rate yourself</label>
-                <input type="number" className="form-control" id="rating"
-                value={petitionerToAdd.rating} onChange={handleChange} name='rating'
-                placeholder="Rate yourself for now"/>
-            </div>
-            <button className="btn btn-primary mx-2" onClick={ (e) => savePetitionerToAdd(e) }>Signup</button>
-            <button className="btn btn-primary mx-2" onClick={ () => navigate('/') }>Back</button>
+            <button className="btn btn-primary" onClick={ (e) => savePetitionerToAdd(e) }>Signup</button>
             </form>
         </div>
     )

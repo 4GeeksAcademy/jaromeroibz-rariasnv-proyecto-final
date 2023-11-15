@@ -121,17 +121,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			addPetitioner: async (item) => {
 				try {
+					console.log(item)
 					const store = getStore()
 					const requestOptions = {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify(item)
 					}
-					const response = await fetch(process.env.BACKEND_URL+'api/petitioner', requestOptions)
+					const response = await fetch(process.env.BACKEND_URL+'api/signup', requestOptions)
 					const data = await response.json()
 
 					if(response.ok){
-						setStore({ petitioners: data })
+						setStore({ users: data })
 					}
 				} catch (error) {
 					
@@ -145,7 +146,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify(item)
 					}
-					const response = await fetch(process.env.BACKEND_URL+'/api/petitioner/'+idToEdit, requestOptions)
+					const response = await fetch(process.env.BACKEND_URL+'api/petitioner/'+idToEdit, requestOptions)
 					if(response.ok){
 						try {
 							const response = await fetch(process.env.BACKEND_URL+'/api/petitioner')
@@ -165,7 +166,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getAddresses: async () => {
 				const store = getStore();
-				let response = await fetch(process.env.BACKEND_URL+'/api/address/')
+				let response = await fetch(process.env.BACKEND_URL+'api/address/')
 			
 				let data = await response.json()
 
@@ -193,7 +194,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				// redirect: 'follow'
 				// };
 
-				let response = await fetch(process.env.BACKEND_URL+'/api/address/'+ idToDelete)
+				let response = await fetch(process.env.BACKEND_URL+'api/address/'+ idToDelete)
 				let data = await response.json()
 				console.log(response)
 				if (response.ok){
@@ -215,7 +216,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(data)
 				}
 				console.log('Add Address')
-				fetch(process.env.BACKEND_URL +'/api/address/', requestOptions)
+				fetch(process.env.BACKEND_URL +'api/address/', requestOptions)
 				.then( (response) => response.json() )
 				.then( (data) => { getActions().getAddresses()} )
 			},
@@ -229,7 +230,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify( address )
 				};
-				fetch(process.env.BACKEND_URL +'/api/address/'+theid, requestOptions)
+				fetch(process.env.BACKEND_URL +'api/address/'+theid, requestOptions)
 					.then((response) => response.json())
 					.then((data) =>  { getActions().getAddresses()
 									   console.log(data)
@@ -253,7 +254,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'DELETE'
 				};
 				
-				fetch(process.env.BACKEND_URL +"/api/address/" + indexMap, requestOptions)
+				fetch(process.env.BACKEND_URL +"api/address/" + indexMap, requestOptions)
 					.then(response => response.json())
 					.then( () => {
 						fetch(process.env.BACKEND_URL+ '/api/address/')
@@ -266,7 +267,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getServices: async () => {
 				const store = getStore();
-				let response = await fetch(process.env.BACKEND_URL+'/api/services/')
+				let response = await fetch(process.env.BACKEND_URL+'api/services/')
 			
 				let data = await response.json()
 
@@ -279,7 +280,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getService: async (result) => {
 				const store = getStore();
 				const idService = result.id
-				let response = await fetch(process.env.BACKEND_URL+'/api/service/'+ idService)
+				let response = await fetch(process.env.BACKEND_URL+'api/service/'+ idService)
 				let data = await response.json()
 				if (response.ok){
 				  setStore({
@@ -298,7 +299,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(data)
 				}
 				console.log('Add Service')
-				fetch(process.env.BACKEND_URL +'/api/service/', requestOptions)
+				fetch(process.env.BACKEND_URL +'api/service/', requestOptions)
 				.then( (response) => response.json() )
 				.then( (data) => { getActions().getServices()} )
 			},
@@ -311,7 +312,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify( service )
 				};
-				fetch(process.env.BACKEND_URL +`/api/service/${theid}`, requestOptions)
+				fetch(process.env.BACKEND_URL +`api/service/${theid}`, requestOptions)
 					.then((response) => response.json())
 					.then((data) =>  actions.getServices())
 					.catch((error) => {console.log(error)})
@@ -328,7 +329,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'DELETE'
 				};
 				
-				fetch(process.env.BACKEND_URL +"/api/service/" + indexMap, requestOptions)
+				fetch(process.env.BACKEND_URL +"api/service/" + indexMap, requestOptions)
 					.then(response => response.json())
 					.then( (data) => {
 						getActions().getServices()
@@ -336,7 +337,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch(error => console.log('error', error));
 		
 			},
-			loginOfferer: (email, password) => {
+			login: (email, password) => {
 				console.log('Login desde flux')
 				const requestOptions = {
 					method: 'POST',
@@ -347,7 +348,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"password": password
 					})
 				};
-				fetch(process.env.BACKEND_URL +"/api/signin/", requestOptions)
+				fetch(process.env.BACKEND_URL +"api/signin/", requestOptions)
 					.then(response => {
 						console.log(response.status)
 						if(response.status === 200){
@@ -363,37 +364,38 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 					)
 			},
-			signUpOfferer: (name, email, password) => {
+			signUp: (name,email,password) => {
 				console.log('Signup desde flux')
+				console.log(name,email,password)
 				const requestOptions = {
 					method: 'POST',
-					headers: { 'Content-type': 'application/json' },
-					body: JSON.stringify(
-					{
+					headers: { 'Content-Type': 'application/json', 'Origin': '*',
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*' },
+					body: JSON.stringify({
+
 						"name": name,
 						"email": email,
 						"password": password
 					})
-				};
-				fetch(process.env.BACKEND_URL +"/api/signup/", requestOptions)
-					.then(response => response.json())
-					.then(data =>{
+				}
+				fetch(process.env.BACKEND_URL +'api/signup', requestOptions)
+					.then((response) => response.json())
+					.then((data) =>{
 						console.log(data)
 						setStore({ users: data })
 						}
 					)
-
 			},
 			logout: () => {
 				console.log('Log out desde flux')
 				setStore({auth: false});
 				localStorage.removeItem("token");
 			},
-
 			getAllOfferers: async () => {
 				try {
 					const store = getStore()
-					const response = await fetch(process.env.BACKEND_URL+'/api/offerer')
+					const response = await fetch(process.env.BACKEND_URL+'api/offerer')
 					const data = await response.json()
 
 					if(response.ok){
@@ -407,7 +409,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					const store = getStore()
 					const idToDisplay = result.id
-					const response = await fetch(process.env.BACKEND_URL+'/api/offerer/'+idToDisplay)
+					const response = await fetch(process.env.BACKEND_URL+'api/offerer/'+idToDisplay)
 					const data = await response.json()
 
 					if(response.ok){
@@ -424,7 +426,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const requestOptions = {
 						method: 'DELETE'
 					}
-					const response = await fetch(process.env.BACKEND_URL+'/api/offerer/'+indexToDelete, requestOptions)
+					const response = await fetch(process.env.BACKEND_URL+'api/offerer/'+indexToDelete, requestOptions)
 
 					if(response.ok){
 						try {
@@ -451,7 +453,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body: JSON.stringify(item)
 					}
 
-					const response = await fetch(process.env.BACKEND_URL+'/api/offerer', requestOptions)
+					const response = await fetch(process.env.BACKEND_URL+'api/offerer', requestOptions)
 					const data = await response.json()
 
 					if(response.ok){
@@ -469,7 +471,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers: {'Content-Type': 'application/json'},
 						body: JSON.stringify(item)
 					}
-					const response = await fetch(process.env.BACKEND_URL+'/api/offerer/'+offererIdToEdit, requestOptions)
+					const response = await fetch(process.env.BACKEND_URL+'api/offerer/'+offererIdToEdit, requestOptions)
 
 					if(response.ok){
 						try {
@@ -488,28 +490,54 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			signInAsAPetitioner: async (email, password) => {
-				try {
-					const store = getStore()
-					const requestOptions = {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							"email_address": email,
-							"password": password
-						})
-					}
+				// try {
+				// 	const store = getStore()
+				// 	const requestOptions = {
+				// 		method: 'POST',
+				// 		headers: { 'Content-Type': 'application/json' },
+				// 		body: JSON.stringify({
+				// 			"email_address": email,
+				// 			"password": password
+				// 		})
+				// 	}
 
-					const response = await fetch(process.env.BACKEND_URL+'api/sign_in_as_petitioner/', requestOptions)
-					const data = await response.json()
-					console.log(data)
-				} catch (error) {
+				// 	const response = await fetch(process.env.BACKEND_URL+'api/sign_in_as_petitioner/', requestOptions)
+				// 	const data = await response.json()
+				// 	console.log(data)
+				// } catch (error) {
 					
-				}
-			}
-
+				// }
+				console.log('Login desde flux')
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-type': 'application/json' },
+					body: JSON.stringify(
+					{
+						"email": email,
+						"password": password
+					})
+				};
+				console.log(email,password)
+				fetch(process.env.BACKEND_URL +"api/signin", requestOptions)
+					.then(response => {
+						console.log(response.status)
+						if(response.status === 200){
+							setStore({auth: true});
+						}
+						
+						return response.json()
+					})
+					.then(data =>{
+						localStorage.setItem("token", data.access_token)
+						setStore({ users: data })
+						console.log(data)
+						}
+					)
+					.catch((error) => console.log(error))
+			},
 			getServiceCategory: async () => {
 				const store = getStore();
-				let response = await fetch(process.env.BACKEND_URL+'/api/servicescategory')
+				let response = await fetch(process.env.BACKEND_URL+'api/servicescategory')
 				let data = await response.json()
 				if (response.ok){
 				  setStore({categories: data})
