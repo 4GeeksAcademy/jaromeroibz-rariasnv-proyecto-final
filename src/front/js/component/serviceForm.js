@@ -36,6 +36,7 @@ export const ServiceForm = (item) => {
 	
 	return (
 		<div className="container">
+			<h1>Book your task</h1>
 			<form>
                 <div className="form-group py-3">
     				<label>Name</label>
@@ -53,9 +54,8 @@ export const ServiceForm = (item) => {
                     <label htmlFor="description">Example textarea</label>
                     <textarea value={service.description} onChange={handleChange} name='description' className="form-control" id="description" placeholder="Please describe the task" rows="3" required/>
                 </div>
-		
 				<Link to="/servicelist">
-				<button onClick={() => saveService()} type="button" className="btn btn-primary py-3">Save Service</button>
+				<button onClick={() => saveService()} type="button" className="btn btn-primary py-3">Post service</button>
 				</Link>
 			</form>
 			<br />
