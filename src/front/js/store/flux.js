@@ -25,6 +25,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			services:[],
 			service:[],
 			auth: false,
+			serviceAccepted: false,
 			users:[],
 			offerers: [],
 			offerersDetail: [],
@@ -180,19 +181,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getAddress: async (result) => {
 				const store = getStore();
 				const idToDelete = result.id
-				// var myHeaders = new Headers();
-				// myHeaders.append("Access-Control-Allow-Headers", "*");
-				// myHeaders.append("Content-Type", "application/json");
-
-				// var raw = JSON.stringify([]);
-
-				// var requestOptions = {
-				// method: 'GET',
-				// headers: myHeaders,
-				// body: raw,
-				// redirect: 'follow'
-				// };
-
+	
 				let response = await fetch(process.env.BACKEND_URL+'/api/address/'+ idToDelete)
 				let data = await response.json()
 				console.log(response)
@@ -389,7 +378,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({auth: false});
 				localStorage.removeItem("token");
 			},
-
 			getAllOfferers: async () => {
 				try {
 					const store = getStore()
@@ -505,8 +493,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					
 				}
-			}
-
+			},
 			getServiceCategory: async () => {
 				const store = getStore();
 				let response = await fetch(process.env.BACKEND_URL+'/api/servicescategory')

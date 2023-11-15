@@ -32,6 +32,8 @@ import { SigninOfferer } from "./component/signinofferer";
 import { OffererProfile } from "./component/offererprofile";
 import { Signup } from "./component/signup";
 import { SignupOfferer } from "./component/signupofferer";
+import {ApplytoService} from "./component/applytoservice";
+import { ServiceConfirmation } from "./component/serviceconfirmation";
 
 //create your first component
 const Layout = () => {
@@ -72,6 +74,8 @@ const Layout = () => {
                         <Route element={<SignUpAsOfferer />} path="/signUpAsOfferer" />
                         <Route element={<EditOfferer />} path="/editOfferer/:offererIdToEdit" />
                         <Route element={<Single />} path="/single/:theid" />
+                        <Route element={<ApplytoService />} path="/applytoservice" />
+                        <Route element={<ServiceConfirmation />} path="/serviceconfirmation/:theid" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer/>

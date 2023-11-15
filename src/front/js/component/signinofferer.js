@@ -19,7 +19,7 @@ export const SigninOfferer = () => {
 return (
     <>
     <div className="signinofferer">
-        { store.auth === true ? <Navigate to= '/offererprofile'/> :
+        { store.auth === true ? <Navigate to= '/applytoservice'/> :
         <>
         you are not logged in
         <h1>Sign in</h1>

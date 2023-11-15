@@ -11,7 +11,7 @@ export const SignInAsPetitioner = () => {
     function sendData(e){
         e.preventDefault()
         actions.signInAsAPetitioner(email,password)
-        navigate('/')
+        navigate('/serviceform')
     }
 
 

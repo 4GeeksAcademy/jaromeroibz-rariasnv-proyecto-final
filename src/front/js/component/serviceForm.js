@@ -11,7 +11,8 @@ export const ServiceForm = (item) => {
 	const [service,setService] = useState({
 		"name": "",
     	"category": "",
-    	"description": ""
+    	"description": "",
+		"date": ""
 	});
 
 	function handleChange (event){
@@ -29,7 +30,8 @@ export const ServiceForm = (item) => {
 			{
                 "name": "",
                 "category": "",
-                "description": ""
+                "description": "",
+				"date": ""
 			}
 		)
 	}
@@ -49,6 +51,10 @@ export const ServiceForm = (item) => {
 								)}
 						</select>
                 </div>
+				<div className="form-group py-3">
+					<label>Date</label>
+   					<input value={service.date} onChange={handleChange} name='date' type="text" className="form-control" id="date" placeholder="ex: DD/MM/YY" required />
+				</div>
                 <div className="form-group py-3">
                     <label htmlFor="description">Example textarea</label>
                     <textarea value={service.description} onChange={handleChange} name='description' className="form-control" id="description" placeholder="Please describe the task" rows="3" required/>

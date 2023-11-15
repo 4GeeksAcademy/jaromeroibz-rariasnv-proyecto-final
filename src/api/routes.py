@@ -217,7 +217,8 @@ def add_service():
     service = Services(
         name = body['name'],
         category = body['category'],
-        description = body['description']
+        description = body['description'],
+        date = body['date']
     )
     db.session.add(service)
     db.session.commit()
@@ -237,6 +238,8 @@ def update_service(service_id):
     update_service.name = request.get_json()['name']
     update_service.category = request.get_json()['category']
     update_service.description = request.get_json()['description']
+    update_service.date = request.get_json()['date']
+
     
     db.session.commit()
 

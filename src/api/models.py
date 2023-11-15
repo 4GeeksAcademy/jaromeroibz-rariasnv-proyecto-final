@@ -89,6 +89,7 @@ class Services(db.Model):
     name = db.Column(db.String(120), unique=True, nullable=False)
     category = db.Column(db.String(80), unique=False, nullable=False)
     description = db.Column(db.String(80), unique=False, nullable=False)
+    date = db.Column(db.String(80), unique=False, nullable=False)
 
 
     def __repr__(self):
@@ -99,7 +100,8 @@ class Services(db.Model):
             "id": self.id,
             "name": self.name,
             "category": self.category,
-            "description": self.description
+            "description": self.description,
+            "date": self.date
         }
 
 class Offerer(db.Model):
@@ -124,6 +126,7 @@ class Offerer(db.Model):
             "email_address": self.email_address,
             "tasks_offer": self.tasks_offer,
             "rating": self.rating
+        }
 
 class ServiceCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
