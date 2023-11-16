@@ -25,9 +25,30 @@ class User(db.Model):
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+    
+class Petitioner (db.Model):
+    __tablename__ = 'petitioner'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=False, nullable=False)
+    phone_number = db.Column(db.Integer, unique=True, nullable=True)
+    address = db.Column(db.String(120), unique=False, nullable=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(120), unique=False, nullable=False)
 
+    def __repr__(self):
+        return f'<Petitioner {self.email}>'
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "phone_number": self.phone_number,
+            "address": self.address,
+            "email": self.email
+        }
 
 class Address(db.Model):
+    __tablename__ = 'address'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
     state = db.Column(db.String(80), unique=False, nullable=False)
@@ -38,7 +59,8 @@ class Address(db.Model):
     zipcode = db.Column(db.String(80), unique=False, nullable=False)
     latitude = db.Column(db.String(80), unique=False)
     longitude = db.Column(db.String(80), unique=False)
-    
+    petitioner_id = db.Column(Integer, ForeignKey('petitioner.id'))
+    petitioner = relationship(Petitioner)
 
     def __repr__(self):
         return f'<Address {self.name}>'
@@ -58,38 +80,40 @@ class Address(db.Model):
         }
             # do not serialize the password, its a security breach
 
-class Petitioner (db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(120), unique=False, nullable=False)
+class Offerer(db.Model):
+    __tablename__ = 'offerer'
+    id= db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=False, nullable=False)
     phone_number = db.Column(db.Integer, unique=True, nullable=False)
     address = db.Column(db.String(120), unique=False, nullable=False)
-    email_address = db.Column(db.String(120), unique=True, nullable=False)
-    offer_services = db.Column(db.String(120), unique=False, nullable=False)
-    rating = db.Column(db.Integer, unique=False, nullable=False)
+    rating = db.Column(db.Integer, unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), unique=False, nullable=False)
 
     def __repr__(self):
-        return f'<Petitioner {self.email_address}>'
+        return f'<Offerer {self.email}>'
     
     def serialize(self):
         return {
             "id": self.id,
-            "full_name": self.full_name,
+            "name": self.name,
             "phone_number": self.phone_number,
             "address": self.address,
-            "email_address": self.email_address,
-            "offer_services": self.offer_services,
-            "rating": self.rating
-
+            "rating": self.rating,
+            "email": self.email
         }
-
+    
 class Services(db.Model):
-    # __tablename__ = 'services'
+    __tablename__ = 'services'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
     category = db.Column(db.String(80), unique=False, nullable=False)
     description = db.Column(db.String(80), unique=False, nullable=False)
-
+    date = db.Column(db.String(80), unique=False, nullable=False)
+    petitioner_id = db.Column(Integer, ForeignKey('petitioner.id'))
+    # offerer_id = db.Column(Integer, ForeignKey('offerer.id'))
+    petitioner = relationship(Petitioner, foreign_keys="Services.petitioner_id")
+    # offerer = relationship(Offerer, foreign_keys="Services.offerer_id")
 
     def __repr__(self):
         return f'<Services {self.name}>'
@@ -99,33 +123,21 @@ class Services(db.Model):
             "id": self.id,
             "name": self.name,
             "category": self.category,
-            "description": self.description
-        }
-
-class Offerer(db.Model):
-    id= db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(120), unique=False, nullable=False)
-    phone_number = db.Column(db.Integer, unique=True, nullable=False)
-    address = db.Column(db.String(120), unique=False, nullable=False)
-    email_address = db.Column(db.String(120), unique=True, nullable=False)
-    tasks_offer = db.Column(db.String(120), unique=False, nullable=False)
-    rating = db.Column(db.String(120), unique=False, nullable=False)
-    password = db.Column(db.String(120), unique=False, nullable=False)
-
-    def __repr__(self):
-        return f'<Offerer {self.email_address}>'
-    
-    def serialize(self):
-        return {
-            "id": self.id,
-            "full_name": self.full_name,
-            "phone_number": self.phone_number,
-            "address": self.address,
-            "email_address": self.email_address,
-            "tasks_offer": self.tasks_offer,
-            "rating": self.rating
+            "description": self.description,
+            "date": self.date,
         }
     
+
+class OffererServices(db.Model):
+    __tablename__ = 'offerer_services'
+    id = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.String(80), unique=False, nullable=False)
+    rating = db.Column(db.Integer, unique=True, nullable=False)
+    service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
+    offerer_id = db.Column(db.Integer, db.ForeignKey('offerer.id'))
+    service = db.relationship(Services)
+    offerer = db.relationship(Offerer)
+   
 class ServiceCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(80), unique=False, nullable=False)

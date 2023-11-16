@@ -83,10 +83,7 @@ def create_petitioner():
             full_name = body['full_name'],
             phone_number = body['phone_number'],
             address = body['address'],
-            email_address = body['email_address'],
-            offer_services = body['offer_services'],
-            rating = body['rating'],
-            password = body['password']
+            email_address = body['email_address']
         )    
 
         db.session.add(petitioner)
@@ -175,11 +172,17 @@ def get_services():
     all_services = Services.query.all()
     result = list(map(lambda item: item.serialize(), all_services))
 
-    return jsonify(result), 200
-   
+    return jsonify(result), 200 
+
 @api.route('/services/<int:service_id>', methods =['GET'])
 def get_service(service_id):
     service = Services.query.filter_by(id=service_id).first()
+
+    return jsonify(service.serialize()), 200
+
+@api.route('/petitioner_service/<int:petitioner_id>', methods =['GET'])
+def get_petitioner_service(petitioner_id):
+    service = Services.query.filter_by(id=petitioner_id).first()
 
     return jsonify(service.serialize()), 200
 
@@ -212,7 +215,8 @@ def add_service():
     service = Services(
         name = body['name'],
         category = body['category'],
-        description = body['description']
+        description = body['description'],
+        date = body['date']
     )
     db.session.add(service)
     db.session.commit()
@@ -232,6 +236,8 @@ def update_service(service_id):
     update_service.name = request.get_json()['name']
     update_service.category = request.get_json()['category']
     update_service.description = request.get_json()['description']
+    update_service.date = request.get_json()['date']
+
     
     db.session.commit()
 
@@ -254,23 +260,41 @@ def delete_service(service_id):
       
     return jsonify(response_body), 200
 
-@api.route("/signin", methods=["POST"])
-def login():
+@api.route("/signin_petitioner", methods=["POST"])
+def login_petitioner():
 
     email = request.json.get("email", None)
     password = request.json.get("password", None)
     print(email, password)
     
-    user = User.query.filter_by(email=email).first()
-    print(user)
-    if email != user.email or password != user.password:
+    petitioner = Petitioner.query.filter_by(email=email).first()
+    print(petitioner)
+    if email != petitioner.email or password != petitioner.password:
         return jsonify({"msg": "Bad username or password"}), 401
 
     access_token = create_access_token(identity=email)
-    user_info = user.serialize()
-    user_info['access_token']=access_token
-    print(user_info)
-    return jsonify(user_info)
+    petitioner_info = petitioner.serialize()
+    petitioner_info['access_token']=access_token
+    print(petitioner_info)
+    return jsonify(petitioner_info)
+
+@api.route("/signin_offerer", methods=["POST"])
+def login_offerer():
+
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+    print(email, password)
+    
+    offerer = Offerer.query.filter_by(email=email).first()
+    print(offerer)
+    if email != offerer.email or password != offerer.password:
+        return jsonify({"msg": "Bad username or password"}), 401
+
+    access_token = create_access_token(identity=email)
+    offerer_info = offerer.serialize()
+    offerer_info['access_token']=access_token
+    print(offerer_info)
+    return jsonify(offerer_info)
 
 
 # Protect a route with jwt_required, which will kick out requests
@@ -291,32 +315,55 @@ def profile():
     return jsonify(response_body), 200
 
 
-@api.route("/signup", methods=["POST"])
-def signup():
+@api.route("/signup_petitioner", methods=["POST"])
+def signup_petitioner():
     body = request.get_json()
     print(body)
-    
-    user = User.query.filter_by(email=body["email"]).first()
-
+    petitioner = Petitioner.query.filter_by(email=body["email"]).first()
     email = request.json.get("email", None)
     access_token = create_access_token(identity=email)
 
-    print(user)
-    if user == None:
-        user = User(name=body["name"], email=body["email"], password=body["password"], is_active=True)
-        print(user)
-        db.session.add(user)
+    print(petitioner)
+    if petitioner == None:
+        petitioner = Petitioner(name=body["name"], email=body["email"], password=body["password"], is_active=True)
+        print(petitioner)
+        db.session.add(petitioner)
         db.session.commit()
-        user_info = user.serialize()
-        user_info['access_token']=access_token
+        petitioner_info = petitioner.serialize()
+        petitioner_info['access_token']=access_token
         response_body = {
 
-            "msg": "User created",
-            "token": user_info
+            "msg": "Petitioner created",
+            "token": petitioner_info
         }
         return jsonify(response_body), 200
     else:
-        return jsonify({"msg": "User already exists with this email address"}), 401
+        return jsonify({"msg": "Petitioner already exists with this email address"}), 401
+    
+@api.route("/signup_offerer", methods=["POST"])
+def signup_offerer():
+    body = request.get_json()
+    print(body)
+    offerer = Offerer.query.filter_by(email=body["email"]).first()
+    email = request.json.get("email", None)
+    access_token = create_access_token(identity=email)
+
+    print(offerer)
+    if offerer == None:
+        offerer = Offerer(name=body["name"], email=body["email"], password=body["password"], is_active=True)
+        print(offerer)
+        db.session.add(offerer)
+        db.session.commit()
+        offerer_info = offerer.serialize()
+        offerer_info['access_token']=access_token
+        response_body = {
+
+            "msg": "Offerer created",
+            "token": offerer_info
+        }
+        return jsonify(response_body), 200
+    else:
+        return jsonify({"msg": "Petitioner already exists with this email address"}), 401
     
 
 @api.route('/offerer', methods=['GET'])

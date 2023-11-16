@@ -190,19 +190,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getAddress: async (result) => {
 				const store = getStore();
 				const idToDelete = result.id
-				// var myHeaders = new Headers();
-				// myHeaders.append("Access-Control-Allow-Headers", "*");
-				// myHeaders.append("Content-Type", "application/json");
-
-				// var raw = JSON.stringify([]);
-
-				// var requestOptions = {
-				// method: 'GET',
-				// headers: myHeaders,
-				// body: raw,
-				// redirect: 'follow'
-				// };
-
 				let response = await fetch(process.env.BACKEND_URL+'api/address/'+ idToDelete)
 				let data = await response.json()
 				console.log(response)
@@ -506,23 +493,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			signInAsAPetitioner: async (email, password) => {
-				// try {
-				// 	const store = getStore()
-				// 	const requestOptions = {
-				// 		method: 'POST',
-				// 		headers: { 'Content-Type': 'application/json' },
-				// 		body: JSON.stringify({
-				// 			"email_address": email,
-				// 			"password": password
-				// 		})
-				// 	}
-
-				// 	const response = await fetch(process.env.BACKEND_URL+'api/sign_in_as_petitioner/', requestOptions)
-				// 	const data = await response.json()
-				// 	console.log(data)
-				// } catch (error) {
-					
-				// }
 				console.log('Login desde flux')
 				const requestOptions = {
 					method: 'POST',
@@ -559,7 +529,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  setStore({categories: data})
 				  }
 			},
-			// addServiceCategory: async () => {
+			addServiceCategory: async () => {
 			// 	console.log('add cat desde flux')
 			// 	const requestOptions = {
 			// 		method: 'POST',
@@ -578,8 +548,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 			setStore({ users: data })
 			// 			}
 			// 		)
-			// }
-
+			},
+			changeStatus: async (service) => {
+				setStore({
+					services: service
+				})
+			}
 		}
 	};
 };
