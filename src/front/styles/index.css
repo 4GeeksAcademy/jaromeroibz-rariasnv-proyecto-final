@@ -1,13 +1,85 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
-.signindiv, .signinofferer, .signupdiv, .signuppetitioner {
+.signindiv, .signinofferer, .signupdiv, .signuppetitioner, .signInAsPetitioner, .addresslist, .addressform, .servicelist, .serviceform, .servicelist {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 10px;
+    box-sizing: border-box;
+    color: rgb(86, 89, 115);
+    font-family: Manrope, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: white;
+    border-radius: 5px;
   }
+
+.jumbotron {
+  box-sizing: border-box;
+  color: rgb(86, 89, 115);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: Manrope, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  /* opacity: 0.5; */
+  border-radius: 5px;
+}
+
+.jumboexampleimg {
+  box-sizing: border-box;
+  justify-content: center;
+  border-radius: 5px;
+}
+  
+
+.signcontainer {
+  box-sizing: border-box;
+  color: rgb(86, 89, 115);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: Manrope, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  height: 782.088px;
+  justify-content: center;
+  line-height: 25.6px;
+  margin-left: 0px;
+  margin-right: 0px;
+  max-width: 95%;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 48px;
+  text-align: start;
+}
+
+.btn-primary {
+  background-color: rgb(99, 102, 241);
+  border-bottom-color: rgb(99, 102, 241);  
+}
+
+.navbar-brand {
+  align-items: center;
+  box-sizing: border-box;
+  color: rgb(11, 15, 25);
+  cursor: pointer;
+  display: flex;
+  font-family: Manrope, sans-serif;
+  font-size: 22px
+}
+
+.body-view {
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%) !important;
+  background-image: linear-gradient(90deg, rgb(99, 102, 241) 0%, rgb(139, 92, 246))
+}
+
+
+
+
 
   /* .footer{
     position: absolute; 

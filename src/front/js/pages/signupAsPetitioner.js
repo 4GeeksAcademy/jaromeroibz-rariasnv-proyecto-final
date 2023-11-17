@@ -20,27 +20,27 @@ export const SignupAsPetitioner = () => {
         <div className="signuppetitioner">
             { store.auth === true ? <Navigate to= '/serviceform'/> :
             <>
-            <h1>Sign up</h1>
+            <h1 className="mx-2">Sign up</h1>
             <form>
-            <div className="py-3">
+            <div className="py-3 mx-2">
                 <label className="form-label">Full Name</label>
                 <input type="text" className="form-control" id="name"
                 value={name} onChange={(e) => setName(e.target.value)} name='name'
-                placeholder="Enter full name"/>
+                placeholder="Enter your full name"/>
             </div>
-            <div className="py-3">
+            <div className="py-3 mx-2">
                 <label className="form-label">Email address</label>
                 <input type="email" className="form-control" id="email"
                 value={email} onChange={(e) => setEmail(e.target.value)} name='email'
                 placeholder="Enter email address"/>
             </div>
-            <div className="py-3">
+            <div className="py-3 mx-2">
                 <label className="form-label">Password</label>
                 <input type="password" className="form-control" id="password"
                 value={password} onChange={(e) => setPassword(e.target.value)} name='password'
                 placeholder="Enter password"/>
             </div>
-            <button className="btn btn-primary" onClick={ (e) => savePetitionerToAdd(e) }>Signup</button>
+            <button className="btn btn-primary mx-2" onClick={ (e) => savePetitionerToAdd(e) }>Signup</button>
             </form>
             </>
         }

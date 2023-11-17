@@ -12,9 +12,9 @@ export const AddressList = () => {
 
     return (
     
-        <div className="container">
+        <div className="container addresslist">
 			<ul className="list-group py-5">
-			<h1 className="py-3">Address List</h1>
+			<h1 className="py-3 mx-2">Address List</h1>
 			{store.addresses.map((item) => 
 				
 					<li key= {item.id}
@@ -71,10 +71,10 @@ export const AddressList = () => {
 			</ul>
 			<br />
 			<Link to="/addressform">
-				<button className="btn btn-primary">Add address</button>
+				<button className="btn btn-primary m-2">Add address</button>
 			</Link>
 			<Link to="/">
-				<button className="btn btn-primary">Back home</button>
+				<button className="btn btn-primary m-2">Back home</button>
 			</Link>
 		</div>
     )
