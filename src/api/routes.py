@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 
-from api.models import db, User, Address, Petitioner, Services, ServiceCategory, Offerer
+from api.models import db, User, Address, Petitioner, Services, ServiceCategory, Offerer, OffererServices
 from api.utils import generate_sitemap, APIException
 
 from flask_jwt_extended import create_access_token
@@ -174,6 +174,37 @@ def get_services():
 
     return jsonify(result), 200 
 
+@api.route('/services_by_status/<int:service_id>', methods=['GET'])
+def get_services_by_status(service_id):
+
+    services_by_status = Services.query.filter_by(id=service_id, status = 'Pending Approval').first()
+
+    return jsonify(services_by_status.serialize()), 200 
+
+@api.route('/services_by_petitioner_created/<int:petitioner_id>', methods=['GET'])
+def get_services_by_petitioner_created(petitioner_id):
+
+    services_by_petitioner = Services.query.filter_by(petitioner_id=petitioner_id).all()
+    result = list(map(lambda item: item.serialize_created(), services_by_petitioner))
+
+    return jsonify(result), 200 
+
+@api.route('/services_by_offerer_pending_approval/<int:offerer_id>', methods=['GET'])
+def get_services_by_offerer_pending_approval(offerer_id):
+
+    services_by_offerer_pending_approval = OffererServices.query.filter_by(offerer_id=offerer_id).all()
+    result = list(map(lambda item: item.serialize_pending_approval(), services_by_offerer_pending_approval))
+
+    return jsonify(result), 200 
+
+@api.route('/services_by_offerer_accepted/<int:offerer_id>', methods=['GET'])
+def services_by_offerer_accepted(offerer_id):
+
+    services_by_offerer_accepted = OffererServices.query.filter_by(offerer_id=offerer_id).all()
+    result = list(map(lambda item: item.serialize_accepted(), services_by_offerer_accepted))
+
+    return jsonify(result), 200 
+
 @api.route('/services/<int:service_id>', methods =['GET'])
 def get_service(service_id):
     service = Services.query.filter_by(id=service_id).first()
@@ -216,7 +247,8 @@ def add_service():
         name = body['name'],
         category = body['category'],
         description = body['description'],
-        date = body['date']
+        date = body['date'],
+        status = 'Created'
     )
     db.session.add(service)
     db.session.commit()
@@ -243,6 +275,39 @@ def update_service(service_id):
 
     response_body = {
         "message": "Service updated"
+    }
+      
+    return jsonify(response_body), 200
+
+
+@api.route('/service_status_pending_approval/offerer/<int:offerer_id>/service/<int:service_id>', methods =['PUT'])
+def update_service_status_pending_approval(service_id,offerer_id):
+    
+    update_service_status_pending_approval = OffererServices.query.filter_by(service_id=service_id, offerer_id=offerer_id).first()
+    print(update_service_status_pending_approval)
+
+    update_service_status_pending_approval.status = 'pending_approval'
+ 
+    db.session.commit()
+
+    response_body = {
+        "message": "Service status updated"
+    }
+      
+    return jsonify(response_body), 200
+
+@api.route('/service_status_accepted/<int:service_id>', methods =['PUT'])
+def update_service_status_accepted(service_id):
+    
+    update_service_status_accepted = Services.query.filter_by(id=service_id).first()
+    print(update_service_status_accepted)
+
+    update_service_status_accepted.status = 'accepted'
+ 
+    db.session.commit()
+
+    response_body = {
+        "message": "Service status updated"
     }
       
     return jsonify(response_body), 200
@@ -325,7 +390,7 @@ def signup_petitioner():
 
     print(petitioner)
     if petitioner == None:
-        petitioner = Petitioner(name=body["name"], email=body["email"], password=body["password"], is_active=True)
+        petitioner = Petitioner(name=body["name"], email=body["email"], password=body["password"])
         print(petitioner)
         db.session.add(petitioner)
         db.session.commit()
@@ -350,7 +415,7 @@ def signup_offerer():
 
     print(offerer)
     if offerer == None:
-        offerer = Offerer(name=body["name"], email=body["email"], password=body["password"], is_active=True)
+        offerer = Offerer(name=body["name"], email=body["email"], password=body["password"])
         print(offerer)
         db.session.add(offerer)
         db.session.commit()
@@ -378,6 +443,8 @@ def get_one_particular_offerer(offerer_id):
     particular_oferer = Offerer.query.filter_by(id=offerer_id).first()
 
     return jsonify(particular_oferer.serialize()), 200
+
+
 
 @api.route('/offerer', methods=['POST'])
 def create_offerer():

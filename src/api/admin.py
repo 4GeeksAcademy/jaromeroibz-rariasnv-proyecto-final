@@ -2,7 +2,7 @@
 import os
 from flask_admin import Admin
 
-from .models import db, User, Address, Petitioner, Services, ServiceCategory, Offerer, OffererServices
+from .models import db, User, Address, Petitioner, Services, ServiceCategory, Offerer, OffererServices, PetitionerServices, Status
 
 from flask_admin.contrib.sqla import ModelView
 
@@ -19,7 +19,10 @@ def setup_admin(app):
     admin.add_view(ModelView(Services, db.session))
     admin.add_view(ModelView(OffererServices, db.session))
     admin.add_view(ModelView(Offerer, db.session))
-    admin.add_view(ModelView(ServiceCategory, db.session))
+    admin.add_view(ModelView(PetitionerServices, db.session))
+    admin.add_view(ModelView(Status, db.session))
+
+
 
 
 

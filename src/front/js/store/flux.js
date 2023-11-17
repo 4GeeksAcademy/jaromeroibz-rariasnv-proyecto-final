@@ -23,6 +23,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			idToDelete: "",
 			address:[],
 			services:[],
+			servicesApplied: [],
 			service:[],
 			auth: false,
 			users:[],
@@ -333,7 +334,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch(error => console.log('error', error));
 		
 			},
-			login: (email, password) => {
+			loginOfferer: (email, password) => {
 				console.log('Login desde flux')
 				const requestOptions = {
 					method: 'POST',
@@ -344,7 +345,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"password": password
 					})
 				};
-				fetch(process.env.BACKEND_URL +"api/signin/", requestOptions)
+				fetch(process.env.BACKEND_URL +"api/signin_offerer", requestOptions)
 					.then(response => {
 						console.log(response.status)
 						if(response.status === 200){
@@ -356,12 +357,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(data =>{
 						setStore({ users: data })
 						console.log(data)
+						localStorage.setItem("token", data.access_token)
 						}
 					)
-					localStorage.setItem("token", data.access_token)
+					
 
 			},
-			signUp: (name,email,password) => {
+			loginPetitioner: (email, password) => {
+				console.log('Login desde flux')
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-type': 'application/json' },
+					body: JSON.stringify(
+					{
+						"email": email,
+						"password": password
+					})
+				};
+				fetch(process.env.BACKEND_URL +"api/signin_petitioner", requestOptions)
+					.then(response => {
+						console.log(response.status)
+						if(response.status === 200){
+							setStore({auth: true});
+						}
+						
+						return response.json()
+					})
+					.then(data =>{
+						setStore({ users: data })
+						console.log(data)
+						localStorage.setItem("token", data.access_token)
+						}
+					)
+
+			},
+			signUpOfferer: (name,email,password) => {
 				console.log('Signup desde flux')
 				console.log(name,email,password)
 				const requestOptions = {
@@ -376,7 +406,36 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"password": password
 					})
 				}
-				fetch(process.env.BACKEND_URL +'api/signup', requestOptions)
+				fetch(process.env.BACKEND_URL +'api/signup_offerer', requestOptions)
+					.then((response) => {
+						if(response.status === 200){
+							setStore({auth: true});
+						}
+						return response.json()
+					})
+					.then((data) =>{
+						console.log(data)
+						setStore({ users: data })
+						}
+					)
+					localStorage.setItem("token", data.access_token)
+			},
+			signUpPetitioner: (name,email,password) => {
+				console.log('Signup desde flux')
+				console.log(name,email,password)
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', 'Origin': '*',
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*' },
+					body: JSON.stringify({
+
+						"name": name,
+						"email": email,
+						"password": password
+					})
+				}
+				fetch(process.env.BACKEND_URL +'api/signup_petitioner', requestOptions)
 					.then((response) => {
 						if(response.status === 200){
 							setStore({auth: true});
@@ -553,6 +612,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({
 					services: service
 				})
+			},
+			saveAppliedService: (item) => {
+
+				setStore({
+					servicesApplied: item
+				})
+			},
+			deleteServiceApplied: async () => {
+
+			},
+			getServicesApplied: async () => {
+				getStore().getServicesApplied()
 			}
 		}
 	};
