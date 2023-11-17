@@ -35,15 +35,15 @@ export const ServiceForm = (item) => {
 	}
 	
 	return (
-		<div className="container">
-			<h1>Book your task</h1>
+		<div className="container serviceform">
+			<h1 className="mx-2">Book your task</h1>
 			<form>
-                <div className="form-group py-3">
-    				<label>Name</label>
-   					<input value={service.name} onChange={handleChange} name='name' type="text" className="form-control" id="name" placeholder="ex: Fix a wall" required />
+                <div className="form-group py-3 mx-2">
+    				<label>What do you need help with?</label>
+   					<input value={service.name} onChange={handleChange} name='name' type="text" className="form-control" id="name" placeholder="Example: Paint a wall" required />
   				</div>
-                <div className="form-group py-3">
-                    <label>Select a category</label>
+                <div className="form-group py-3 mx-2">
+                    <label>Choose category</label>
 						<select value={service.category} onChange={handleChange} name='category' className="form-select" aria-label="Default select example" required>
 							{store.categories.map((item) => 
 							<option value= {item.category}>{item.category}</option>
@@ -51,18 +51,20 @@ export const ServiceForm = (item) => {
 						</select>
 				
                 </div>
-                <div className="form-group py-3">
-                    <label htmlFor="description">Example textarea</label>
+                <div className="form-group py-3 mx-2">
+                    <label htmlFor="description">Give us details about the task</label>
                     <textarea value={service.description} onChange={handleChange} name='description' className="form-control" id="description" placeholder="Please describe the task" rows="3" required/>
-                </div>
-				<Link to="/servicelist">
-				<button onClick={() => saveService()} type="button" className="btn btn-primary py-3">Post service</button>
-				</Link>
+                </div>				
 			</form>
-			<br />
-			<Link to="/servicelist">
-				<button className="btn btn-primary">Back home</button>
-			</Link>
+			<div className="">
+				<Link to="/servicelist">
+					<button onClick={() => saveService()} type="button" className="btn btn-primary mx-2">Post service</button>
+				</Link>
+				<Link to="/servicelist">
+					<button className="btn btn-primary mx-2">Back home</button>
+				</Link>
+			</div>
+			
 		</div>
 	);
 }

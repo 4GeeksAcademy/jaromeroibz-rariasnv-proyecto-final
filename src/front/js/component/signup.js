@@ -6,30 +6,26 @@ import { Context } from "../store/appContext";
 export const Signup = () => {
 
 return (
-    <>
+    <div className="signcontainer">
         <div className="signupdiv">
-            <div className="card" style={{width: "18rem"}}>
-                <img className="card-img-top" src="..." alt="Card image cap"></img>
+            <div className="card my-2" style={{width: "18rem"}}>
                 <div className="card-body">
-                    <h5 className="card-title">Sign up as petitioner</h5>
-                    <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <h5 className="card-title">Petitioner</h5>                    
                     <Link to="/signUpAsPetitioner">
-                    <button className="btn btn-primary">Sign up as petitioner</button>
+                    <button className="btn btn-primary">Sign up</button>
                     </Link>
                 </div>
             </div>
-            <div className="card" style={{width: "18rem"}}>
-                <img className="card-img-top" src="..." alt="Card image cap"></img>
+            <div className="card my-2" style={{width: "18rem"}}>
                 <div className="card-body">
-                    <h5 className="card-title">Sign up as offerer</h5>
-                    <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <h5 className="card-title">Offerer</h5>                    
                     <Link to="/signupofferer">
-                        <button className="btn btn-primary">Sign up as offerer</button>
+                        <button className="btn btn-primary">Sign up</button>
                     </Link>
                 </div>
             </div>
         </div>
-    </>
+    </div>
 
     )
 }
