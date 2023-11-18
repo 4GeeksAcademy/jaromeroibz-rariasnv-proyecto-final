@@ -1,12 +1,25 @@
 from flask_sqlalchemy import SQLAlchemy
-
+from enum import Enum
 import os
 import sys
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy import create_engine
 
+
 db = SQLAlchemy()
+
+class OffererStatus(Enum): 
+    pending_approval = 'pending_approval',
+    accepted = 'accepted',
+    insuficient = 'insuficient',
+    done = 'done'
+
+class PetitionerStatus(Enum): 
+    evaluating_proposal = 'evaluating_proposal',
+    task_done = 'task_done',
+    task_not_done = 'task_not_done'
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -35,6 +48,7 @@ class Petitioner (db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), unique=False, nullable=False)
 
+
     def __repr__(self):
         return f'<Petitioner {self.email}>'
     
@@ -46,6 +60,58 @@ class Petitioner (db.Model):
             "address": self.address,
             "email": self.email
         }
+    
+class Services(db.Model):
+    __tablename__ = 'services'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
+    category = db.Column(db.String(80), unique=False, nullable=False)
+    description = db.Column(db.String(80), unique=False, nullable=False)
+    date = db.Column(db.String(80), unique=False, nullable=False)
+    status = db.Column(db.String(80), nullable = False, unique=False)
+    petitioner_id = db.Column(db.Integer, db.ForeignKey('petitioner.id'))
+    petitioner = relationship(Petitioner)
+
+    def __repr__(self):
+        return f'<Services {self.name}>'
+
+    def serialize(self):    
+        return {
+            "id": self.id,
+            "petitioner_id": self.petitioner_id,
+            "name": self.name,
+            "category": self.category,
+            "description": self.description,
+            "date": self.date,
+            "status": self.status
+        }
+    
+    def serialize_created(self):
+        service = Services.query.filter_by(status='created').first()
+        if service is not None:
+            return {
+                "id": self.id,
+                "name": self.name,
+                "category": self.category,
+                "description": self.description,
+                "date": self.date,
+                "status": self.status,
+                "petitioner_id": self.petitioner_id
+            }
+    
+    def serialize_accepted(self):
+        service = Services.query.filter_by(status='accepted').first()
+        if service is not None:
+            return {
+                "id": self.id,
+                "name": self.name,
+                "category": self.category,
+                "description": self.description,
+                "date": self.date,
+                "status": self.status,
+                "offerer_id": self.offerer_id
+            }
+           
 
 class Address(db.Model):
     __tablename__ = 'address'
@@ -103,76 +169,13 @@ class Offerer(db.Model):
             "email": self.email
         }
     
-class Services(db.Model):
-    __tablename__ = 'services'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
-    category = db.Column(db.String(80), unique=False, nullable=False)
-    description = db.Column(db.String(80), unique=False, nullable=False)
-    date = db.Column(db.String(80), unique=False, nullable=False)
-    petitioner_id = db.Column(Integer, ForeignKey('petitioner.id'))
-    petitioner = relationship(Petitioner, foreign_keys="Services.petitioner_id")
 
-    def __repr__(self):
-        return f'<Services {self.name}>'
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "category": self.category,
-            "description": self.description,
-            "date": self.date,
-        }
-    
-    def serialize_created(self):
-        service = Services.query.filter_by(status='created').first()
-        if service is not None:
-            return {
-                "id": self.id,
-                "name": self.name,
-                "category": self.category,
-                "description": self.description,
-                "date": self.date,
-                "status": self.status,
-                "petitioner_id": self.petitioner_id
-            }
-    
-    def serialize_accepted(self):
-        service = Services.query.filter_by(status='accepted').first()
-        if service is not None:
-            return {
-                "id": self.id,
-                "name": self.name,
-                "category": self.category,
-                "description": self.description,
-                "date": self.date,
-                "status": self.status,
-                "offerer_id": self.offerer_id
-            }
-        
-class Status(db.Model):
-    __tablename__ = 'status'
-    id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String(80), unique=False, nullable=False)
-
-    def __repr__(self):
-        return f'<Status {self.status}>'
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "status": self.status
-        }
-            
 class OffererServices(db.Model):
     __tablename__ = 'offerer_services'
     id = db.Column(db.Integer, primary_key=True)
-    rating = db.Column(db.Integer, unique=False, nullable=True)
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
     offerer_id = db.Column(db.Integer, db.ForeignKey('offerer.id'))
-    status_id = db.Column(db.Integer, db.ForeignKey('status.id'))
-    status = db.relationship(Status)
+    status = db.Column(db.String(80), nullable = False, unique=False)
     service = db.relationship(Services)
     offerer = db.relationship(Offerer)
 
@@ -182,10 +185,9 @@ class OffererServices(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "rating": self.rating,
             "service_id": self.service_id,
             "offerer_id": self.offerer_id,
-            "status_id": self.status_id
+            "status": self.status
         }
     
     def serialize_pending_approval(self):
@@ -193,9 +195,10 @@ class OffererServices(db.Model):
         if service is not None:
             return {
                 "id": self.id,
-                "rating": self.rating,
-                "service": service.serialize(),
-                "offerer_id": self.offerer_id
+                "service_id": service.serialize(),
+                "offerer_id": self.offerer_id,
+                "status": self.status
+
             }
         
     # def serialize_accepted(self):
@@ -207,38 +210,6 @@ class OffererServices(db.Model):
     #             "service": service.serialize(),
     #             "offerer_id": self.offerer_id
     #         }
-
-class PetitionerServices(db.Model):
-    __tablename__ = 'petitioner_services'
-    id = db.Column(db.Integer, primary_key=True)
-    service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
-    petitioner_id = db.Column(db.Integer, db.ForeignKey('petitioner.id'))
-    status_id = db.Column(db.Integer, db.ForeignKey('status.id'))
-    status = db.relationship(Status)
-    service = db.relationship(Services)
-    petitioner = db.relationship(Petitioner)
-
-    def __repr__(self):
-        return f'<PetitionerServices {self.id}>'
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "service_id": self.service_id,
-            "petitioner_id": self.petitioner_id,
-            "status": self.status
-        }
-    
-    def serialize_approve(self):
-        service = PetitionerServices.query.filter_by(status='accepted').first()
-        if service is not None:
-            return {
-                "id": self.id,
-                "rating": self.rating,
-                "service": service.serialize(),
-                "offerer_id": self.offerer_id
-            }
-
 
 class ServiceCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)

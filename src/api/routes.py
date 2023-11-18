@@ -174,36 +174,75 @@ def get_services():
 
     return jsonify(result), 200 
 
-@api.route('/services_by_status/<int:service_id>', methods=['GET'])
-def get_services_by_status(service_id):
+@api.route('/services_by_status_petitioner/<int:petitioner_id>', methods=['GET'])
+def get_services_by_status_petitioner(petitioner_id):
 
-    services_by_status = Services.query.filter_by(id=service_id, status = 'Pending Approval').first()
-
-    return jsonify(services_by_status.serialize()), 200 
-
-@api.route('/services_by_petitioner_created/<int:petitioner_id>', methods=['GET'])
-def get_services_by_petitioner_created(petitioner_id):
-
-    services_by_petitioner = Services.query.filter_by(petitioner_id=petitioner_id).all()
-    result = list(map(lambda item: item.serialize_created(), services_by_petitioner))
+    services_by_status = Services.query.filter_by(petitioner_id=petitioner_id, status = 'evaluating_proposal').all()
+    result = list(map(lambda item: item.serialize(), services_by_status))
 
     return jsonify(result), 200 
 
-@api.route('/services_by_offerer_pending_approval/<int:offerer_id>', methods=['GET'])
-def get_services_by_offerer_pending_approval(offerer_id):
+# filtrar servicios por offerer y status
 
-    services_by_offerer_pending_approval = OffererServices.query.filter_by(offerer_id=offerer_id).all()
-    result = list(map(lambda item: item.serialize_pending_approval(), services_by_offerer_pending_approval))
+@api.route('/services_by_status_offerer_pending_approval/<int:offerer_id>', methods=['GET'])
+def get_services_by_status_offerer_pending_approval(offerer_id):
+
+    services_by_status = OffererServices.query.filter_by(offerer_id=offerer_id, status = 'pending_approval').all()
+    result = list(map(lambda item: item.serialize(), services_by_status))
+
+    return jsonify(result), 200
+
+@api.route('/services_by_status_offerer_accepted/<int:offerer_id>', methods=['GET'])
+def get_services_by_status_offerer_accepted(offerer_id):
+
+    services_by_status = OffererServices.query.filter_by(offerer_id=offerer_id, status = 'accepted').all()
+    result = list(map(lambda item: item.serialize(), services_by_status))
+
+    return jsonify(result), 200  
+
+@api.route('/services_by_status_offerer_insuficient/<int:offerer_id>', methods=['GET'])
+def get_services_by_status_offerer_insuficient(offerer_id):
+
+    services_by_status = OffererServices.query.filter_by(offerer_id=offerer_id, status = 'insuficient').all()
+    result = list(map(lambda item: item.serialize(), services_by_status))
 
     return jsonify(result), 200 
 
-@api.route('/services_by_offerer_accepted/<int:offerer_id>', methods=['GET'])
-def services_by_offerer_accepted(offerer_id):
+@api.route('/services_by_status_offerer_done/<int:offerer_id>', methods=['GET'])
+def get_services_by_status_offerer_done(offerer_id):
 
-    services_by_offerer_accepted = OffererServices.query.filter_by(offerer_id=offerer_id).all()
-    result = list(map(lambda item: item.serialize_accepted(), services_by_offerer_accepted))
+    services_by_status = OffererServices.query.filter_by(offerer_id=offerer_id, status = 'done').all()
+    result = list(map(lambda item: item.serialize(), services_by_status))
 
     return jsonify(result), 200 
+
+# filtrar servicios por petitioner y status
+
+@api.route('/services_by_status_petitioner_evaluating_proposal/<int:petitioner_id>', methods=['GET'])
+def get_services_by_status_petitioner_evaluating_proposal(petitioner_id):
+
+    services_by_status = Services.query.filter_by(petitioner_id=petitioner_id, status = 'evaluating_proposal').all()
+    result = list(map(lambda item: item.serialize(), services_by_status))
+
+    return jsonify(result), 200
+
+@api.route('/services_by_status_petitioner_finished/<int:petitioner_id>', methods=['GET'])
+def get_services_by_status_petitioner_finished(petitioner_id):
+
+    services_by_status = Services.query.filter_by(petitioner_id=petitioner_id, status = 'finished').all()
+    result = list(map(lambda item: item.serialize(), services_by_status))
+
+    return jsonify(result), 200
+
+@api.route('/services_by_status_petitioner_not_started/<int:petitioner_id>', methods=['GET'])
+def get_services_by_status_petitioner_not_started(petitioner_id):
+
+    services_by_status = Services.query.filter_by(petitioner_id=petitioner_id, status = 'not_started').all()
+    result = list(map(lambda item: item.serialize(), services_by_status))
+
+    return jsonify(result), 200
+
+# filtrar servicios por service id y offerer id
 
 @api.route('/services/<int:service_id>', methods =['GET'])
 def get_service(service_id):
@@ -211,9 +250,10 @@ def get_service(service_id):
 
     return jsonify(service.serialize()), 200
 
-@api.route('/petitioner_service/<int:petitioner_id>', methods =['GET'])
-def get_petitioner_service(petitioner_id):
-    service = Services.query.filter_by(id=petitioner_id).first()
+@api.route('/offerer_service/<int:offerer_id>', methods =['GET'])
+def get_offerer_service(offerer_id):
+    service = OffererServices.query.filter_by(id=offerer_id).first()
+    print(service)
 
     return jsonify(service.serialize()), 200
 
@@ -239,6 +279,8 @@ def add_service_category():
     }
     
     return jsonify(response_body), 200
+
+# crear, editar y borrar servicios
 
 @api.route('/service', methods =['POST'])
 def add_service():
@@ -280,38 +322,6 @@ def update_service(service_id):
     return jsonify(response_body), 200
 
 
-@api.route('/service_status_pending_approval/offerer/<int:offerer_id>/service/<int:service_id>', methods =['PUT'])
-def update_service_status_pending_approval(service_id,offerer_id):
-    
-    update_service_status_pending_approval = OffererServices.query.filter_by(service_id=service_id, offerer_id=offerer_id).first()
-    print(update_service_status_pending_approval)
-
-    update_service_status_pending_approval.status = 'pending_approval'
- 
-    db.session.commit()
-
-    response_body = {
-        "message": "Service status updated"
-    }
-      
-    return jsonify(response_body), 200
-
-@api.route('/service_status_accepted/<int:service_id>', methods =['PUT'])
-def update_service_status_accepted(service_id):
-    
-    update_service_status_accepted = Services.query.filter_by(id=service_id).first()
-    print(update_service_status_accepted)
-
-    update_service_status_accepted.status = 'accepted'
- 
-    db.session.commit()
-
-    response_body = {
-        "message": "Service status updated"
-    }
-      
-    return jsonify(response_body), 200
-
 @api.route('/service/<int:service_id>', methods =['DELETE'])
 def delete_service(service_id):
     delete_service = Services.query.filter_by(id=service_id).first()
@@ -324,6 +334,8 @@ def delete_service(service_id):
     }
       
     return jsonify(response_body), 200
+
+# sign in y sign up
 
 @api.route("/signin_petitioner", methods=["POST"])
 def login_petitioner():
@@ -405,6 +417,7 @@ def signup_petitioner():
     else:
         return jsonify({"msg": "Petitioner already exists with this email address"}), 401
     
+
 @api.route("/signup_offerer", methods=["POST"])
 def signup_offerer():
     body = request.get_json()
@@ -430,6 +443,7 @@ def signup_offerer():
     else:
         return jsonify({"msg": "Petitioner already exists with this email address"}), 401
     
+# obtener, crear , editar y borrar un Offerer
 
 @api.route('/offerer', methods=['GET'])
 def get_all_offerer():
@@ -443,8 +457,6 @@ def get_one_particular_offerer(offerer_id):
     particular_oferer = Offerer.query.filter_by(id=offerer_id).first()
 
     return jsonify(particular_oferer.serialize()), 200
-
-
 
 @api.route('/offerer', methods=['POST'])
 def create_offerer():
@@ -507,31 +519,3 @@ def update_one_particular_offerer(offerer_id):
     }
 
     return jsonify(response_body), 200
-
-# @api.route('/sign_in_as_petitioner', methods=['POST'])
-# def sign_in_as_petitioner():
-#     email = request.json.get("email", None)
-#     password = request.json.get("password", None)
-
-#     user = User.query.filter_by(email=email).first()
-    
-#     if email != user.email or password != user.password:
-#         return jsonify({"msg": "Bad email or password"}), 401
-    
-#     access_token = create_access_token(identity=email)
-#     user_info = user.serialize()
-#     user_info['access_token']=access_token
-#     print(user_info)
-#     return jsonify(user_info)
-
-# @api.route('/petitioner_profile', methods=['GET'])
-# @jwt_required()
-# def petitioner_profile():
-#     petitioner_profile = get_jwt_identity()
-#     petitioner = Petitioner.query.filter_by(email_address=petitioner_profile).first()
-#     response_body = {
-#         "msg": "User found",
-#         "petitioner": petitioner.serialize()
-#     }
-
-#     return jsonify(response_body), 200
