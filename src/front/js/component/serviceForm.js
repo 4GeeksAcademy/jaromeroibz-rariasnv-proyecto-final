@@ -14,8 +14,7 @@ export const ServiceForm = (item) => {
 		"name": "",
     	"category": "",
     	"description": "",
-		"date": "",
-		"status": ""
+		"date": ""
 	});
 	
 	function handleChange (event){
@@ -33,8 +32,7 @@ export const ServiceForm = (item) => {
                 "name": "",
                 "category": "",
                 "description": "",
-				"date": "",
-				"status": ""
+				"date": ""
 			}
 		)
 	}

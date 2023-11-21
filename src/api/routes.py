@@ -515,12 +515,12 @@ def signup_petitioner():
     print(body)
     petitioner = Petitioner.query.filter_by(email=body["email"]).first()
     email = request.json.get("email", None)
-    access_token = create_access_token(identity=email)
 
     print(petitioner)
     if petitioner == None:
         petitioner = Petitioner(name=body["name"], email=body["email"], password=body["password"])
         print(petitioner)
+        access_token = create_access_token(identity=petitioner.id)
         db.session.add(petitioner)
         db.session.commit()
         petitioner_info = petitioner.serialize()
@@ -541,12 +541,12 @@ def signup_offerer():
     print(body)
     offerer = Offerer.query.filter_by(email=body["email"]).first()
     email = request.json.get("email", None)
-    access_token = create_access_token(identity=email)
 
     print(offerer)
     if offerer == None:
         offerer = Offerer(name=body["name"], email=body["email"], password=body["password"])
         print(offerer)
+        access_token = create_access_token(identity=offerer.id)
         db.session.add(offerer)
         db.session.commit()
         offerer_info = offerer.serialize()

@@ -272,7 +272,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				//pasar un header "authorization" clase auth. Agregar backend jwt required. get jwt identity. filter by id (está dentro del token) 
 			},
 			getOffererServices: async () => {
-				const store = getStore();
+
 				let token = localStorage.getItem("token")
 				const requestOptions = {
 					headers: { 'Content-Type': 'application/json',
@@ -300,19 +300,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			},
-			addService: (data) => {
+			addService: async (item) => {
 				
 				const store = getStore();
-
+				let token = localStorage.getItem("token")
 				const requestOptions = {
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(data)
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(item)
 				}
 				console.log('Add Service')
-				fetch(process.env.BACKEND_URL +'api/service/', requestOptions)
-				.then( (response) => response.json() )
-				.then( (data) => { getActions().getServices()} )
+				let response = await fetch(process.env.BACKEND_URL +'api/services/', requestOptions)
+				let data = await response.json()
+				if (response.ok === 200){
+					setStore({petitionerServices: data})
+					actions.getPetitionerServices()
+				}
 			},
 			editService: (service, theid) =>{
 				const store = getStore();
@@ -329,7 +333,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch((error) => {console.log(error)})
 			},
 			deletePetitionerService: async (indexMap) => {
-				
+				console.log(indexMap)
 			let token = localStorage.getItem("token")
 				const requestOptions = {
 					method: 'DELETE',

@@ -68,7 +68,7 @@ class Services(db.Model):
     category = db.Column(db.String(80), unique=False, nullable=False)
     description = db.Column(db.String(80), unique=False, nullable=False)
     date = db.Column(db.String(80), unique=False, nullable=False)
-    status = db.Column(db.String(80), nullable = False, unique=False)
+    status = db.Column(db.String(80), nullable = True, unique=False)
     petitioner_id = db.Column(db.Integer, db.ForeignKey('petitioner.id'))
     petitioner = relationship(Petitioner)
 
