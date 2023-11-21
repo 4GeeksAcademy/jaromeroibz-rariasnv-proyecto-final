@@ -246,7 +246,7 @@ def update_one_particular_offerer(offerer_id):
 @jwt_required()
 def get_services():
     current_user = get_jwt_identity()
-    # all_services = Services.query.filter_by(status='')all()
+    all_services = Services.query.all()
     print(all_services)
     result = list(map(lambda item: item.serialize(), all_services))
     print(result)
@@ -274,8 +274,13 @@ def get_offerer_services():
     print(all_services)
     result = list(map(lambda item: item.serialize(), all_services))
     print(result)
-
-    return jsonify(result), 200
+    all_services_details = []
+    for i in all_services: 
+        servicio = Services.query.get(i.service_id)
+        all_services_details.append({'id': servicio.id, 'name': servicio.name, 'category': servicio.category, 'description': servicio.description, 'date':servicio.date, 'status': servicio.status, 'petitioner_id': servicio.petitioner_id})
+    print (all_services_details)
+    
+    return jsonify(all_services_details), 200
 
 
 @api.route('/services/<int:service_id>', methods=['GET'])
@@ -347,6 +352,21 @@ def update_service(service_id):
     return jsonify(response_body), 200
 
 
+@api.route('/delete_petitioner_service/<int:service_id>', methods =['DELETE'])
+@jwt_required()
+def delete_petitioner_service(service_id):
+    current_user = get_jwt_identity()
+    delete_service = Services.query.filter_by(id=service_id).first()
+
+    db.session.delete(delete_service)
+    db.session.commit()
+
+    response_body = {
+        "message": "Service deleted"
+    }
+      
+    return jsonify(response_body), 200
+
 @api.route('/service/<int:service_id>', methods =['DELETE'])
 def delete_service(service_id):
     delete_service = Services.query.filter_by(id=service_id).first()
@@ -370,11 +390,14 @@ def get_services_by_status_offerer(offerer_id,offerer_status):
 
     return jsonify(result), 200
 
-# filtrar servicios por petitioner y status
+# Actualizar status de un servicio
 
 @api.route('/service_status_update/<int:service_id>', methods=['PUT'])
+@jwt_required()
+
 def update_service_status(service_id):
 
+    current_user = get_jwt_identity()
     services_by_status = Services.query.filter_by(id=service_id).first()
     
     if services_by_status.status == 'finished':
@@ -393,13 +416,25 @@ def update_service_status(service_id):
       
     return jsonify(response_body), 200
 
-@api.route('/services_by_status_petitioner/<int:petitioner_id>/<string:petitioner_status>', methods=['PUT'])
-def get_services_by_status_petitioner_evaluating_proposal(petitioner_id,petitioner_status):
+@api.route('/service_status_update_insuficient/<int:service_id>', methods=['PUT'])
+def update_service_status_insuficient(service_id):
 
-    services_by_status = Services.query.filter_by(petitioner_id=petitioner_id, status = petitioner_status).all()
-    result = list(map(lambda item: item.serialize(), services_by_status))
+    services_by_status = Services.query.filter_by(id=service_id).first()
+    
+    if services_by_status.status == 'finished':
+        return jsonify({"message": "Status is 'finished', can't change it"}), 400
+    if services_by_status.status == 'evaluating_proposal':
+        return jsonify({"message": "Status is 'evaluating_proposal', asign it to an offerer"}), 400
+    if services_by_status.status == 'asigned':
+        services_by_status.status = 'insuficient'
 
-    return jsonify(result), 200
+    db.session.commit()
+
+    response_body = {
+        "message": "Service status updated"
+    }
+      
+    return jsonify(response_body), 200
 
 # # filtrar servicios por service id y offerer id
 
@@ -472,24 +507,6 @@ def login_offerer():
     offerer_info['access_token']=access_token
     print(offerer_info)
     return jsonify(offerer_info)
-
-
-# Protect a route with jwt_required, which will kick out requests
-# without a valid JWT present.
-@api.route("/profile", methods=["GET"])
-@jwt_required()
-def profile():
-    # Access the identity of the current user with get_jwt_identity
-    email = get_jwt_identity()
-    # return jsonify(logged_in_as=current_user), 200
-    user = User.query.filter_by(email=email).first()
-    print(user)
-    response_body = {
-        "msg": "User found",
-        "user": user.serialize()
-    }
-
-    return jsonify(response_body), 200
 
 
 @api.route("/signup_petitioner", methods=["POST"])

@@ -9,13 +9,25 @@ export const ServiceList = () => {
 		actions.getPetitionerServices()
     }, [])
 
+	function acceptProposal (serviceId) {
+		actions.updateStatus(serviceId)
+	}
+
+	function closeService (serviceId){
+		actions.updateStatus(serviceId)
+	}
+
+	function openService (serviceId){
+		actions.updateStatus(serviceId)
+	}
+
     return (
     
         <div className="container">
 			<>
 			<ul className="list-group py-5">
 			<h1 className="py-3">Service List</h1>
-			{store.services.map((item) => 
+			{store.petitionerServices.map((item) => 
 				
 					<li key= {item.id}
 						className="list-group-item d-flex"
@@ -35,6 +47,16 @@ export const ServiceList = () => {
                             <Link to={`/service/${item.id}`}>
                                 See details
                             </Link>
+						</div>
+						<div className="container">
+						<p>{item.status}</p>	
+						{/* {item.status === 'evaluating_proposal' ? <button onClick = { () => acceptProposal(item.id)}>Accept proposal</button>:
+							item.status === 'asigned' ? <button onClick = { () => closeService(item.id)}>Service done succesfully</button>:
+							<>
+							<button onClick = { () => openService(item.id)}>Service not finished</button>
+							</>
+						
+						} */}
 						</div>
 						<div className="pencontainer">
                             <Link to={`/editservice/${item.id}`}>
@@ -58,7 +80,7 @@ export const ServiceList = () => {
 									</div>
 									<div className="modal-footer">
 										<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-										<button onClick={ () => actions.deleteService(item)} type="button" data-bs-dismiss="modal" className="btn btn-primary">Delete</button>
+										<button onClick={ () => actions.deletePetitionerService(item.id)} type="button" data-bs-dismiss="modal" className="btn btn-primary">Delete</button>
 									</div>
 									</div>
 								</div>
@@ -73,7 +95,8 @@ export const ServiceList = () => {
 				<button className="btn btn-primary">Add service</button>
 			</Link>
 		</div>
-    )
+		)
+
 
 
 }

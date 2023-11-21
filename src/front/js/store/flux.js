@@ -47,7 +47,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			PetitionerStatus: [],
 			petitionerBearerToken: "",
 			offererBearerToken: "",
-			offererServicesData: []
+			offererServicesData: [],
+			petitionerServices: []
 		},
 		actions: {
 			getAllPetitioners: async () => {								
@@ -239,22 +240,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getAllServices: async () => {
 				const store = getStore();
-				// let token = localStorage.getItem("token")
-				// const requestOptions = {
-				// 	headers: { 'Content-Type': 'application/json',
-				// 				'Authorization': `Bearer ${token}`},
-				// 	body: JSON.stringify(data)
-				// }
-				let response = await fetch(process.env.BACKEND_URL+'api/services/',requestOptions)
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(data)
+				}
+				let response = await fetch(process.env.BACKEND_URL+'api/services/', requestOptions)
 				let data = await response.json()
 				console.log(data)
 				if (response.ok){
 				  setStore({allServices: data})
-				//   setStore({offererBearerToken: token})
+				  setStore({offererBearerToken: token})
 				}
 			},
 			getPetitionerServices: async () => {
-				const store = getStore();
+
 				let token = localStorage.getItem("token")
 				const requestOptions = {
 					headers: { 'Content-Type': 'application/json',
@@ -265,7 +266,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				let data = await response.json()
 				console.log(data)
 				if (response.ok){
-				  setStore({services: data})
+				  setStore({petitionerServices: data})
 				  setStore({petitionerBearerToken: token})
 				}
 				//pasar un header "authorization" clase auth. Agregar backend jwt required. get jwt identity. filter by id (está dentro del token) 
@@ -327,26 +328,38 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then((data) =>  actions.getServices())
 					.catch((error) => {console.log(error)})
 			},
-			deleteService: (item) => {
+			deletePetitionerService: async (indexMap) => {
 				
-				console.log(item)
-				const store = getStore();
-				const actions = getActions();
-				const indexMap = getStore().idToDelete
-				console.log(indexMap)
+			let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'DELETE',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(data)
+				}
 
-				var requestOptions = {
-					method: 'DELETE'
-				};
-				
-				fetch(process.env.BACKEND_URL +"api/service/" + indexMap, requestOptions)
-					.then(response => response.json())
-					.then( (data) => {
-						getActions().getServices()
-					})
-					.catch(error => console.log('error', error));
-		
+				let response = await fetch(process.env.BACKEND_URL+'api/delete_petitioner_service/' + indexMap, requestOptions)
+					let data = await response.json()
+					if (response.ok){
+						actions.getPetitionerServices()
+					  }
 			},
+			deleteOffererService: async (indexMap) => {
+				
+				let token = localStorage.getItem("token")
+					const requestOptions = {
+						method: 'DELETE',
+						headers: { 'Content-Type': 'application/json',
+									'Authorization': `Bearer ${token}`},
+						body: JSON.stringify(data)
+					}
+	
+					let response = await fetch(process.env.BACKEND_URL+'api/petitioner_services/' + indexMap, requestOptions)
+						let data = await response.json()
+						if (response.ok){
+							actions.getPetitionerServices()
+						  }
+				},
 			loginOfferer: async (email, password) => {
 				console.log('Login desde flux')
 				const requestOptions = {
@@ -624,19 +637,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 			}
 			// 		)
 			},
-			getPetitionerServicesByStatus: async () => {
-				let response = await fetch(process.env.BACKEND_URL+'api/services_by_status_petitioner/<int:petitioner_id>/<string:petitioner_status>')
-			
-				let data = await response.json()
+			updateStatus: async (serviceId) => {
+				const actions = getActions();
+				let token = localStorage.getItem("token")
 
-				if (response.ok){
-				  setStore({
-					PetitionerStatus: data
-				  })
+				const requestOptions = {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(data)
 				}
-			},
-			changeStatus: async (service) => {
-			
+				let response = await fetch(process.env.BACKEND_URL +'service_status_update/' + serviceId , requestOptions)
+				let data = await response.json()
+				if (response.ok){
+					console.log(data)
+					actions.getPetitionerServices()
+				}
 			},
 			saveAppliedService: (item) => {
 

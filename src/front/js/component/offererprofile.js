@@ -25,7 +25,7 @@ export const OffererProfile = () => {
         <div className="container">
 			<ul className="list-group py-5">
 			<h1 className="py-3">Service List</h1>
-			<h2 className="py-3">All services</h2>
+			<h2 className="py-3">Apply to a service:</h2>
 			{store.allServices.map((item) => 
 				
 					<li key= {item.id}
@@ -76,7 +76,7 @@ export const OffererProfile = () => {
 			</ul>
 			<h2 className="py-3">Services you applied to</h2>
 			<ul className="list-group py-5">
-			{store.services.map((item) => 
+			{store.offererServicesData.map((item) => 
 				
 					<li key= {item.id}
 						className="list-group-item d-flex"
