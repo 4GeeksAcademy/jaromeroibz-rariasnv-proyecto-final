@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom"
+import { Link, useResolvedPath } from "react-router-dom"
 import { Context } from "../store/appContext";
 // import "../../styles.demo.css";
 
 export const ServiceList = () => {
     const { store, actions } = useContext(Context);
     useEffect(() => {
-        actions.getServices()
+		actions.getPetitionerServices()
     }, [])
 
     return (
     
         <div className="container">
+			<>
 			<ul className="list-group py-5">
 			<h1 className="py-3">Service List</h1>
 			{store.services.map((item) => 
@@ -67,6 +68,7 @@ export const ServiceList = () => {
 			)}
 			</ul>
 			<br />
+			</>
 			<Link to="/serviceform">
 				<button className="btn btn-primary">Add service</button>
 			</Link>

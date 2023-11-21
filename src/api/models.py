@@ -121,10 +121,9 @@ class Address(db.Model):
     city = db.Column(db.String(80), unique=False, nullable=False)
     county = db.Column(db.String(80), unique=False, nullable=False)
     full_address = db.Column(db.String(80), unique=False, nullable=False)
-    details = db.Column(db.String(80), unique=False)
     zipcode = db.Column(db.String(80), unique=False, nullable=False)
-    latitude = db.Column(db.String(80), unique=False)
-    longitude = db.Column(db.String(80), unique=False)
+    latitude = db.Column(db.String(80), unique=False, nullable=True)
+    longitude = db.Column(db.String(80), unique=False, nullable=True)
     petitioner_id = db.Column(Integer, ForeignKey('petitioner.id'))
     petitioner = relationship(Petitioner)
 
@@ -140,7 +139,6 @@ class Address(db.Model):
             "city": self.city,
             "county": self.county,
             "latitude": self.latitude,
-            "details": self.details,
             "zipcode": self.zipcode,
             "longitude": self.longitude
         }
@@ -190,15 +188,16 @@ class OffererServices(db.Model):
             "status": self.status
         }
     
-    def serialize_pending_approval(self):
-        service = OffererServices.query.filter_by(status='pending_approval').first()
-        if service is not None:
+    def serialize_offerer_services(self):
+        services = Services.query.filter_by(id=service_id).first()
+        if services is not None:
             return {
                 "id": self.id,
-                "service_id": service.serialize(),
-                "offerer_id": self.offerer_id,
+                "name": service.name(),
+                "category": self.category,
+                "date": self.date,
+                "description": self.description,
                 "status": self.status
-
             }
         
     # def serialize_accepted(self):

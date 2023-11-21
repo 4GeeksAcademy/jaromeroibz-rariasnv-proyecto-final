@@ -8,21 +8,22 @@ import { Context } from "../store/appContext";
 
 export const ServiceForm = (item) => {
 	const { store, actions } = useContext(Context);
-	const [service,setService] = useState({
+	// const petitionerId = store.users.id
+	// console.log(petitionerId)
+ 	const [service,setService] = useState({
 		"name": "",
     	"category": "",
     	"description": "",
 		"date": "",
-		"status": false
+		"status": ""
 	});
-
+	
 	function handleChange (event){
 		setService({
 			...service,
 			[event.target.name]:event.target.value
 		})
 		// actions.getServiceCategory()
- 
 	}
 
 	function saveService() {
@@ -33,7 +34,7 @@ export const ServiceForm = (item) => {
                 "category": "",
                 "description": "",
 				"date": "",
-				"status": false
+				"status": ""
 			}
 		)
 	}

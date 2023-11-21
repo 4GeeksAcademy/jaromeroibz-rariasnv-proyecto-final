@@ -16,7 +16,7 @@ export const SignupOfferer = () => {
         e.preventDefault()
         console.log('Send Data')
         console.log(name, email, password)
-        actions.signUp(name, email, password)
+        actions.signUpOfferer(name, email, password)
         navigate('/offererprofile')
     }
 

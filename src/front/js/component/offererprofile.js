@@ -7,10 +7,16 @@ export const OffererProfile = () => {
     const { store, actions } = useContext(Context);
 
     useEffect(() => {
-        actions.getServices()
-		actions.getServicesApplied()
+		actions.getAllServices()
+        actions.getOffererServices()
     }, [])
 
+	// function getServiceInfo (){
+	// 	store.offererServicesData.forEach(item => {
+	// 		const serviceInfo = store.services
+	// 	});
+	// }
+	
 	function cancelService (item) {
 		actions.deleteServiceApplied(item)
 	}
@@ -20,7 +26,7 @@ export const OffererProfile = () => {
 			<ul className="list-group py-5">
 			<h1 className="py-3">Service List</h1>
 			<h2 className="py-3">All services</h2>
-			{store.services.map((item) => 
+			{store.allServices.map((item) => 
 				
 					<li key= {item.id}
 						className="list-group-item d-flex"
@@ -70,7 +76,7 @@ export const OffererProfile = () => {
 			</ul>
 			<h2 className="py-3">Services you applied to</h2>
 			<ul className="list-group py-5">
-			{store.servicesApplied.map((item) => 
+			{store.services.map((item) => 
 				
 					<li key= {item.id}
 						className="list-group-item d-flex"
@@ -80,7 +86,6 @@ export const OffererProfile = () => {
                             <h1>{item.name}</h1>
                             <p className="info">{item.category}</p>
                             <p className="info">{item.description}</p>
-
 						</div>
 						<div className="container">
                             <Link to={`/service/${item.id}`}>

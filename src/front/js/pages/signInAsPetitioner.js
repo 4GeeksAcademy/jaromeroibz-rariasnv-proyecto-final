@@ -8,13 +8,15 @@ export const SignInAsPetitioner = () => {
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
 
-    function sendData(e){
+    async function sendData(e){
         e.preventDefault()
-        actions.loginPetitioner(email,password)
-        navigate('/serviceform')
+        const result = await actions.loginPetitioner(email,password)
+        console.log(result)
+        if (result == 200){
+            navigate('/serviceform')
+        }
     }
-
-
+    
     return(
             <div className="signInAsPetitioner m-5">
                  <h1>Sign in</h1>
