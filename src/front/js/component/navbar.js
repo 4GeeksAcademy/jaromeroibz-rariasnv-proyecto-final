@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
+import logo from "../../img/logoapp.png"
 
 export const Navbar = () => {
 	const {store, actions} = useContext(Context);
@@ -15,9 +16,12 @@ export const Navbar = () => {
 	return (
 		<>
 		<nav className="navbar">
-			<div className="container">
+			<div className="container px-3">
 				<Link to="/">
-					<span className="btn btn-light navbar-brand pe-3">App name</span>
+					<div className="divlogo row pe-3">
+						<img className="navbar-brand navbarlogo col-12" src={logo}/>
+						Easy me							
+					</div>					
 				</Link>
 				<div className="d-flex">					
 					<div className="px-3">

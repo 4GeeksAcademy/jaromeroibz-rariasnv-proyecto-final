@@ -19,11 +19,11 @@ export const ServiceList = () => {
                       <h3 className="h5">Task: {item.name} </h3>
                       <div className="d-flex flex-sm-nowrap flex-wrap align-items-center justify-content-between">
                         <div className="d-flex align-items-center position-relative me-3">
-						<img src="https://picsum.photos/200" className="rounded-circle me-3" width="48" alt="Avatar"/>
-                          <div>
-                            <p>description: {item.description}</p>
-                            <span className="fs-sm text-muted">Category: {item.category}</span>
-                          </div>
+							<img src="https://picsum.photos/200" className="rounded-circle me-3" width="48" alt="Avatar"/>
+							<div>
+								<p>description: {item.description}</p>
+								<span className="fs-sm text-muted">Category: {item.category}</span>
+							</div>
                         </div>
                         <div className="d-flex align-items-center mt-sm-0 mt-4 text-muted">
                           <div className="d-flex align-items-center me-3">
