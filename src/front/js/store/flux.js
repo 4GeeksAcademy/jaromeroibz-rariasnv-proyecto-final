@@ -30,24 +30,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			users:[],
 			offerers: [],
 			offerersDetail: [],
-			categories: [
-				{
-					category: "Category1",
-					id: 1
-				},
-				{
-					category: "Category2",
-					id: 2
-				},
-				{
-					category: "Category3",
-					id: 3
-				},
-			],
+			categories: [],
 			PetitionerStatus: [],
 			petitionerBearerToken: "",
 			offererBearerToken: "",
-			offererServicesData: [],
+			offererServices: [],
 			petitionerServices: []
 		},
 		actions: {
@@ -283,7 +270,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				let data = await response.json()
 				console.log(data)
 				if (response.ok){
-				  setStore({offererServicesData: data})
+				  setStore({offererServices: data})
 				  setStore({offererBearerToken: token})
 				}
 				//pasar un header "authorization" clase auth. Agregar backend jwt required. get jwt identity. filter by id (está dentro del token) 
@@ -314,9 +301,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 				let response = await fetch(process.env.BACKEND_URL +'api/services/', requestOptions)
 				let data = await response.json()
 				if (response.ok === 200){
+					console.log(data)
 					setStore({petitionerServices: data})
-					actions.getPetitionerServices()
 				}
+				getActions().getPetitionerServices()
+
+			},
+			addOffererService: async (serviceId) => {
+				const store = getStore();
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(serviceId)
+				}
+				console.log('Add Service')
+				let response = await fetch(process.env.BACKEND_URL +'api/add_offerer_service/' + serviceId, requestOptions)
+				let data = await response.json()
+				if (response.ok === 200){
+					console.log(data)
+					setStore({offererServices: data})
+				}
+				getActions().getOffererServices()
 			},
 			editService: (service, theid) =>{
 				const store = getStore();
@@ -345,8 +352,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				let response = await fetch(process.env.BACKEND_URL+'api/delete_petitioner_service/' + indexMap, requestOptions)
 					let data = await response.json()
 					if (response.ok){
-						actions.getPetitionerServices()
+						getActions().getPetitionerServices()
 					  }
+
+					  
 			},
 			deleteOffererService: async (indexMap) => {
 				
@@ -363,7 +372,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						if (response.ok){
 							actions.getPetitionerServices()
 						  }
-				},
+			},
 			loginOfferer: async (email, password) => {
 				console.log('Login desde flux')
 				const requestOptions = {
@@ -641,7 +650,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 			}
 			// 		)
 			},
-			updateStatus: async (serviceId) => {
+			updateStatusPetitioner: async (serviceId) => {
 				const actions = getActions();
 				let token = localStorage.getItem("token")
 
@@ -658,11 +667,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 					actions.getPetitionerServices()
 				}
 			},
-			saveAppliedService: (item) => {
+			updateServiceStatusOfferer: async (serviceId) => {
+				const store = getStore();
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(serviceId)
+				}
 
-				setStore({
-					servicesApplied: item
-				})
+				let response = await fetch(process.env.BACKEND_URL+'api/service_status_update_offerer/'+ serviceId, requestOptions)
+					let data = await response.json()
+					if(response.ok){
+						console.log(data)
+					}
 			},
 			deleteServiceApplied: async () => {
 
@@ -670,6 +689,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getServicesApplied: async () => {
 				getStore().getServicesApplied()
 			},
+			getCategories: async () => {
+				const store = getStore();
+	
+				let response = await fetch(process.env.BACKEND_URL+'api/categories')
+				let data = await response.json()
+				if (response.ok){
+				  setStore({
+					categories: data
+				  })
+				  console.log(data)
+				}
+
+			}
 
 		}
 	};

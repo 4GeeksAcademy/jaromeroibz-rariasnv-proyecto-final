@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 
-from api.models import db, User, Address, Petitioner, Services, ServiceCategory, Offerer, OffererServices
+from api.models import db, User, Address, Petitioner, Services, Category, Offerer, OffererServices
 from api.utils import generate_sitemap, APIException
 
 from flask_jwt_extended import create_access_token
@@ -95,6 +95,14 @@ def delete_address(address_id):
     }
       
     return jsonify(response_body), 200
+# obtener categorias
+
+@api.route('/categories', methods=['GET'])
+def get_all_categories():
+    all_categories = Category.query.all()
+    result = list(map(lambda category: category.serialize() ,all_categories))
+
+    return jsonify(result), 200
 
 # crear, obtener, editar y borrar Solicitantes
 
@@ -314,13 +322,36 @@ def get_services_by_offerer(offerer_id):
 def add_service():
     current_user = get_jwt_identity()
     body = request.get_json()
+    print(body)
     service = Services(
         name = body['name'],
-        category = body['category'],
+        category_id = body['category'],
         description = body['description'],
         date = body['date'],
         status = 'evaluating_proposal',
         petitioner_id = current_user
+    )
+    db.session.add(service)
+    try:
+        db.session.commit()
+    except Exception as error:
+        print(error)
+
+    response_body = {
+        "message": "Service created"
+    }
+    
+    return jsonify(response_body), 200
+
+@api.route('/add_offerer_service/<int:service_id>', methods =['POST'])
+@jwt_required()
+def add_offerer_service(service_id):
+    current_user = get_jwt_identity()
+    body = request.get_json()
+    service = OffererServices(
+        offerer_id = current_user,
+        service_id = service_id,
+        status = 'pending_approval'
     )
     db.session.add(service)
     db.session.commit()
@@ -357,6 +388,13 @@ def update_service(service_id):
 def delete_petitioner_service(service_id):
     current_user = get_jwt_identity()
     delete_service = Services.query.filter_by(id=service_id).first()
+    delete_service_offerer_services = OffererServices.query.filter_by(id=service_id).first()
+
+    print(delete_service)
+    print(delete_service_offerer_services)
+
+    if delete_service_offerer_services != None:
+        db.session.delete(delete_service_offerer_services)
 
     db.session.delete(delete_service)
     db.session.commit()
@@ -368,6 +406,7 @@ def delete_petitioner_service(service_id):
     return jsonify(response_body), 200
 
 @api.route('/service/<int:service_id>', methods =['DELETE'])
+@jwt_required()
 def delete_service(service_id):
     delete_service = Services.query.filter_by(id=service_id).first()
 
@@ -404,9 +443,31 @@ def update_service_status(service_id):
         return jsonify({"message": "Status is 'finished', can't change it"}), 400
     if services_by_status.status == 'asigned':
         services_by_status.status = 'finished'
+        #agregar opción de status insuficient
     if services_by_status.status == 'evaluating_proposal':
         services_by_status.status = 'asigned'
     
+
+    db.session.commit()
+
+    response_body = {
+        "message": "Service status updated"
+    }
+      
+    return jsonify(response_body), 200
+
+@api.route('/service_status_update_offerer/<int:service_id>', methods=['PUT'])
+@jwt_required()
+
+def update_service_status_offerer(service_id):
+
+    offerer_id = get_jwt_identity()
+    services_by_offerer_id = OffererServices.query.filter_by(offerer_id=offerer_id,service_id=service_id).first()
+    print(services_by_offerer_id)
+    if services_by_offerer_id.status == 'finished':
+        return jsonify({"message": "Status is 'finished', can't change it"}), 400
+    if services_by_offerer_id.status == 'created':
+        services_by_offerer_id.status = 'pending_approval'
 
     db.session.commit()
 

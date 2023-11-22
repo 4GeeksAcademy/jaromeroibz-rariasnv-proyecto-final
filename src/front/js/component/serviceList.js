@@ -7,18 +7,11 @@ export const ServiceList = () => {
     const { store, actions } = useContext(Context);
     useEffect(() => {
 		actions.getPetitionerServices()
+		actions.getCategories()
     }, [])
 
-	function acceptProposal (serviceId) {
-		actions.updateStatus(serviceId)
-	}
-
-	function closeService (serviceId){
-		actions.updateStatus(serviceId)
-	}
-
-	function openService (serviceId){
-		actions.updateStatus(serviceId)
+	function updateStatusPetitioner (serviceId) {
+		actions.updateStatusPetitioner(serviceId)
 	}
 
     return (
@@ -50,13 +43,9 @@ export const ServiceList = () => {
 						</div>
 						<div className="container">
 						<p>{item.status}</p>	
-						{/* {item.status === 'evaluating_proposal' ? <button onClick = { () => acceptProposal(item.id)}>Accept proposal</button>:
-							item.status === 'asigned' ? <button onClick = { () => closeService(item.id)}>Service done succesfully</button>:
-							<>
-							<button onClick = { () => openService(item.id)}>Service not finished</button>
-							</>
-						
-						} */}
+						{item.status === 'evaluating_proposal' ? <button onClick = { () => updateStatusPetitioner(item.id)}>Accept proposal</button>:
+							<button onClick = { () => updateStatusPetitioner(item.id)}>Service finished</button>
+						}
 						</div>
 						<div className="pencontainer">
                             <Link to={`/editservice/${item.id}`}>
@@ -65,22 +54,22 @@ export const ServiceList = () => {
 						</div>
 						<div className="trashcan px-5">
 							<button onClick= { () => actions.saveToDelete(item.id) } type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-							Delete
+							Cancel
 							</button>
 
 							<div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 								<div className="modal-dialog">
 									<div className="modal-content">
 									<div className="modal-header">
-										<h1 className="modal-title fs-5" id="exampleModalLabel">Delete service</h1>
+										<h1 className="modal-title fs-5" id="exampleModalLabel">Cancel service</h1>
 										<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
 									<div className="modal-body">
-										Are you sure to delete this service?
+										Are you sure to cancel this service?
 									</div>
 									<div className="modal-footer">
 										<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-										<button onClick={ () => actions.deletePetitionerService(item.id)} type="button" data-bs-dismiss="modal" className="btn btn-primary">Delete</button>
+										<button onClick={ () => actions.deletePetitionerService(item.id)} type="button" data-bs-dismiss="modal" className="btn btn-primary">Cancel</button>
 									</div>
 									</div>
 								</div>

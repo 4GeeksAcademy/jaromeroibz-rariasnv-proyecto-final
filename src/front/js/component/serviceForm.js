@@ -8,8 +8,11 @@ import { Context } from "../store/appContext";
 
 export const ServiceForm = (item) => {
 	const { store, actions } = useContext(Context);
-	// const petitionerId = store.users.id
-	// console.log(petitionerId)
+	
+	useEffect(() => {
+		actions.getCategories()
+    }, [])
+
  	const [service,setService] = useState({
 		"name": "",
     	"category": "",
@@ -49,7 +52,7 @@ export const ServiceForm = (item) => {
                     <label>Select a category</label>
 						<select value={service.category} onChange={handleChange} name='category' className="form-select" aria-label="Default select example" required>
 							{store.categories.map((item) => 
-							<option value= {item.category}>{item.category}</option>
+							<option key = {item.id} value= {item.id}>{item.category}</option>
 								)}
 						</select>
 				

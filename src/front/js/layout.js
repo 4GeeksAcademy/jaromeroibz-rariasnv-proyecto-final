@@ -29,7 +29,7 @@ import { ServiceList } from "./component/serviceList";
 import { EditService } from "./component/editService";
 import { Signin } from "./component/signin";
 import { SigninOfferer } from "./component/signinofferer";
-import { OffererProfile } from "./component/offererprofile";
+import { ServiceListOfferer } from "./component/servicelistofferer";
 import { Signup } from "./component/signup";
 import { SignupOfferer } from "./component/signupofferer";
 import {ApplytoService} from "./component/applytoservice";
@@ -62,7 +62,7 @@ const Layout = () => {
                         <Route element={<Signup />} path="/signup" />
                         <Route element={<SigninOfferer />} path="/signinofferer" />
                         <Route element={<SignupOfferer />} path="/signupofferer" />
-                        <Route element={<OffererProfile />} path="/offererprofile" />
+                        <Route element={<ServiceListOfferer />} path="/servicelistofferer" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<SignupAsPetitioner />} path="/signUpAsPetitioner" />
                         <Route element={<RegisteredPetitioners />} path="/registeredPetitioners" />

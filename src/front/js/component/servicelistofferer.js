@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { Context } from "../store/appContext";
 // import "../../styles.demo.css";
 
-export const OffererProfile = () => {
+export const ServiceListOfferer = () => {
     const { store, actions } = useContext(Context);
 
     useEffect(() => {
@@ -17,9 +17,19 @@ export const OffererProfile = () => {
 	// 	});
 	// }
 	
-	function cancelService (item) {
-		actions.deleteServiceApplied(item)
+	function applyService (idService) {
+		actions.addOffererService(idService)
+		actions.updateServiceStatusOfferer(idService)
+		const deleteService = store.allServices.find((item) => item.id == idService )
+		const index = store.allServices.indexOf(deleteService)
+		const x = store.allServices.splice(index,1)
 	}
+	// function cancelService (idService) {
+	// 	// actions.deleteOffererService(idService)
+	// 	const addService = store.allServices.find((item) => item.id == idService )
+	// 	const index = store.offererServices.indexOf(addService)
+	// 	const x = store.allServices.append(index,1)
+	// }
     return (
     
         <div className="container">
@@ -44,13 +54,13 @@ export const OffererProfile = () => {
                             </Link>
 						</div>
 						<div className="pencontainer">
-							<button onClick= { () => actions.saveAppliedService(item) } type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+							<button onClick= { () => applyService(item.id) } type="button" className="btn btn-primary">
 							Apply
 							</button>
 						</div>
 						<div className="trashcan px-5">
-							<button onClick= { () => actions.saveToDelete(item.id) } type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-							Delete
+							<button onClick= { () => actions.saveToDelete(item.id) } type="button" className="btn btn-primary">
+							Hide
 							</button>
 
 							<div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -76,7 +86,7 @@ export const OffererProfile = () => {
 			</ul>
 			<h2 className="py-3">Services you applied to</h2>
 			<ul className="list-group py-5">
-			{store.offererServicesData.map((item) => 
+			{store.offererServices.map((item) => 
 				
 					<li key= {item.id}
 						className="list-group-item d-flex"
