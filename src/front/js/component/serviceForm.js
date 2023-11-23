@@ -15,7 +15,7 @@ export const ServiceForm = (item) => {
 
  	const [service,setService] = useState({
 		"name": "",
-    	"category": "",
+    	"category_id": "",
     	"description": "",
 		"date": ""
 	});
@@ -25,7 +25,6 @@ export const ServiceForm = (item) => {
 			...service,
 			[event.target.name]:event.target.value
 		})
-		// actions.getServiceCategory()
 	}
 
 	function saveService() {
@@ -33,7 +32,7 @@ export const ServiceForm = (item) => {
 		setService(
 			{
                 "name": "",
-                "category": "",
+                "category_id": "",
                 "description": "",
 				"date": ""
 			}
@@ -50,7 +49,7 @@ export const ServiceForm = (item) => {
   				</div>
                 <div className="form-group py-3">
                     <label>Select a category</label>
-						<select value={service.category} onChange={handleChange} name='category' className="form-select" aria-label="Default select example" required>
+						<select value={service.category_id} onChange={handleChange} name='category_id' className="form-select" aria-label="Default select example" required>
 							{store.categories.map((item) => 
 							<option key = {item.id} value= {item.id}>{item.category}</option>
 								)}

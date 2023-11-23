@@ -250,13 +250,24 @@ def update_one_particular_offerer(offerer_id):
     return jsonify(response_body), 200
 
 # obtener servicios por service id, offerer id y petitioner id
-@api.route('/services', methods=['GET'])
+
+@api.route('/open_services', methods=['GET'])
 @jwt_required()
-def get_services():
+def get_all_services():
     current_user = get_jwt_identity()
-    all_services = Services.query.all()
+    print(current_user)
+    all_services = Services.query.filter_by(status='open').all()
     print(all_services)
     result = list(map(lambda item: item.serialize(), all_services))
+    # for i in result:
+    #     result[i].status = 'created'
+    #cambiar status a created
+    # print(all_services)
+    # for i in all_services: 
+    #     servicio = Services.query.get(i.service_id)
+    #     servicio[i].status = 'created'
+
+    # print (servicio)
     print(result)
     return jsonify(result), 200 
 
@@ -272,22 +283,40 @@ def get_petitioner_services():
     print(result)
     return jsonify(result), 200 
 
+@api.route('/petitioner_services/<int:service_id>', methods=['GET'])
+@jwt_required()
+def get_petitioner_service(service_id):
+    offerer_data = OffererServices.query.filter_by(service_id=service_id).all()
+    
+    all_offerer_details = []
+    all_service_details = []
+    for i in offerer_data: 
+        offerer = Offerer.query.get(i.offerer_id)
+        all_offerer_details.append({'id': offerer.id, 'name': offerer.name, "status": i.status})
 
-@api.route('/offerer_services', methods=['GET'])
+    service = Services.query.get(service_id)
+    category = Category.query.get(service.category_id)
+    # all_service_details.append({'service_name':service.name, 'service_category': category.category, 'service_date': service.date, 'service_description': service.description, 'offerer_data': all_offerer_details})
+    all_service_details = {'service_name':service.name, 'service_category': category.category, 'service_date': service.date, 'service_description': service.description, 'offerer_data': all_offerer_details, 'offerers': all_offerer_details}
+
+    print (all_offerer_details)
+
+    return jsonify(all_service_details), 200 
+
+@api.route('/offerer_services/', methods=['GET'])
 @jwt_required()
 def get_offerer_services():
     current_user = get_jwt_identity()
     print(current_user)
     all_services = OffererServices.query.filter_by(offerer_id=current_user).all()
-    print(all_services)
-    result = list(map(lambda item: item.serialize(), all_services))
-    print(result)
+    
     all_services_details = []
     for i in all_services: 
         servicio = Services.query.get(i.service_id)
-        all_services_details.append({'id': servicio.id, 'name': servicio.name, 'category': servicio.category, 'description': servicio.description, 'date':servicio.date, 'status': servicio.status, 'petitioner_id': servicio.petitioner_id})
+        all_services_details.append({'id': servicio.id, 'name': servicio.name, 'category': servicio.category_id, 'description': servicio.description, 'date':servicio.date, 'status': servicio.status, 'petitioner_id': servicio.petitioner_id})
     print (all_services_details)
-    
+    # result = list(map(lambda item: item.serialize(), all_services_details))
+
     return jsonify(all_services_details), 200
 
 
@@ -317,20 +346,22 @@ def get_services_by_offerer(offerer_id):
 
 # crear, editar y borrar servicios
 
-@api.route('/services', methods =['POST'])
+@api.route('/add_services', methods =['POST'])
 @jwt_required()
 def add_service():
     current_user = get_jwt_identity()
     body = request.get_json()
     print(body)
+ 
     service = Services(
         name = body['name'],
-        category_id = body['category'],
+        category_id = body['category_id'],
         description = body['description'],
         date = body['date'],
-        status = 'evaluating_proposal',
+        status = 'open',
         petitioner_id = current_user
     )
+    print(service)
     db.session.add(service)
     try:
         db.session.commit()
@@ -466,7 +497,7 @@ def update_service_status_offerer(service_id):
     print(services_by_offerer_id)
     if services_by_offerer_id.status == 'finished':
         return jsonify({"message": "Status is 'finished', can't change it"}), 400
-    if services_by_offerer_id.status == 'created':
+    if services_by_offerer_id.status == 'open':
         services_by_offerer_id.status = 'pending_approval'
 
     db.session.commit()

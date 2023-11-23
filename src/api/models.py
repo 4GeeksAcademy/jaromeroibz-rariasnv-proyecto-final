@@ -96,7 +96,7 @@ class Services(db.Model):
             "id": self.id,
             "petitioner_id": self.petitioner_id,
             "name": self.name,
-            "category": self.category_id,
+            "category_id": self.category_id,
             "description": self.description,
             "date": self.date,
             "status": self.status

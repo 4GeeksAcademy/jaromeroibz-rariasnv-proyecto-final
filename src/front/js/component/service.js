@@ -9,26 +9,30 @@ export const Service = () => {
     const { store, actions } = useContext(Context);
     const theid = useParams().theid
     console.log(theid)
-    const result = store.services.find((item) => item.id == theid )
-    console.log(result)
 
     useEffect(() => {
-        actions.getService(result)
+        actions.getServiceDetails(theid)
+        .then(console.log(store.serviceDetails.offerer_data))
     }, [])
 
     return (
-    
-        <div className="container">
+        <>
+          <div className="container">
 			<h1 className="py-3">Service</h1>
             <div className="list-group-item d-flex">
                 <img src="https://picsum.photos/200" alt=""></img>
                 <div className="d-block px-5">
-                    <h1>{result.name}</h1>
-                    <p className="info">{result.category}</p>
-                    <p className="info">{result.description}</p>
+                    <h1>{store.serviceDetails.service_name}</h1>
+                    <p className="info">{store.serviceDetails.service_category}</p>
+                    <p className="info">{store.serviceDetails.service_description}</p>
+
+
+                    {store.serviceDetails.offerers?.map((item)=>{item.id})}
+
+
 
                 </div>
-                <div className="pencontainer">
+                {/* <div className="pencontainer">
                     <Link to={`/editservice/${result.id}`}>
                         Edit
                     </Link>
@@ -56,15 +60,18 @@ export const Service = () => {
                             </div>
                         </div>
                     </div>
-                </div>	
+                </div>	  */}
 			</div>
-            <Link to="/serviceform">
+            {/* <Link to="/serviceform">
 				<button className="btn btn-primary">Add service</button>
 			</Link>
             <Link to="/servicelist">
 				<button className="btn btn-primary">Back home</button>
-			</Link>
-	    </div>
+			</Link> */}
+	    </div>            
+        </>
+
+      
     )
 
 

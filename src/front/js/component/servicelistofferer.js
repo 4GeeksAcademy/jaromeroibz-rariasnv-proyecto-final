@@ -21,8 +21,10 @@ export const ServiceListOfferer = () => {
 		actions.addOffererService(idService)
 		actions.updateServiceStatusOfferer(idService)
 		const deleteService = store.allServices.find((item) => item.id == idService )
+		console.log(deleteService)
 		const index = store.allServices.indexOf(deleteService)
 		const x = store.allServices.splice(index,1)
+		console.log(store.allServices)
 	}
 	// function cancelService (idService) {
 	// 	// actions.deleteOffererService(idService)
@@ -46,6 +48,7 @@ export const ServiceListOfferer = () => {
                             <h1>{item.name}</h1>
                             <p className="info">{item.category}</p>
                             <p className="info">{item.description}</p>
+							<p className="info">{item.status}</p>
 
 						</div>
 						<div className="container">
