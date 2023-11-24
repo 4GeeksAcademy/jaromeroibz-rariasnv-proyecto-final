@@ -26,12 +26,15 @@ def handle_hello():
 # crear, obtener, editar y borrar direcciones
 
 @api.route('/address', methods=['GET'])
+@jwt_required()
 def get_addresses():
+    current_user = get_jwt_identity()
 
-    all_addresses = Address.query.all()
+    all_addresses = Address.query.filter_by(petitioner_id=current_user).all()
+    print(all_addresses)
     result = list(map(lambda item: item.serialize(), all_addresses))
 
-    return jsonify(result), 200
+    return jsonify(result), 
 
 @api.route('/address/<int:address_id>', methods =['GET'])
 def get_address(address_id):
@@ -40,7 +43,10 @@ def get_address(address_id):
     return jsonify(address.serialize()), 200
 
 @api.route('/address', methods =['POST'])
+@jwt_required()
 def add_address():
+    current_user = get_jwt_identity()
+    print(current_user)
     body = request.get_json()
     address = Address(
         name = body['name'],
@@ -48,8 +54,10 @@ def add_address():
         state = body['state'],
         city = body['city'],
         county = body['county'],
-        zipcode = body['zipcode']
+        zipcode = body['zipcode'],
+        petitioner_id= current_user
     )
+    print(address)
     db.session.add(address)
     db.session.commit()
 
@@ -259,19 +267,11 @@ def get_all_services():
     all_services = Services.query.filter_by(status='open').all()
     print(all_services)
     result = list(map(lambda item: item.serialize(), all_services))
-    # for i in result:
-    #     result[i].status = 'created'
-    #cambiar status a created
-    # print(all_services)
-    # for i in all_services: 
-    #     servicio = Services.query.get(i.service_id)
-    #     servicio[i].status = 'created'
-
-    # print (servicio)
+  
     print(result)
     return jsonify(result), 200 
 
-@api.route('/petitioner_services', methods=['GET'])
+@api.route('/get_petitioner_services', methods=['GET'])
 @jwt_required()
 def get_petitioner_services():
     current_user = get_jwt_identity()
@@ -463,11 +463,9 @@ def get_services_by_status_offerer(offerer_id,offerer_status):
 # Actualizar status de un servicio
 
 @api.route('/service_status_update/<int:service_id>', methods=['PUT'])
-@jwt_required()
 
 def update_service_status(service_id):
 
-    current_user = get_jwt_identity()
     services_by_status = Services.query.filter_by(id=service_id).first()
     
     if services_by_status.status == 'finished':
@@ -477,6 +475,8 @@ def update_service_status(service_id):
         #agregar opción de status insuficient
     if services_by_status.status == 'evaluating_proposal':
         services_by_status.status = 'asigned'
+    if services_by_status.status == 'open':
+        services_by_status.status = 'evaluating_proposal'
     
 
     db.session.commit()
@@ -497,8 +497,10 @@ def update_service_status_offerer(service_id):
     print(services_by_offerer_id)
     if services_by_offerer_id.status == 'finished':
         return jsonify({"message": "Status is 'finished', can't change it"}), 400
-    if services_by_offerer_id.status == 'open':
-        services_by_offerer_id.status = 'pending_approval'
+    if services_by_offerer_id.status == 'asigned':
+        services_by_offerer_id.status = 'finished'
+    if services_by_offerer_id.status == 'pending_approval':
+        services_by_offerer_id.status = 'asigned'
 
     db.session.commit()
 

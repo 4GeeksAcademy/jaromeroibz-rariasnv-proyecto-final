@@ -140,7 +140,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getAddresses: async () => {
 				const store = getStore();
-				let response = await fetch(process.env.BACKEND_URL+'api/address/')
+				let token = localStorage.getItem("token")
+				
+				const requestOptions = {
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(data)
+				}
+
+				let response = await fetch(process.env.BACKEND_URL+'api/address', requestOptions)
 			
 				let data = await response.json()
 
@@ -150,14 +158,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  })
 				  console.log('Address exists')
 				}
-			  
 			},
 			getAddress: async (result) => {
 				const store = getStore();
-				const idToDelete = result.id
-				let response = await fetch(process.env.BACKEND_URL+'api/address/'+ idToDelete)
+				let token = localStorage.getItem("token")
+				
+				const requestOptions = {
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(result)
+				}
+
+				const idToGet = result.id
+				let response = await fetch(process.env.BACKEND_URL+'api/address/'+ idToGet, requestOptions)
 				let data = await response.json()
-				console.log(response)
+				console.log(response)	
 				if (response.ok){
 				  setStore({
 					address: data
@@ -165,21 +180,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			},
-			addAddress: (data) => {
+			addAddress: async (result) => {
 				
+				console.log(result)
 				const store = getStore();
+				let token = localStorage.getItem("token")
 
 				const requestOptions = {
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json', 'Origin': '*',
-					'Access-Control-Allow-Headers': '*',
-					'Access-Control-Allow-Origin': '*' },
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
 					body: JSON.stringify(data)
 				}
-				console.log('Add Address')
-				fetch(process.env.BACKEND_URL +'api/address/', requestOptions)
-				.then( (response) => response.json() )
-				.then( (data) => { getActions().getAddresses()} )
+			
+				let response = await fetch(process.env.BACKEND_URL +'api/address/', requestOptions)
+				let data = await response.json();
+				if (response.ok === 200){
+					getActions().getAddresses()
+				}
+				console.log(data)
 			},
 			editAddress: (address, theid) =>{
 				const store = getStore();
@@ -239,7 +258,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log(data)
 				if (response.ok){
 				  setStore({allServices: data})
-				  setStore({offererBearerToken: token})
 				}
 			},
 			getPetitionerServices: async () => {
@@ -250,12 +268,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 								'Authorization': `Bearer ${token}`},
 					body: JSON.stringify(data)
 				}
-				let response = await fetch(process.env.BACKEND_URL+'api/petitioner_services/',requestOptions)
+				let response = await fetch(process.env.BACKEND_URL+'api/get_petitioner_services/',requestOptions)
 				let data = await response.json()
 				console.log(data)
 				if (response.ok){
 				  setStore({petitionerServices: data})
-				  setStore({petitionerBearerToken: token})
 				}
 				//pasar un header "authorization" clase auth. Agregar backend jwt required. get jwt identity. filter by id (está dentro del token) 
 			},
@@ -345,7 +362,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			deletePetitionerService: async (indexMap) => {
 				console.log(indexMap)
-			let token = localStorage.getItem("token")
+				let token = localStorage.getItem("token")
 				const requestOptions = {
 					method: 'DELETE',
 					headers: { 'Content-Type': 'application/json',
@@ -656,15 +673,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			updateStatusPetitioner: async (serviceId) => {
 				const actions = getActions();
-				let token = localStorage.getItem("token")
+				// let token = localStorage.getItem("token")
 
 				const requestOptions = {
 					method: 'PUT',
-					headers: { 'Content-Type': 'application/json',
-								'Authorization': `Bearer ${token}`},
+					headers: { 'Content-Type': 'application/json'},
 					body: JSON.stringify(data)
 				}
-				let response = await fetch(process.env.BACKEND_URL +'service_status_update/' + serviceId , requestOptions)
+				let response = await fetch(process.env.BACKEND_URL +'api/service_status_update/' + serviceId , requestOptions)
 				let data = await response.json()
 				if (response.ok){
 					console.log(data)

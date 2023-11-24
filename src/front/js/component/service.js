@@ -3,35 +3,46 @@ import { Link, useParams } from "react-router-dom"
 import { Context } from "../store/appContext";
 import { EditAddress } from "./editaddress";
 import { AddressList } from "./addressList";
+import {ServiceList} from "./serviceList";
+
 // import "../../styles.demo.css";
 
 export const Service = () => {
     const { store, actions } = useContext(Context);
     const theid = useParams().theid
     console.log(theid)
+    const result = store.petitionerServices.find((item) => item.id = theid)
+    console.log(result)
+    console.log(store.serviceDetails.offerers)
 
     useEffect(() => {
         actions.getServiceDetails(theid)
-        .then(console.log(store.serviceDetails.offerer_data))
     }, [])
 
     return (
-        <>
+
           <div className="container">
-			<h1 className="py-3">Service</h1>
+			<h1 className="py-3">Service Details</h1>
             <div className="list-group-item d-flex">
                 <img src="https://picsum.photos/200" alt=""></img>
                 <div className="d-block px-5">
                     <h1>{store.serviceDetails.service_name}</h1>
                     <p className="info">{store.serviceDetails.service_category}</p>
                     <p className="info">{store.serviceDetails.service_description}</p>
+                    <p className="info">{result.status}</p>
+                </div>
+                <div className="d-block px-5">
 
-
+                   {/* <div className="container">
+						<p>{result.status}</p>	
+						{item.status === 'evaluating_proposal' ? <button onClick = { () => updateStatusPetitioner(item.id)}>Accept proposal</button>:
+							<button onClick = { () => updateStatusPetitioner(item.id)}>Service finished</button>
+						}
+					</div> */}
                     {store.serviceDetails.offerers?.map((item)=>{item.id})}
 
-
-
                 </div>
+
                 {/* <div className="pencontainer">
                     <Link to={`/editservice/${result.id}`}>
                         Edit
@@ -69,7 +80,6 @@ export const Service = () => {
 				<button className="btn btn-primary">Back home</button>
 			</Link> */}
 	    </div>            
-        </>
 
       
     )

@@ -17,15 +17,25 @@ export const ServiceListOfferer = () => {
 	// 	});
 	// }
 	
+	const {price,setPrice} = useState({
+		"price": ""
+	})
+
+	function handleChange (event){
+		setPrice({
+			[event.target.name]:event.target.value
+		}) 
+	}
+	
 	function applyService (idService) {
 		actions.addOffererService(idService)
-		actions.updateServiceStatusOfferer(idService)
+		actions.updateStatusPetitioner(idService)
 		const deleteService = store.allServices.find((item) => item.id == idService )
-		console.log(deleteService)
 		const index = store.allServices.indexOf(deleteService)
 		const x = store.allServices.splice(index,1)
-		console.log(store.allServices)
+
 	}
+
 	// function cancelService (idService) {
 	// 	// actions.deleteOffererService(idService)
 	// 	const addService = store.allServices.find((item) => item.id == idService )
@@ -57,6 +67,8 @@ export const ServiceListOfferer = () => {
                             </Link>
 						</div>
 						<div className="pencontainer">
+							{/* <label>Add a price for your service</label>
+   								<input value={price.price} onChange={handleChange} name="price" type="text" className="form-control" id="price" placeholder="Add a price" required/>	 */}
 							<button onClick= { () => applyService(item.id) } type="button" className="btn btn-primary">
 							Apply
 							</button>
