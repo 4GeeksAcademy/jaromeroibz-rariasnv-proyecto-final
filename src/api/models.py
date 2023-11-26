@@ -102,32 +102,6 @@ class Services(db.Model):
             "status": self.status
         }
     
-    def serialize_created(self):
-        service = Services.query.filter_by(status='created').first()
-        if service is not None:
-            return {
-                "id": self.id,
-                "name": self.name,
-                "category": self.category,
-                "description": self.description,
-                "date": self.date,
-                "status": self.status,
-                "petitioner_id": self.petitioner_id
-            }
-    
-    def serialize_accepted(self):
-        service = Services.query.filter_by(status='accepted').first()
-        if service is not None:
-            return {
-                "id": self.id,
-                "name": self.name,
-                "category": self.category,
-                "description": self.description,
-                "date": self.date,
-                "status": self.status,
-                "offerer_id": self.offerer_id
-            }
-           
 
 class Address(db.Model):
     __tablename__ = 'address'
@@ -140,7 +114,7 @@ class Address(db.Model):
     zipcode = db.Column(db.String(80), unique=False, nullable=False)
     latitude = db.Column(db.String(80), unique=False, nullable=True)
     longitude = db.Column(db.String(80), unique=False, nullable=True)
-    petitioner_id = db.Column(Integer, ForeignKey('petitioner.id'))
+    petitioner_id = db.Column(db.Integer, db.ForeignKey('petitioner.id'))
     petitioner = relationship(Petitioner)
 
     def __repr__(self):
@@ -149,6 +123,7 @@ class Address(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "petitioner_id": self.petitioner_id,
             "name": self.name,
             "full_address": self.full_address,
             "state": self.state,
@@ -190,6 +165,7 @@ class OffererServices(db.Model):
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
     offerer_id = db.Column(db.Integer, db.ForeignKey('offerer.id'))
     status = db.Column(db.String(80), nullable = False, unique=False)
+    price = db.Column(db.Integer(), nullable = True, unique=False)
     service = db.relationship(Services)
     offerer = db.relationship(Offerer)
 
@@ -201,30 +177,9 @@ class OffererServices(db.Model):
             "id": self.id,
             "service_id": self.service_id,
             "offerer_id": self.offerer_id,
-            "status": self.status
+            "status": self.status,
+            "price": self.price
         }
-    
-    # def serialize_offerer_services(self):
-    #     services = Services.query.filter_by(id=service_id).first()
-    #     if services is not None:
-    #         return {
-    #             "id": self.id,
-    #             "name": service.name(),
-    #             "category": self.category,
-    #             "date": self.date,
-    #             "description": self.description,
-    #             "status": self.status
-    #         }
-        
-    # def serialize_accepted(self):
-    #     service = Services.query.filter_by(status='accepted').first()
-    #     if service is not None:
-    #         return {
-    #             "id": self.id,
-    #             "rating": self.rating,
-    #             "service": service.serialize(),
-    #             "offerer_id": self.offerer_id
-    #         }
 
 
 

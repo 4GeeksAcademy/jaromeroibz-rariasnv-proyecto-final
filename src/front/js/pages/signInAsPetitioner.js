@@ -8,19 +8,20 @@ export const SignInAsPetitioner = () => {
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
 
-    async function sendData(e){
-        e.preventDefault()
-        const result = await actions.loginPetitioner(email,password)
-        console.log(result)
-        if (result == 200){
-            navigate('/serviceform')
-        }
+    function sendData(e){
+        // e.preventDefault()
+        actions.loginPetitioner(email,password)
+        // console.log(result)
+        // if (result == 200){
+        //     navigate('/serviceform')
+        // }
+        navigate('/serviceform')
     }
     
     return(
             <div className="signInAsPetitioner m-5">
                  <h1>Sign in</h1>
-                <form onSubmit={sendData}>
+                <form onSubmit={(e)=>sendData(e)}>
                     <div className="form-group">
                         <label htmlFor="exampleInputEmail1">Email address</label>
                         <input type="email" className="form-control" id="email" placeholder="Enter email" onChange={ (e) => setEmail(e.target.value) }></input>

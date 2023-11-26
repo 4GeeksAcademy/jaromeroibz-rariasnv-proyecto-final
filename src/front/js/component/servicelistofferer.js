@@ -10,29 +10,20 @@ export const ServiceListOfferer = () => {
 		actions.getAllServices()
         actions.getOffererServices()
     }, [])
-
-	// function getServiceInfo (){
-	// 	store.offererServicesData.forEach(item => {
-	// 		const serviceInfo = store.services
-	// 	});
-	// }
 	
-	const {price,setPrice} = useState({
-		"price": ""
-	})
+	const [price,setPrice] = useState('');
 
 	function handleChange (event){
-		setPrice({
-			[event.target.name]:event.target.value
-		}) 
+		setPrice(event.target.value);
 	}
-	
-	function applyService (idService) {
-		actions.addOffererService(idService)
-		actions.updateStatusPetitioner(idService)
+
+	function applyService (idService, price) {
+		actions.addOffererService(idService, price)
+		// actions.updateServiceStatusEvaluatingProposal(idService)
 		const deleteService = store.allServices.find((item) => item.id == idService )
 		const index = store.allServices.indexOf(deleteService)
 		const x = store.allServices.splice(index,1)
+		console.log(price)
 
 	}
 
@@ -67,9 +58,9 @@ export const ServiceListOfferer = () => {
                             </Link>
 						</div>
 						<div className="pencontainer">
-							{/* <label>Add a price for your service</label>
-   								<input value={price.price} onChange={handleChange} name="price" type="text" className="form-control" id="price" placeholder="Add a price" required/>	 */}
-							<button onClick= { () => applyService(item.id) } type="button" className="btn btn-primary">
+							<label>Add a price for your service</label>
+   								<input value={price} onChange={e=>handleChange(e)} name="price" type="text" className="form-control" placeholder="Add a price" required/>	
+							<button onClick= { () => applyService(item.id, price) } type="button" className="btn btn-primary">
 							Apply
 							</button>
 						</div>

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 import { Context } from "../store/appContext";
 
-
 // import "../../styles/demo.css";
 
 export const ServiceForm = (item) => {
@@ -28,7 +27,9 @@ export const ServiceForm = (item) => {
 	}
 
 	function saveService() {
+		console.log(service)
 		actions.addService(service)
+		actions.getPetitionerServices()
 		setService(
 			{
                 "name": "",
@@ -70,7 +71,7 @@ export const ServiceForm = (item) => {
 			</form>
 			<br />
 			<Link to="/servicelist">
-				<button className="btn btn-primary">Back home</button>
+				<button className="btn btn-primary">Service List</button>
 			</Link>
 		</div>
 	);

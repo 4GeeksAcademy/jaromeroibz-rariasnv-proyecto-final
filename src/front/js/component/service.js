@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { Context } from "../store/appContext";
 import { EditAddress } from "./editaddress";
 import { AddressList } from "./addressList";
-import {ServiceList} from "./serviceList";
+import {ServiceConfirmation} from "./serviceconfirmation";
 
 // import "../../styles.demo.css";
 
@@ -11,13 +11,22 @@ export const Service = () => {
     const { store, actions } = useContext(Context);
     const theid = useParams().theid
     console.log(theid)
-    const result = store.petitionerServices.find((item) => item.id = theid)
-    console.log(result)
+    // const result = store.serviceDetails.find((item) => item.id = theid)
+    // console.log(result)
     console.log(store.serviceDetails.offerers)
+    const navigate = useNavigate()
+    // const offerer_data = store.serviceDetails.offerers?.find((item)=> item.id
 
     useEffect(() => {
         actions.getServiceDetails(theid)
     }, [])
+
+    function updateStatus (offererId) {
+		actions.updateStatusPetitioner(theid)
+        // actions.updateServiceStatusOfferer(theid)
+        actions.updateServiceStatusOffererPetitionerView(theid, offererId)     
+        navigate('/serviceconfirmation/'+theid)		
+	}
 
     return (
 
@@ -27,20 +36,24 @@ export const Service = () => {
                 <img src="https://picsum.photos/200" alt=""></img>
                 <div className="d-block px-5">
                     <h1>{store.serviceDetails.service_name}</h1>
-                    <p className="info">{store.serviceDetails.service_category}</p>
-                    <p className="info">{store.serviceDetails.service_description}</p>
-                    <p className="info">{result.status}</p>
+                    <p className="info">Category: {store.serviceDetails.service_category}</p>
+                    <p className="info">Description: {store.serviceDetails.service_description}</p>
+                    <p className="info">Date: {store.serviceDetails.service_date}</p>
                 </div>
                 <div className="d-block px-5">
-
-                   {/* <div className="container">
-						<p>{result.status}</p>	
-						{item.status === 'evaluating_proposal' ? <button onClick = { () => updateStatusPetitioner(item.id)}>Accept proposal</button>:
-							<button onClick = { () => updateStatusPetitioner(item.id)}>Service finished</button>
-						}
-					</div> */}
-                    {store.serviceDetails.offerers?.map((item)=>{item.id})}
-
+                <h2>Offerers</h2>
+                    <ul>
+                    {store.serviceDetails.offerers?.map((item)=>
+                    <>
+                        <li key={item.id}>
+                            <p>{item.name}</p>
+                            <p>Price: {item.price}</p>
+                            <p>Asign service to an offerer</p>
+                            <button onClick= {() => updateStatus(item.id)}>Asign</button>
+                        </li>
+                    </>
+                    )}
+                    </ul>
                 </div>
 
                 {/* <div className="pencontainer">
@@ -75,10 +88,10 @@ export const Service = () => {
 			</div>
             {/* <Link to="/serviceform">
 				<button className="btn btn-primary">Add service</button>
-			</Link>
+			</Link>*/}
             <Link to="/servicelist">
-				<button className="btn btn-primary">Back home</button>
-			</Link> */}
+				<button className="btn btn-primary">Back to service list</button>
+			</Link> 
 	    </div>            
 
       

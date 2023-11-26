@@ -8,13 +8,8 @@ export const ServiceList = () => {
     useEffect(() => {
 		actions.getPetitionerServices()
 		actions.getCategories()
-		actions.getAllServices()
 		actions.getOffererServices()
     }, [])
-
-	function updateStatusPetitioner (serviceId) {
-		actions.updateStatusPetitioner(serviceId)
-	}
 
     return (
     
@@ -27,16 +22,17 @@ export const ServiceList = () => {
 					<li key= {item.id}
 						className="list-group-item d-flex"
 						>
-						<img src="https://picsum.photos/200" alt=""></img>
+						{/* <img src="https://picsum.photos/200" alt=""></img> */}
+						<h1>{item.name}</h1>
 						<div className="d-block px-5">
-                            <h1>{item.name}</h1>
 							Date:
                             <p className="info">{item.date}</p>
 							Category:
                             <p className="info">{item.category_id}</p>
 							Description:
                             <p className="info">{item.description}</p>
-
+							Status:
+                            <p className="info">{item.status}</p>							
 						</div>
 						<div className="container">
                             <Link to={`/service/${item.id}`}>
