@@ -34,12 +34,10 @@ export const ServiceConfirmation = () => {
                     <p className="info">{store.serviceDetails.service_description}</p>
                     Offerer:
                     <p className="info">{store.serviceDetails.offerer_data[0].name}</p>
-
-
                 </div>               
                 <div>
-                    <Link to='/servicelistofferer'>
-                        Apply to another service
+                    <Link to='/serviceform'>
+                        Add another task
                     </Link>
                 </div>
 		</div>

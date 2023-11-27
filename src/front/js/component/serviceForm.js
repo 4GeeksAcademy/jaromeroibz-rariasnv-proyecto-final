@@ -51,6 +51,7 @@ export const ServiceForm = (item) => {
                 <div className="form-group py-3">
                     <label>Select a category</label>
 						<select value={service.category_id} onChange={handleChange} name='category_id' className="form-select" aria-label="Default select example" required>
+						<option selected>Select a category</option>
 							{store.categories.map((item) => 
 							<option key = {item.id} value= {item.id}>{item.category}</option>
 								)}

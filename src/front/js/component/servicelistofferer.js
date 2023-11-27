@@ -53,7 +53,7 @@ export const ServiceListOfferer = () => {
 
 						</div>
 						<div className="container">
-                            <Link to={`/service/${item.id}`}>
+                            <Link to={`/setprice/${item.id}`}>
                                 See details
                             </Link>
 						</div>
@@ -66,7 +66,7 @@ export const ServiceListOfferer = () => {
 						</div>
 						<div className="trashcan px-5">
 							<button onClick= { () => actions.saveToDelete(item.id) } type="button" className="btn btn-primary">
-							Hide
+							Delete
 							</button>
 
 							<div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

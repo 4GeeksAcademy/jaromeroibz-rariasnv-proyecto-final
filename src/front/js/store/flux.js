@@ -28,6 +28,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			service:[],
 			serviceDetails:{},
 			auth: JSON.parse(localStorage.getItem("auth"))||false,
+			token: localStorage.getItem("token")||"",
 			users:[],
 			offerers: [],
 			offerersDetail: [],
@@ -251,8 +252,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const requestOptions = {
 					method: 'GET',
 					headers: { 'Content-Type': 'application/json',
-								'Authorization': `Bearer ${token}`},
-					body: JSON.stringify(data)
+								'Authorization': `Bearer ${token}`}
 				}
 				let response = await fetch(process.env.BACKEND_URL+'api/all_services', requestOptions)
 				let data = await response.json()
@@ -281,9 +281,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				let token = localStorage.getItem("token")
 				const requestOptions = {
+					method: 'GET',
 					headers: { 'Content-Type': 'application/json',
 								'Authorization': `Bearer ${token}`},
-					body: JSON.stringify(data)
 				}
 				let response = await fetch(process.env.BACKEND_URL+'api/offerer_services/',requestOptions)
 				let data = await response.json()
@@ -459,7 +459,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"password": password
 					})
 				}
-				fetch(process.env.BACKEND_URL +'api/signup_offerer', requestOptions)
+				const isLogin = fetch(process.env.BACKEND_URL +'api/signup_offerer', requestOptions)
 					.then((response) => {
 						if(response.status === 200){
 							setStore({auth: true});
@@ -471,8 +471,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({ users: data })
 						localStorage.setItem("token", data.access_token)
 						localStorage.setItem("auth", true)
+						return true
 						}
 					)
+					return isLogin
 			},
 			signUpPetitioner: async (name,email,password) => {
 

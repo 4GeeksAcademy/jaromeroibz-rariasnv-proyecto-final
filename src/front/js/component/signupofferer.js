@@ -12,12 +12,16 @@ export const SignupOfferer = () => {
     const navigate = useNavigate()
 
 
-    function sendData(e){
+    async function sendData(e){
         e.preventDefault()
         console.log('Send Data')
         console.log(name, email, password)
-        actions.signUpOfferer(name, email, password)
-        navigate('/servicelistofferer')
+        const isLogin = await actions.signUpOfferer(name, email, password)
+        console.log(isLogin)
+        if (isLogin){
+            navigate('/servicelistofferer')
+        }
+        
     }
 
 

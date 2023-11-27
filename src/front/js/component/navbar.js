@@ -19,7 +19,9 @@ export const Navbar = () => {
 				<Link to="/">
 					<span className="btn btn-light">App name</span>
 				</Link>
-				<div className="d-flex">					
+				<div className="d-flex">
+					{ store.auth === true ? <p className="py-1 px-3">Hello {store.users.name}!</p> : 
+					<>					
 					<div className="px-3">
 						<Link to="/signin">
 							<button className="btn btn-light">Sign in</button>
@@ -29,7 +31,11 @@ export const Navbar = () => {
 						<Link to="/signup">
 							<button className="btn btn-light">Signup</button>
 						</Link>
-						{ store.auth === true ? <button onClick={() => handleLogout()} className="btn btn-primary">Logout</button> :null}
+					</div>
+					</>
+					}
+					<div className="px-3">
+					{ store.auth === true ? <button onClick={() => handleLogout()} className="btn btn-primary">Logout</button> :null}
 					</div>
 				</div>
 			</div>
