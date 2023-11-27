@@ -7,7 +7,7 @@ import {ServiceConfirmation} from "./serviceconfirmation";
 
 // import "../../styles.demo.css";
 
-export const Service = () => {
+export const Price = () => {
     const { store, actions } = useContext(Context);
     const theid = useParams().theid
     console.log(theid)
@@ -16,16 +16,28 @@ export const Service = () => {
     console.log(store.serviceDetails.offerers)
     const navigate = useNavigate()
     // const offerer_data = store.serviceDetails.offerers?.find((item)=> item.id
-
+	
+	const [price,setPrice] = useState('');
+    
     useEffect(() => {
         actions.getServiceDetails(theid)
     }, [])
 
-    function updateStatus (offererId) {
-		actions.updateStatusPetitioner(theid)
-        // actions.updateServiceStatusOfferer(theid)
-        actions.updateServiceStatusOffererPetitionerView(theid, offererId)     
-        navigate('/serviceconfirmation/'+theid)		
+    console.log(store.allServices)
+
+	function handleChange (event){
+		setPrice(event.target.value);
+	}
+
+	function applyService (theid, price) {
+		actions.addOffererService(theid, price)
+		// actions.updateServiceStatusEvaluatingProposal(idService)
+		const deleteService = store.allServices.find((item) => item.id == theid )
+		const index = store.allServices.indexOf(deleteService)
+		store.allServices.splice(index,1)
+		console.log(price)
+        navigate("/servicelistofferer")
+
 	}
 
     return (
@@ -41,19 +53,12 @@ export const Service = () => {
                     <p className="info">Date: {store.serviceDetails.service_date}</p>
                 </div>
                 <div className="d-block px-5">
-                <h2>Offerers</h2>
-                    <ul>
-                    {store.serviceDetails.offerers?.map((item)=>
-                    <>
-                        <li key={item.id}>
-                            <p>{item.name}</p>
-                            <p>Price: {item.price}</p>
-                            <p>Asign service to an offerer</p>
-                            <button onClick= {() => updateStatus(item.id)}>Asign</button>
-                        </li>
-                    </>
-                    )}
-                    </ul>
+                <h2>Apply to this service:</h2>
+                    <div className="pencontainer">
+							<label>Add a price for your service</label>
+   								<input value={price} onChange={e=>handleChange(e)} name="price" type="text" className="form-control" placeholder="Add a price" required/>	
+							<button onClick= { () => applyService(price) } type="button" className="btn btn-primary">Apply</button>
+					</div>
                 </div>
 
                 {/* <div className="pencontainer">

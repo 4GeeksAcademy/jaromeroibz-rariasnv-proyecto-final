@@ -29,9 +29,12 @@ import { ServiceList } from "./component/serviceList";
 import { EditService } from "./component/editService";
 import { Signin } from "./component/signin";
 import { SigninOfferer } from "./component/signinofferer";
-import { OffererProfile } from "./component/offererprofile";
+import { ServiceListOfferer } from "./component/servicelistofferer";
 import { Signup } from "./component/signup";
 import { SignupOfferer } from "./component/signupofferer";
+import {ApplytoService} from "./component/applytoservice";
+import { ServiceConfirmation } from "./component/serviceconfirmation";
+import {Price} from "./component/setprice";
 
 //create your first component
 const Layout = () => {
@@ -60,7 +63,7 @@ const Layout = () => {
                         <Route element={<Signup />} path="/signup" />
                         <Route element={<SigninOfferer />} path="/signinofferer" />
                         <Route element={<SignupOfferer />} path="/signupofferer" />
-                        <Route element={<OffererProfile />} path="/offererprofile" />
+                        <Route element={<ServiceListOfferer />} path="/servicelistofferer" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<SignupAsPetitioner />} path="/signUpAsPetitioner" />
                         <Route element={<RegisteredPetitioners />} path="/registeredPetitioners" />
@@ -72,9 +75,10 @@ const Layout = () => {
                         <Route element={<SignUpAsOfferer />} path="/signUpAsOfferer" />
                         <Route element={<EditOfferer />} path="/editOfferer/:offererIdToEdit" />
                         <Route element={<Single />} path="/single/:theid" />
+                        <Route element={<Price />} path="/setprice/:theid" />
+                        <Route element={<ServiceConfirmation />} path="/serviceconfirmation/:theid" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
-                    <Footer/>
                 </ScrollToTop>
             </BrowserRouter>
         </div>

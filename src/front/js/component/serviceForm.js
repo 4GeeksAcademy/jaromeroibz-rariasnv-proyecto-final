@@ -3,33 +3,39 @@ import { Link } from "react-router-dom";
 
 import { Context } from "../store/appContext";
 
-
 // import "../../styles/demo.css";
 
 export const ServiceForm = (item) => {
 	const { store, actions } = useContext(Context);
-	const [service,setService] = useState({
-		"name": "",
-    	"category": "",
-    	"description": ""
-	});
+	
+	useEffect(() => {
+		actions.getCategories()
+    }, [])
 
+ 	const [service,setService] = useState({
+		"name": "",
+    	"category_id": "",
+    	"description": "",
+		"date": ""
+	});
+	
 	function handleChange (event){
 		setService({
 			...service,
 			[event.target.name]:event.target.value
 		})
-		// actions.getServiceCategory()
- 
 	}
 
 	function saveService() {
+		console.log(service)
 		actions.addService(service)
+		actions.getPetitionerServices()
 		setService(
 			{
                 "name": "",
-                "category": "",
-                "description": ""
+                "category_id": "",
+                "description": "",
+				"date": ""
 			}
 		)
 	}
@@ -43,14 +49,18 @@ export const ServiceForm = (item) => {
    					<input value={service.name} onChange={handleChange} name='name' type="text" className="form-control" id="name" placeholder="Example: Paint a wall" required />
   				</div>
                 <div className="form-group py-3 mx-2">
-                    <label>Choose category</label>
-						<select value={service.category} onChange={handleChange} name='category' className="form-select" aria-label="Default select example" required>
-							{store.categories.map((item) => 
-							<option value= {item.category}>{item.category}</option>
+					<label>Choose category</label>
+						<select value={service.category_id} onChange={handleChange} name='category_id' className="form-select" aria-label="Default select example" required >
+						<option selected>Select a category</option>
+						{store.categories.map((item) => 
+							<option key = {item.id} value= {item.id}>{item.category}</option>
 								)}
 						</select>
-				
-                </div>
+				</div>
+				<div className="form-group py-3">
+    				<label>Date</label>
+   					<input value={service.date} onChange={handleChange} name='date' type="text" className="form-control" id="date" placeholder="DD/MM/YY" required />
+  				</div>
                 <div className="form-group py-3 mx-2">
                     <label htmlFor="description">Give us details about the task</label>
                     <textarea value={service.description} onChange={handleChange} name='description' className="form-control" id="description" placeholder="Please describe the task" rows="3" required/>

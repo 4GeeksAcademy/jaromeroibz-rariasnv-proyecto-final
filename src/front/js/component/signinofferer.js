@@ -13,13 +13,13 @@ export const SigninOfferer = () => {
         e.preventDefault()
         console.log('Send Data')
         console.log(email, password)
-        actions.login(email, password)
+        actions.loginOfferer(email, password)
     }
 
 return (
     <>
     <div className="signinofferer">
-        { store.auth === true ? <Navigate to= '/offererprofile'/> :
+        { store.auth === true ? <Navigate to= '/servicelistofferer'/> :
         <>
         <p className="">Sign in</p>        
         <h1 className="">Welcome back!</h1>

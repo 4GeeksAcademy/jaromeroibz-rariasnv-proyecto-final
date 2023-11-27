@@ -9,12 +9,15 @@ export const SignInAsPetitioner = () => {
     const navigate = useNavigate()
 
     function sendData(e){
-        e.preventDefault()
-        actions.signInAsAPetitioner(email,password)
-        navigate('/')
+        // e.preventDefault()
+        actions.loginPetitioner(email,password)
+        // console.log(result)
+        // if (result == 200){
+        //     navigate('/serviceform')
+        // }
+        navigate('/serviceform')
     }
-
-
+    
     return(
             <div className="signInAsPetitioner">
                 <p className="">Sign in</p> 

@@ -10,10 +10,13 @@ export const SignupAsPetitioner = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    function savePetitionerToAdd(e) {
+    async function savePetitionerToAdd(e) {
         e.preventDefault()
-        actions.signUp(name,email,password)
+        const result = await actions.signUpPetitioner(name,email,password)
+        console.log(result)
+        if (result == 200){
         navigate('/serviceform')
+        }
     };
 
     return(

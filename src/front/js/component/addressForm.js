@@ -26,7 +26,6 @@ export const AddressForm = (item) => {
 			...address,
 			[event.target.name]:event.target.value
 		}) 
-		console.log(address)
 	}
 
 	function saveAddress (e) {

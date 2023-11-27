@@ -22,58 +22,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 			addresses: [],
 			idToDelete: "",
 			address:[],
+			allServices:[],
 			services:[],
+			servicesApplied: [],
 			service:[],
-			auth: false,
+			serviceDetails:{},
+			auth: JSON.parse(localStorage.getItem("auth"))||false,
+			token: localStorage.getItem("token")||"",
 			users:[],
 			offerers: [],
 			offerersDetail: [],
-			categories: [
-				{
-					category: "Category1",
-					id: 1
-				},
-				{
-					category: "Category2",
-					id: 2
-				},
-				{
-					category: "Category3",
-					id: 3
-				},
-			]
+			categories: [],
+			PetitionerStatus: [],
+			petitionerBearerToken: "",
+			offererBearerToken: "",
+			offererServices: [],
+			petitionerServices: [],
+			confirmedServices: []
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			getMessage: async () => {
-				try{
-					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				}catch(error){
-					console.log("Error loading message from backend", error)
-				}
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
-			}, 
 			getAllPetitioners: async () => {								
 				 try {
 					const store = getStore();
@@ -175,7 +142,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getAddresses: async () => {
 				const store = getStore();
-				let response = await fetch(process.env.BACKEND_URL+'api/address/')
+				let token = localStorage.getItem("token")
+				
+				const requestOptions = {
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(data)
+				}
+
+				let response = await fetch(process.env.BACKEND_URL+'api/address', requestOptions)
 			
 				let data = await response.json()
 
@@ -185,27 +160,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  })
 				  console.log('Address exists')
 				}
-			  
 			},
 			getAddress: async (result) => {
 				const store = getStore();
-				const idToDelete = result.id
-				// var myHeaders = new Headers();
-				// myHeaders.append("Access-Control-Allow-Headers", "*");
-				// myHeaders.append("Content-Type", "application/json");
+				let token = localStorage.getItem("token")
+				
+				const requestOptions = {
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(result)
+				}
 
-				// var raw = JSON.stringify([]);
-
-				// var requestOptions = {
-				// method: 'GET',
-				// headers: myHeaders,
-				// body: raw,
-				// redirect: 'follow'
-				// };
-
-				let response = await fetch(process.env.BACKEND_URL+'api/address/'+ idToDelete)
+				const idToGet = result.id
+				let response = await fetch(process.env.BACKEND_URL+'api/address/'+ idToGet, requestOptions)
 				let data = await response.json()
-				console.log(response)
+				console.log(response)	
 				if (response.ok){
 				  setStore({
 					address: data
@@ -213,31 +182,35 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			},
-			addAddress: (data) => {
+			addAddress: async (result) => {
 				
+				console.log(result)
 				const store = getStore();
+				let token = localStorage.getItem("token")
 
 				const requestOptions = {
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json', 'Origin': '*',
-					'Access-Control-Allow-Headers': '*',
-					'Access-Control-Allow-Origin': '*' },
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
 					body: JSON.stringify(data)
 				}
-				console.log('Add Address')
-				fetch(process.env.BACKEND_URL +'api/address/', requestOptions)
-				.then( (response) => response.json() )
-				.then( (data) => { getActions().getAddresses()} )
+			
+				let response = await fetch(process.env.BACKEND_URL +'api/add_address/', requestOptions)
+				let data = await response.json();
+				if (response.ok === 200){
+					getActions().getAddresses()
+				}
+				console.log(data)
 			},
 			editAddress: (address, theid) =>{
-				const store = getStore();
-				const actions = getActions();
-				console.log(address)
-				console.log(theid)
+				
+				let token = localStorage.getItem("token")
+				
 			    const requestOptions = {
 					method: 'PUT',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify( address )
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify( {address} )
 				};
 				fetch(process.env.BACKEND_URL +'api/address/'+theid, requestOptions)
 					.then((response) => response.json())
@@ -252,17 +225,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 			},
 			deleteAddress: (item) => {
-				
-				console.log(item)
-				const store = getStore();
-				const actions = getActions();
+
 				const indexMap = getStore().idToDelete
 				console.log(indexMap)
-
-				var requestOptions = {
-					method: 'DELETE'
-				};
 				
+				const requestOptions = {
+					method: 'DELETE',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`}
+				}
+
 				fetch(process.env.BACKEND_URL +"api/address/" + indexMap, requestOptions)
 					.then(response => response.json())
 					.then( () => {
@@ -274,79 +246,158 @@ const getState = ({ getStore, getActions, setStore }) => {
 					
 				getActions().getAddresses();	
 			},
-			getServices: async () => {
+			getAllServices: async () => {
 				const store = getStore();
-				let response = await fetch(process.env.BACKEND_URL+'api/services/')
-			
-				let data = await response.json()
-
-				if (response.ok){
-				  setStore({
-					services: data
-				  })
-				}
-			},
-			getService: async (result) => {
-				const store = getStore();
-				const idService = result.id
-				let response = await fetch(process.env.BACKEND_URL+'api/service/'+ idService)
-				let data = await response.json()
-				if (response.ok){
-				  setStore({
-					service: data
-				  })
-				}
-
-			},
-			addService: (data) => {
-				
-				const store = getStore();
-
+				let token = localStorage.getItem("token")
 				const requestOptions = {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
+					method: 'GET',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`}
+				}
+				let response = await fetch(process.env.BACKEND_URL+'api/all_services', requestOptions)
+				let data = await response.json()
+				console.log(data)
+				if (response.ok){
+				  setStore({allServices: data})
+				}
+			},
+			getPetitionerServices: async () => {
+
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
 					body: JSON.stringify(data)
 				}
+				let response = await fetch(process.env.BACKEND_URL+'api/get_petitioner_services',requestOptions)
+				let data = await response.json()
+				console.log(data)
+				if (response.ok){
+				  setStore({petitionerServices: data})
+				}
+				//pasar un header "authorization" clase auth. Agregar backend jwt required. get jwt identity. filter by id (está dentro del token) 
+			},
+			getOffererServices: async () => {
+
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'GET',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+				}
+				let response = await fetch(process.env.BACKEND_URL+'api/offerer_services/',requestOptions)
+				let data = await response.json()
+					console.log(data)
+					if (response.ok){
+					setStore({offererServices: data})
+					}
+				//pasar un header "authorization" clase auth. Agregar backend jwt required. get jwt identity. filter by id (está dentro del token) 
+			},
+			addService: async (service) => {
+				console.log(service)
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(service)
+				}
 				console.log('Add Service')
-				fetch(process.env.BACKEND_URL +'api/service/', requestOptions)
-				.then( (response) => response.json() )
-				.then( (data) => { getActions().getServices()} )
+				let response = await fetch(process.env.BACKEND_URL +'api/add_services/', requestOptions)
+				let data = await response.json();
+				if (response.ok === 200){
+					getActions().getPetitionerServices()
+				}
+				console.log(data)
+			},
+			getServiceDetails: async (serviceId) => {
+				
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(data)
+				}
+				let response = await fetch(process.env.BACKEND_URL+'api/petitioner_services/' + serviceId, requestOptions)
+				let data = await response.json()
+				console.log(data)
+				if (response.ok){
+				  setStore({serviceDetails: data})
+				  console.log(data)
+				  console.log(getStore().serviceDetails)
+				}
+			},
+			addOffererService: async (idService, price) => {
+				const store = getStore();
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json',
+								'Access-Control-Allow-Origin': "*",
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify({"price":price,
+										  "service_id":idService})
+				}
+				console.log('Add Service')
+				let response = await fetch(process.env.BACKEND_URL +'api/add_offerer_service', requestOptions)
+				let data = await response.json()
+				if (response.ok === 200){
+					console.log(data)
+					setStore({offererServices: data})
+				}
+				getActions().getOffererServices()
 			},
 			editService: (service, theid) =>{
-				const store = getStore();
 				const actions = getActions();
+				
+				let token = localStorage.getItem("token")
 				
 			    const requestOptions = {
 					method: 'PUT',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify( service )
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify( {service} )
 				};
 				fetch(process.env.BACKEND_URL +`api/service/${theid}`, requestOptions)
 					.then((response) => response.json())
 					.then((data) =>  actions.getServices())
 					.catch((error) => {console.log(error)})
 			},
-			deleteService: (item) => {
-				
-				console.log(item)
-				const store = getStore();
-				const actions = getActions();
-				const indexMap = getStore().idToDelete
+			deletePetitionerService: async (indexMap) => {
 				console.log(indexMap)
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'DELETE',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(data)
+				}
 
-				var requestOptions = {
-					method: 'DELETE'
-				};
-				
-				fetch(process.env.BACKEND_URL +"api/service/" + indexMap, requestOptions)
-					.then(response => response.json())
-					.then( (data) => {
-						getActions().getServices()
-					})
-					.catch(error => console.log('error', error));
-		
+				let response = await fetch(process.env.BACKEND_URL+'api/delete_petitioner_service/' + indexMap, requestOptions)
+					let data = await response.json()
+					if (response.ok){
+						getActions().getPetitionerServices()
+					  }
+
+					  
 			},
-			login: (email, password) => {
+			deleteOffererService: async (indexMap) => {
+				
+				let token = localStorage.getItem("token")
+					const requestOptions = {
+						method: 'DELETE',
+						headers: { 'Content-Type': 'application/json',
+									'Authorization': `Bearer ${token}`},
+						body: JSON.stringify(data)
+					}
+	
+					let response = await fetch(process.env.BACKEND_URL+'api/petitioner_services/' + indexMap, requestOptions)
+						let data = await response.json()
+						if (response.ok){
+							actions.getPetitionerServices()
+						  }
+			},
+			loginOfferer: async (email, password) => {
 				console.log('Login desde flux')
 				const requestOptions = {
 					method: 'POST',
@@ -357,24 +408,43 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"password": password
 					})
 				};
-				fetch(process.env.BACKEND_URL +"api/signin/", requestOptions)
-					.then(response => {
-						console.log(response.status)
-						if(response.status === 200){
-							setStore({auth: true});
-						}
-						
-						return response.json()
-					})
-					.then(data =>{
+				let response = await fetch(process.env.BACKEND_URL +"api/signin_offerer", requestOptions)
+				let data = await response.json()	
+					if(response.status === 200){
+						setStore({auth: true});
 						setStore({ users: data })
 						console.log(data)
-						}
-					)
+						localStorage.setItem("token", data.access_token)
+						localStorage.setItem("auth", true)
+					}
+						
+				return response.status
+			},
+			loginPetitioner: async (email, password) => {
+				console.log('Login desde flux')
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-type': 'application/json' },
+					body: JSON.stringify(
+					{
+						"email": email,
+						"password": password
+					})
+				};
+				let response = await fetch(process.env.BACKEND_URL +"api/signin_petitioner", requestOptions)
+				let data = await response.json()
+				if (response.status == 200){
+					setStore({auth: true});
+					console.log(data)
+					setStore({ users: data })
 					localStorage.setItem("token", data.access_token)
+					localStorage.setItem("auth", true)
+
+				}
+				return response.status
 
 			},
-			signUp: (name,email,password) => {
+			signUpOfferer: (name,email,password) => {
 				console.log('Signup desde flux')
 				console.log(name,email,password)
 				const requestOptions = {
@@ -389,7 +459,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"password": password
 					})
 				}
-				fetch(process.env.BACKEND_URL +'api/signup', requestOptions)
+				const isLogin = fetch(process.env.BACKEND_URL +'api/signup_offerer', requestOptions)
 					.then((response) => {
 						if(response.status === 200){
 							setStore({auth: true});
@@ -399,14 +469,46 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then((data) =>{
 						console.log(data)
 						setStore({ users: data })
+						localStorage.setItem("token", data.access_token)
+						localStorage.setItem("auth", true)
+						return true
 						}
 					)
-					localStorage.setItem("token", data.access_token)
+					return isLogin
+			},
+			signUpPetitioner: async (name,email,password) => {
+
+				console.log('Signup desde flux')
+				console.log(name,email,password)
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', 'Origin': '*',
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*' },
+					body: JSON.stringify({
+
+						"name": name,
+						"email": email,
+						"password": password
+					})
+				}
+				let response = await fetch(process.env.BACKEND_URL +'api/signup_petitioner', requestOptions)
+					let data = await response.json()
+					if (response.status == 200){
+						setStore({auth: true});
+						console.log(data)
+						setStore({ users: data })
+						localStorage.setItem("token", data.access_token)
+						localStorage.setItem("auth", true)
+					}
+					return response.status
 			},
 			logout: () => {
 				console.log('Log out desde flux')
 				setStore({auth: false});
 				localStorage.removeItem("token");
+				localStorage.removeItem("auth");
+
 			},
 			getAllOfferers: async () => {
 				try {
@@ -505,61 +607,50 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 			},
-			signInAsAPetitioner: async (email, password) => {
-				// try {
-				// 	const store = getStore()
-				// 	const requestOptions = {
-				// 		method: 'POST',
-				// 		headers: { 'Content-Type': 'application/json' },
-				// 		body: JSON.stringify({
-				// 			"email_address": email,
-				// 			"password": password
-				// 		})
-				// 	}
-
-				// 	const response = await fetch(process.env.BACKEND_URL+'api/sign_in_as_petitioner/', requestOptions)
-				// 	const data = await response.json()
-				// 	console.log(data)
-				// } catch (error) {
-					
-				// }
-				console.log('Login desde flux')
-				const requestOptions = {
-					method: 'POST',
-					headers: { 'Content-type': 'application/json' },
-					body: JSON.stringify(
-					{
-						"email": email,
-						"password": password
-					})
-				};
-				console.log(email,password)
-				fetch(process.env.BACKEND_URL +"api/signin", requestOptions)
-					.then(response => {
-						console.log(response.status)
-						if(response.status === 200){
-							setStore({auth: true});
-						}
+			// signInAsAPetitioner: async (email, password) => {
+			// 	console.log('Login desde flux')
+			// 	const requestOptions = {
+			// 		method: 'POST',
+			// 		headers: { 'Content-type': 'application/json' },
+			// 		body: JSON.stringify(
+			// 		{
+			// 			"email": email,
+			// 			"password": password
+			// 		})
+			// 	};
+			// 	console.log(email,password)
+			// 	fetch(process.env.BACKEND_URL +"api/signin", requestOptions)
+			// 		.then(response => {
+			// 			console.log(response.status)
+			// 			if(response.status === 200){
+			// 				setStore({auth: true});
+			// 			}
 						
-						return response.json()
-					})
-					.then(data =>{
-						localStorage.setItem("token", data.access_token)
-						setStore({ users: data })
-						console.log(data)
-						}
-					)
-					.catch((error) => console.log(error))
-			},
+			// 			return response.json()
+			// 		})
+			// 		.then(data =>{
+			// 			localStorage.setItem("token", data.access_token)
+			// 			setStore({ users: data })
+			// 			console.log(data)
+			// 			}
+			// 		)
+			// 		.catch((error) => console.log(error))
+			// },
 			getServiceCategory: async () => {
 				const store = getStore();
-				let response = await fetch(process.env.BACKEND_URL+'api/servicescategory')
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'GET',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`}
+				}	
+				let response = await fetch(process.env.BACKEND_URL+'api/servicescategory', requestOptions)
 				let data = await response.json()
 				if (response.ok){
 				  setStore({categories: data})
 				  }
 			},
-			// addServiceCategory: async () => {
+			addServiceCategory: async () => {
 			// 	console.log('add cat desde flux')
 			// 	const requestOptions = {
 			// 		method: 'POST',
@@ -578,7 +669,92 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 			setStore({ users: data })
 			// 			}
 			// 		)
-			// }
+			},
+			updateStatusPetitioner: async (serviceId) => {
+
+				let token = localStorage.getItem("token")
+
+				const requestOptions = {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify({data})
+				}
+				let response = await fetch(process.env.BACKEND_URL +'api/service_status_update/' + serviceId , requestOptions)
+				let data = await response.json()
+				if (response.ok){
+					console.log(data)
+				}
+			},
+			updateServiceStatusOfferer: async (serviceId) => {
+
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify({serviceId})
+				}
+
+				let response = await fetch(process.env.BACKEND_URL+'api/service_status_update_offerer/'+ serviceId , requestOptions)
+					let data = await response.json()
+					if(response.ok){
+						console.log(data)
+					}
+			},
+			updateServiceStatusOffererPetitionerView: async (serviceId, offererId) => {
+
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify({serviceId})
+				}
+
+				let response = await fetch(process.env.BACKEND_URL+'api/service_status_update_offerer_petitioner_view/'+ serviceId + '/'+ offererId, requestOptions)
+					let data = await response.json()
+					if(response.ok){
+						console.log(data)
+					}
+
+				
+			},
+			updateServiceStatusEvaluatingProposal: async (serviceId) => {
+				
+				let token = localStorage.getItem("token")
+				const requestOptions = {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify({serviceId})
+				}
+
+				let response = await fetch(process.env.BACKEND_URL+'api/service_status_update_evaluating_proposal/'+ serviceId , requestOptions)
+					let data = await response.json()
+					if(response.ok){
+						console.log(data)
+					}
+				
+			},
+			deleteServiceApplied: async () => {
+
+			},
+			getServicesApplied: async () => {
+				getStore().getServicesApplied()
+			},
+			getCategories: async () => {
+				const store = getStore();
+	
+				let response = await fetch(process.env.BACKEND_URL+'api/categories')
+				let data = await response.json()
+				if (response.ok){
+				  setStore({
+					categories: data
+				  })
+				}
+
+			}
 
 		}
 	};

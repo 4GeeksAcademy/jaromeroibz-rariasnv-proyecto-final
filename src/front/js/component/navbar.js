@@ -23,7 +23,9 @@ export const Navbar = () => {
 						Easy me							
 					</div>					
 				</Link>
-				<div className="d-flex">					
+				<div className="d-flex">
+					{ store.auth === true ? <p className="py-1 px-3">Hello {store.users.name}!</p> : 
+					<>					
 					<div className="px-3">
 						<Link to="/signin">
 							<button className="btn btn-lg btn-primary flex-shrink-0 me-md-4 mb-md-0 mb-sm-4 mb-3">Sign in</button>
@@ -33,7 +35,11 @@ export const Navbar = () => {
 						<Link to="/signup">
 							<button className="btn btn-lg btn-primary flex-shrink-0 me-md-4 mb-md-0 mb-sm-4 mb-3">Signup</button>
 						</Link>
-						{ store.auth === true ? <button onClick={() => handleLogout()} className="btn btn-primary">Logout</button> :null}
+					</div>
+					</>
+					}
+					<div className="px-3">
+					{ store.auth === true ? <button onClick={() => handleLogout()} className="btn btn-primary">Logout</button> :null}
 					</div>
 				</div>
 			</div>
