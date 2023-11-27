@@ -5,6 +5,15 @@ import { BackendURL } from "./component/backendURL";
 
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
+import { SignupAsPetitioner } from "./pages/signupAsPetitioner";
+import { RegisteredPetitioners} from "./pages/registeredPetitioners"
+import { RegisteredPetitionerDetail} from "./pages/registeredPetitionerDetail"
+import { EditPetitioner } from "./pages/editPetitioner";
+import { SignInAsPetitioner} from "./pages/signInAsPetitioner"
+import { RegisteredOfferers } from "./pages/registeredOfferers";
+import { RegisteredOffererDetail } from "./pages/registeredOffererDetail";
+import { SignUpAsOfferer } from "./pages/signUpAsOfferer";
+import { EditOfferer } from "./pages/editOfferer";
 import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 
@@ -20,10 +29,12 @@ import { ServiceList } from "./component/serviceList";
 import { EditService } from "./component/editService";
 import { Signin } from "./component/signin";
 import { SigninOfferer } from "./component/signinofferer";
-import { OffererProfile } from "./component/offererprofile";
+import { ServiceListOfferer } from "./component/servicelistofferer";
 import { Signup } from "./component/signup";
 import { SignupOfferer } from "./component/signupofferer";
 import { Georef } from "./component/georeference";
+import { ServiceConfirmation } from "./component/serviceconfirmation";
+import {Price} from "./component/setprice";
 
 //create your first component
 const Layout = () => {
@@ -52,13 +63,23 @@ const Layout = () => {
                         <Route element={<Signup />} path="/signup" />
                         <Route element={<SigninOfferer />} path="/signinofferer" />
                         <Route element={<SignupOfferer />} path="/signupofferer" />
-                        <Route element={<OffererProfile />} path="/offererprofile" />
+                        <Route element={<ServiceListOfferer />} path="/servicelistofferer" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Georef />} path="/georef" />
+                        <Route element={<SignupAsPetitioner />} path="/signUpAsPetitioner" />
+                        <Route element={<RegisteredPetitioners />} path="/registeredPetitioners" />
+                        <Route element={<RegisteredPetitionerDetail />} path="/registeredPetitioners/:theId" />
+                        <Route element={<EditPetitioner />} path="/editPetitioner/:idToEdit" />
+                        <Route element={<SignInAsPetitioner />} path="/signInAsPetitioner" />
+                        <Route element={<RegisteredOfferers />} path="/registeredOfferers" />
+                        <Route element={<RegisteredOffererDetail />} path="/registeredOfferers/:offererId" />
+                        <Route element={<SignUpAsOfferer />} path="/signUpAsOfferer" />
+                        <Route element={<EditOfferer />} path="/editOfferer/:offererIdToEdit" />
                         <Route element={<Single />} path="/single/:theid" />
+                        <Route element={<Price />} path="/setprice/:theid" />
+                        <Route element={<ServiceConfirmation />} path="/serviceconfirmation/:theid" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
-                    <Footer />
                 </ScrollToTop>
             </BrowserRouter>
         </div>

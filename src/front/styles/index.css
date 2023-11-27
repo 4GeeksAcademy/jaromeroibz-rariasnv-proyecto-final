@@ -1,10 +1,126 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
-.signindiv, .signinofferer, .signupdiv {
+.signindiv, .signinofferer, .signupdiv, .signuppetitioner, .signInAsPetitioner, .addresslist, .addressform, .servicelist, .serviceform, .servicelist, .offererprofile {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 10px;
+    box-sizing: border-box;
+    color: rgb(86, 89, 115);
+    font-family: Manrope, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: white;
+    border-radius: 5px;
   }
+
+.cardaddresslist, .cardregisteredpetitioners, .cardserviceslist, .cardoffererprofile {
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px black;
+}
+
+.registeredpetitioners {
+  width: 100%;
+  padding: 10px;  
+  color: rgb(86, 89, 115);
+  font-family: Manrope, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  background-color: white;
+  border-radius: 5px;
+  margin: 10px;  
+}
+
+.jumbotron {
+  box-sizing: border-box;
+  color: rgb(86, 89, 115);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: Manrope, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  /* opacity: 0.5; */
+  border-radius: 5px;
+}
+
+.jumboexampleimg {
+  box-sizing: border-box;
+  justify-content: center;
+  border-radius: 5px;
+}
+
+.navbarlogo {
+ width: 60px;
+ height: auto;
+ max-width: 100%;
+ vertical-align: middle;
+ border-radius: 40px;
+}
+
+.divlogo {
+  text-decoration: none;
+}
+
+.cardbodyimg1, .cardbodyimg2, .cardbodyimg3 {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+  
+
+.signcontainer {
+  box-sizing: border-box;
+  color: rgb(86, 89, 115);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: Manrope, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  height: 782.088px;
+  justify-content: center;
+  line-height: 25.6px;
+  margin-left: 0px;
+  margin-right: 0px;
+  max-width: 95%;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 48px;
+  text-align: start;
+}
+
+.btn-primary {
+  background-color: rgb(99, 102, 241);
+  border-bottom-color: rgb(99, 102, 241);  
+}
+
+.navbar-brand {
+  align-items: center;
+  box-sizing: border-box;
+  color: rgb(11, 15, 25);
+  cursor: pointer;
+  display: flex;
+  font-family: Manrope, sans-serif;
+  font-size: 22px
+}
+
+.body-view {
+  background: linear-gradient(90deg, #c8c9ff 0%, #d6c6fb 50%, #ecbaf4 100%) !important;
+  background-image: linear-gradient(90deg, rgb(168, 169, 248) 0%, rgb(255, 255, 255));
+  position: relative;
+}
+
+
+
+
+
+  /* .footer{
+    position: absolute; 
+    bottom: 0px;
+    background-color: #67727e;
+    height: 100px;
+    width: 100%;
+  } */
