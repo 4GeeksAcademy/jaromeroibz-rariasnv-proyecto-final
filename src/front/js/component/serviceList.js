@@ -10,20 +10,19 @@ export const ServiceList = () => {
     }, [])
 
     return (    
-        <div className="container servicelist">
-			
+        <div className="container">			
 			<div className="row g-0">
-                  <div className="col-sm-7">
+                  <div className="col-sm-7 servicelist p-3">
 				  	{store.services.map((item) => 
-                    <div className="card-body servicelist-item my-1" key= {item.id} style={{border: "solid", borderRadius: "5px"}}>
+                    <div className="cardserviceslist card-body servicelist-item my-1 my-3" key= {item.id} >
                       <h3 className="h5">Task: {item.name} </h3>
                       <div className="d-flex flex-sm-nowrap flex-wrap align-items-center justify-content-between">
                         <div className="d-flex align-items-center position-relative me-3">
-						<img src="https://picsum.photos/200" className="rounded-circle me-3" width="48" alt="Avatar"/>
-                          <div>
-                            <p>description: {item.description}</p>
-                            <span className="fs-sm text-muted">Category: {item.category}</span>
-                          </div>
+							<img src="https://picsum.photos/200" className="rounded-circle me-3" width="48" alt="Avatar"/>
+							<div>
+								<p>description: {item.description}</p>
+								<span className="fs-sm text-muted">Category: {item.category}</span>
+							</div>
                         </div>
                         <div className="d-flex align-items-center mt-sm-0 mt-4 text-muted">
                           <div className="d-flex align-items-center me-3">
@@ -69,14 +68,15 @@ export const ServiceList = () => {
                       </div>
                     </div>
 					)}
+					<div className="my-3">
+						<Link to="/serviceform">
+							<button className="btn btn-primary mx-2">Add task</button>
+						</Link>
+					</div>
                   </div>
                 </div>
 
-			<div className="my-3">
-				<Link to="/serviceform">
-					<button className="btn btn-primary mx-2">Add task</button>
-				</Link>
-			</div>
+			
 			
 		</div>
     )

@@ -1,7 +1,7 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
-.signindiv, .signinofferer, .signupdiv, .signuppetitioner, .signInAsPetitioner, .addresslist, .addressform, .servicelist, .serviceform, .servicelist {
+.signindiv, .signinofferer, .signupdiv, .signuppetitioner, .signInAsPetitioner, .addresslist, .addressform, .servicelist, .serviceform, .servicelist, .offererprofile {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -15,6 +15,23 @@
     background-color: white;
     border-radius: 5px;
   }
+
+.cardaddresslist, .cardregisteredpetitioners, .cardserviceslist, .cardoffererprofile {
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px black;
+}
+
+.registeredpetitioners {
+  width: 100%;
+  padding: 10px;  
+  color: rgb(86, 89, 115);
+  font-family: Manrope, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  background-color: white;
+  border-radius: 5px;
+  margin: 10px;  
+}
 
 .jumbotron {
   box-sizing: border-box;
@@ -35,6 +52,24 @@
   justify-content: center;
   border-radius: 5px;
 }
+
+.navbarlogo {
+ width: 60px;
+ height: auto;
+ max-width: 100%;
+ vertical-align: middle;
+ border-radius: 40px;
+}
+
+.divlogo {
+  text-decoration: none;
+}
+
+.cardbodyimg1, .cardbodyimg2, .cardbodyimg3 {
+  max-width: 100%;
+  max-height: 100%;
+}
+
   
 
 .signcontainer {
@@ -73,8 +108,9 @@
 }
 
 .body-view {
-  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%) !important;
-  background-image: linear-gradient(90deg, rgb(99, 102, 241) 0%, rgb(139, 92, 246))
+  background: linear-gradient(90deg, #c8c9ff 0%, #d6c6fb 50%, #ecbaf4 100%) !important;
+  background-image: linear-gradient(90deg, rgb(168, 169, 248) 0%, rgb(255, 255, 255));
+  position: relative;
 }
 
 
