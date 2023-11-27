@@ -32,7 +32,6 @@ import { SigninOfferer } from "./component/signinofferer";
 import { ServiceListOfferer } from "./component/servicelistofferer";
 import { Signup } from "./component/signup";
 import { SignupOfferer } from "./component/signupofferer";
-import {ApplytoService} from "./component/applytoservice";
 import { ServiceConfirmation } from "./component/serviceconfirmation";
 import {Price} from "./component/setprice";
 
