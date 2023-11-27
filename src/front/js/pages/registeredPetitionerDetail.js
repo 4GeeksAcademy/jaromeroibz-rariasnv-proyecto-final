@@ -20,24 +20,28 @@ export const RegisteredPetitionerDetail = () => {
     },[store.petitioners])
 
     return (
-        <div className="body m-5">            
-            <div className="card" style={{width: "18rem"}}>
-            <img src="..." className="card-img-top" alt="..."/>
-            <div className="card-body">
-                <h6 className="card-subtitle mb-2 text-body-secondary">Full Name: {detail?.full_name}</h6>
-                <p className="card-text">Phone number: {detail?.phone_number}</p>
-                <p className="card-text">Address: {detail?.address}</p>
-                <p className="card-text">Email address: {detail?.email_address}</p>
-                <p className="card-text">Offer: {detail?.offer_services}</p>
-                <p className="card-text">Rating: {detail?.rating}</p>
+        <div className="petitionerdetail container">
+            <div>            
+                <div className="body m-5">            
+                    <div className="card" style={{width: "18rem"}}>
+                    <img src="..." className="card-img-top" alt="..."/>
+                    <div className="card-body">
+                        <h6 className="card-subtitle mb-2 text-body-secondary">Full Name: {detail?.full_name}</h6>
+                        <p className="card-text">Phone number: {detail?.phone_number}</p>
+                        <p className="card-text">Address: {detail?.address}</p>
+                        <p className="card-text">Email address: {detail?.email_address}</p>
+                        <p className="card-text">Offer: {detail?.offer_services}</p>
+                        <p className="card-text">Rating: {detail?.rating}</p>
 
-                
-                <button className="btn btn-primary" onClick={ () => navigate('/registeredPetitioners')}>Back</button>                    
-                <button className="btn btn-danger mx-2">Delete</button>
+                        
+                        <button className="btn btn-primary" onClick={ () => navigate('/registeredPetitioners')}>Back</button>                    
+                        <button className="btn btn-danger mx-2">Delete</button>
+                    </div>
+                    </div>
+                    
+                    
+                </div>
             </div>
-            </div>
-            
-            
         </div>
     )
 }

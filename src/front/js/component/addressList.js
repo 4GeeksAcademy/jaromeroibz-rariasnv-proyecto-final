@@ -12,13 +12,13 @@ export const AddressList = () => {
 
     return (
     
-        <div className="container addresslist">
+        <div className="container">
 			<div className="row g-0">
-				<div className="col-sm-7">	
+				<div className="col-sm-7 addresslist p-3">	
 					{store.addresses.map((item) => 		
-						<div className="card-body servicelist-item my-1" key= {item.id} style={{border: "solid", borderRadius: "5px"}}>
+						<div className="cardaddresslist card-body servicelist-item my-3" key= {item.id}>
 							<h3 className="h5">Address name: {item.name}</h3>					
-								<div key= {item.id} div className="d-flex flex-sm-nowrap flex-wrap align-items-center justify-content-between">
+								<div className="d-flex flex-sm-nowrap flex-wrap align-items-center justify-content-between">
 									<div className="d-flex align-items-center position-relative me-3">
 										<img src="https://picsum.photos/200" className="rounded-circle me-3" width="48" alt="Avatar"></img>
 										<div className="">																							
@@ -82,18 +82,16 @@ export const AddressList = () => {
 									</div>
 						</div>
 					)}
+					<div className="my-3">
+						<Link to="/addressform">
+							<button className="btn btn-primary m-2">Add address</button>
+						</Link>
+						<Link to="/">
+							<button className="btn btn-primary m-2">Back home</button>
+						</Link>						
+					</div>
 				</div>
-			</div>
-
-			<div className="my-3">
-				<Link to="/addressform">
-					<button className="btn btn-primary m-2">Add address</button>
-				</Link>
-				<Link to="/">
-					<button className="btn btn-primary m-2">Back home</button>
-				</Link>						
-			</div>
-			
+			</div>			
 		</div>
     )
 
