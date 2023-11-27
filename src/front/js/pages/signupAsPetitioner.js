@@ -20,30 +20,44 @@ export const SignupAsPetitioner = () => {
     };
 
     return(
-        <div className="signuppetitioner">
+        <div className="signuppetitioner p-3">
             { store.auth === true ? <Navigate to= '/serviceform'/> :
             <>
-            <h1>Sign up</h1>
+            <h1 className="">Create an account</h1>
             <form>
-            <div className="py-3">
-                <label className="form-label">Full Name</label>
-                <input type="text" className="form-control" id="name"
-                value={name} onChange={(e) => setName(e.target.value)} name='name'
-                placeholder="Enter full name"/>
-            </div>
-            <div className="py-3">
-                <label className="form-label">Email address</label>
-                <input type="email" className="form-control" id="email"
-                value={email} onChange={(e) => setEmail(e.target.value)} name='email'
-                placeholder="Enter email address"/>
-            </div>
-            <div className="py-3">
-                <label className="form-label">Password</label>
-                <input type="password" className="form-control" id="password"
-                value={password} onChange={(e) => setPassword(e.target.value)} name='password'
-                placeholder="Enter password"/>
-            </div>
-            <button className="btn btn-primary" onClick={ (e) => savePetitionerToAdd(e) }>Signup</button>
+                <div className="row">
+                <div className="col-sm-6">
+                    <div className="position-relative mb-4">
+                        <label className="form-label">Full Name</label>
+                        <input type="text" className="form-control" id="name"
+                        value={name} onChange={(e) => setName(e.target.value)} name='name'
+                        placeholder="Enter your full name"/>
+                    </div>                    
+                </div>
+                <div className="col-sm-6">
+                    <div className="position-relative mb-4">
+                        <label className="form-label">Email address</label>
+                        <input type="email" className="form-control" id="email"
+                        value={email} onChange={(e) => setEmail(e.target.value)} name='email'
+                        placeholder="Enter email address"/>
+                    </div>
+                    
+                </div>
+                <div className="col-12 mb-4">
+                    <div className="position-relative mb-4">
+                        <label className="form-label">Password</label>
+                        <input type="password" className="form-control" id="password"
+                        value={password} onChange={(e) => setPassword(e.target.value)} name='password'
+                        placeholder="Enter password"/>
+                    </div>                    
+                </div>
+                <div className="col-12 mb-4">
+                    <div className="position-relative mb-4">
+                        <button className="btn btn-primary btn-lg w-100" onClick={ (e) => savePetitionerToAdd(e) }>Signup</button>
+                    </div>
+                </div>
+                    
+                </div>
             </form>
             </>
         }

@@ -75,12 +75,10 @@ const Layout = () => {
                         <Route element={<SignUpAsOfferer />} path="/signUpAsOfferer" />
                         <Route element={<EditOfferer />} path="/editOfferer/:offererIdToEdit" />
                         <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<ApplytoService />} path="/applytoservice" />
                         <Route element={<Price />} path="/setprice/:theid" />
                         <Route element={<ServiceConfirmation />} path="/serviceconfirmation/:theid" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
-                    <Footer/>
                 </ScrollToTop>
             </BrowserRouter>
         </div>
