@@ -32,6 +32,7 @@ import { SigninOfferer } from "./component/signinofferer";
 import { ServiceListOfferer } from "./component/servicelistofferer";
 import { Signup } from "./component/signup";
 import { SignupOfferer } from "./component/signupofferer";
+import { Georef } from "./component/georeference";
 import { ServiceConfirmation } from "./component/serviceconfirmation";
 import {Price} from "./component/setprice";
 
@@ -64,6 +65,7 @@ const Layout = () => {
                         <Route element={<SignupOfferer />} path="/signupofferer" />
                         <Route element={<ServiceListOfferer />} path="/servicelistofferer" />
                         <Route element={<Demo />} path="/demo" />
+                        <Route element={<Georef />} path="/georef" />
                         <Route element={<SignupAsPetitioner />} path="/signUpAsPetitioner" />
                         <Route element={<RegisteredPetitioners />} path="/registeredPetitioners" />
                         <Route element={<RegisteredPetitionerDetail />} path="/registeredPetitioners/:theId" />

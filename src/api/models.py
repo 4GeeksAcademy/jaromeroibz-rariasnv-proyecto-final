@@ -107,10 +107,26 @@ class Address(db.Model):
     __tablename__ = 'address'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
+    full_address = db.Column(db.String(200), unique=False, nullable=False)
+    
+    def __repr__(self):
+        return f'<Address {self.name}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "full_address": self.full_address,
+        }
+
+class AddressDetails(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
     state = db.Column(db.String(80), unique=False, nullable=False)
     city = db.Column(db.String(80), unique=False, nullable=False)
     county = db.Column(db.String(80), unique=False, nullable=False)
-    full_address = db.Column(db.String(80), unique=False, nullable=False)
+    country = db.Column(db.String(80), unique=False, nullable=False)
+    full_address = db.Column(db.String(200), unique=False, nullable=False)
     zipcode = db.Column(db.String(80), unique=False, nullable=False)
     latitude = db.Column(db.String(80), unique=False, nullable=True)
     longitude = db.Column(db.String(80), unique=False, nullable=True)
@@ -118,7 +134,7 @@ class Address(db.Model):
     petitioner = relationship(Petitioner)
 
     def __repr__(self):
-        return f'<Address {self.name}>'
+        return f'<AddressDetails {self.name}>'
 
     def serialize(self):
         return {
@@ -133,7 +149,6 @@ class Address(db.Model):
             "zipcode": self.zipcode,
             "longitude": self.longitude
         }
-            # do not serialize the password, its a security breach
 
 class Offerer(db.Model):
     __tablename__ = 'offerer'

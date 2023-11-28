@@ -11,14 +11,7 @@ export const EditAddress = () => {
 	const [address,setAddress] = useState(
         {
             "name": "",
-            "state": "",
-            "city": "",
-            "county":"",
             "full_address":"",
-            "details": "",
-            "zipcode": "",
-            "latitude": "",
-            "longitude":""
         }
     );
 
@@ -35,14 +28,7 @@ export const EditAddress = () => {
 		console.log(result)
 		setAddress(   {
             "name": result?.name,
-            "state": result?.state,
-            "city": result?.city,
-            "county":result?.county,
             "full_address":result?.full_address,
-            "details": result?.details,
-            "zipcode": result?.zipcode,
-            "latitude": result?.latitude,
-            "longitude":result?.longitude
         })
 	}
 

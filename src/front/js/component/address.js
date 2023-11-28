@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link, useParams } from "react-router-dom"
 import { Context } from "../store/appContext";
-import { EditAddress } from "./editaddress";
-import { AddressList } from "./addressList";
-// import "../../styles.demo.css";
+import locationImageUrl from "../../img/location-icon.png"
 
 export const Address = () => {
     const { store, actions } = useContext(Context);
@@ -20,18 +18,10 @@ export const Address = () => {
         <div className="container">
 			<h1 className="py-3">Address</h1>
             <div className="list-group-item d-flex">
-                <img src="https://picsum.photos/200" alt=""></img>
+                <img src={locationImageUrl} width="100" height="100" />
                 <div className="d-block px-5">
                     <h1>{result.name}</h1>
                     <p className="info">{result.full_address}</p>
-                    <p className="info">{result.city}</p>
-                    {/* <p className="info">{result.county}</p>
-                    <p className="info">{item.state}</p>
-                    <p className="info">{item.details}</p>
-                    <p className="info">{item.zipcode}</p>
-                    <p className="info">{item.latitude}</p>
-                    <p className="info">{item.longitude}</p> */}
-
                 </div>
                 <div className="pencontainer">
                     <Link to={`/editaddress/${result.id}`}>

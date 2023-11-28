@@ -2,8 +2,8 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-
-from api.models import db, User, Address, Petitioner, Services, Category, Offerer, OffererServices
+from api.models import db, User, Address, Petitioner, Services, AddressDetails
+from api.models import db, User, Address, Petitioner, Services, Category, Offerer, OffererServices, AddressDetails
 from api.utils import generate_sitemap, APIException
 
 from flask_jwt_extended import create_access_token
@@ -38,11 +38,11 @@ def get_addresses():
 
     return jsonify(result) 
 
-@api.route('/address/<int:address_id>', methods =['GET'])
-def get_address(address_id):
-    address = Address.query.filter_by(id=address_id).first()
+# @api.route('/address/<int:address_id>', methods =['GET'])
+# def get_address(address_id):
+#     address = AddressDetails.query.filter_by(id=address_id).first()
 
-    return jsonify(address.serialize()), 200
+#     return jsonify(address.serialize()), 200
 
 @api.route('/add_address', methods =['POST'])
 @jwt_required()
@@ -53,13 +53,7 @@ def add_address():
     address = Address(
         name = body['name'],
         full_address = body['full_address'],
-        state = body['state'],
-        city = body['city'],
-        county = body['county'],
-        zipcode = body['zipcode'],
-        petitioner_id= current_user
     )
-    print(address)
     db.session.add(address)
     db.session.commit()
 
@@ -67,6 +61,50 @@ def add_address():
         "message": "Address created"
     }
     
+    return jsonify(response_body), 200
+
+@api.route('/addressdetails/', methods =['GET'])
+def get_addresses_details():
+
+    all_addresses_details = AddressDetails.query.all()
+    result = list(map(lambda item: item.serialize(), all_addresses_details))
+
+    return jsonify(result), 200
+
+@api.route('/addressdetails/<int:address_details_id>', methods =['GET'])
+def get_address(address_details_id):
+    address_details = AddressDetails.query.filter_by(id=address_details_id).first()
+
+    return jsonify(address_details.serialize()), 200
+
+@api.route('/addressdetails', methods =['POST'])
+def add_address_details():
+    body = request.get_json()
+    address_details = AddressDetails(
+        name = body['name'],
+        full_address = body['full_address'],
+        county = body['county'],
+        city = body['city'],
+        state = body['state'],
+        country = body['country'],
+        zipcode = body['zipcode']
+    )
+   
+    db.session.add(address_details)
+    db.session.commit()
+    
+    return jsonify(address_details.serialize()), 200
+
+@api.route('/addressdetails/<int:address_details_id>', methods =['DELETE'])
+def delete_address_details(address_details_id):
+    delete_address_details = AddressDetails.query.filter_by(id=address_details_id).first()
+
+    db.session.delete(delete_address_details)
+
+    response_body = {
+        "message": "Address details deleted"
+    }
+      
     return jsonify(response_body), 200
 
 @api.route('/address/<int:address_id>', methods =['PUT'])
@@ -165,6 +203,21 @@ def delete_one_particular_petitioner(petitioner_id):
 
     return jsonify(response_body), 200
 
+@api.route('/address/<int:address_id>', methods =['PUT'])
+def update_address(address_id):
+    
+    update_address = Address.query.filter_by(id=address_id).first()
+    print(update_address)
+    print(request.get_json())
+    if request.get_json()['name']: update_address.name = request.get_json()['name']
+    if request.get_json()['full_address']: update_address.full_address = request.get_json()['full_address'] 
+    db.session.commit()
+
+    response_body = {
+        "message": "Address updated"
+    }
+      
+    return jsonify(response_body), 200
 
 @api.route('/petitioner/<int:petitioner_id>', methods=['PUT'])
 def update_one_particular_petitioner(petitioner_id):
@@ -697,79 +750,3 @@ def signup_offerer():
     else:
         return jsonify({"msg": "Offerer already exists with this email address"}), 401
     
-# obtener, crear , editar y borrar un Offerer
-
-# @api.route('/offerer', methods=['GET'])
-# def get_all_offerer():
-#     all_offerer = Offerer.query.all()
-#     result = list(map( lambda offerer: offerer.serialize(), all_offerer ))
-
-#     return jsonify(result), 200
-
-# @api.route('/offerer/<int:offerer_id>', methods=['GET'])
-# def get_one_particular_offerer(offerer_id):
-#     particular_oferer = Offerer.query.filter_by(id=offerer_id).first()
-
-#     return jsonify(particular_oferer.serialize()), 200
-
-# @api.route('/offerer', methods=['POST'])
-# def create_offerer():
-#     body = request.get_json()
-#     offerer = Offerer.query.filter_by(email_address=body['email_address']).first()
-
-#     if offerer == None:
-#         offerer = Offerer(
-#             full_name= body['full_name'],
-#             phone_number= body['phone_number'],
-#             address= body['address'],
-#             email_address= body['email_address'],
-#             tasks_offer= body['tasks_offer'],
-#             rating= body['rating'],
-#             password= body['password']
-#         )
-
-#         db.session.add(offerer)
-#         db.session.commit()
-
-#         response_body = {
-#             "msg": "Offerer created"
-#         }
-
-#         return jsonify(response_body), 200
-    
-#     else:
-#         return jsonify({ "msg": "Email address already exists" }), 401
-
-# @api.route('/offerer/<int:offerer_id>', methods=['DELETE'])
-# def delete_one_particular_offerer(offerer_id):
-#     offerer_to_delete = Offerer.query.filter_by(id=offerer_id).first()
-
-#     db.session.delete(offerer_to_delete)
-#     db.session.commit()
-
-#     response_body = {
-#         "msg": "Offerer deleted"
-#     }
-
-#     return jsonify(response_body), 200
-
-# @api.route('/offerer/<int:offerer_id>', methods=['PUT'])
-# def update_one_particular_offerer(offerer_id):
-#     offerer_to_update = Offerer.query.filter_by(id=offerer_id).first()
-#     body = request.get_json()
-
-#     offerer_to_update.full_name= body['full_name'],
-#     offerer_to_update.phone_number= body['phone_number'],
-#     offerer_to_update.address= body['address'],
-#     offerer_to_update.email_address= body['email_address'],
-#     offerer_to_update.tasks_offer= body['tasks_offer'],
-#     offerer_to_update.rating= body['rating'],
-#     offerer_to_update.password= body['password']
-
-#     db.session.commit()
-
-#     response_body = {
-#         "msg": "Offerer updated"
-#     }
-
-#     return jsonify(response_body), 200

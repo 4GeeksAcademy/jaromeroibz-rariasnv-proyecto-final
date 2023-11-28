@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom"
 import { Context } from "../store/appContext";
-import { EditAddress } from "./editaddress";
+import locationImageUrl from "../../img/location-icon.png"
 // import "../../styles.demo.css";
 
 export const AddressList = () => {
     const { store, actions } = useContext(Context);
     useEffect(() => {
         actions.getAddresses()
+		actions.getAddressesDetails()
     }, [])
 
     return (
     
-        <div className="container">
+     <div className="container">
 			<div className="row g-0">
 				<div className="col-sm-7 addresslist p-3">	
 					{store.addresses.map((item) => 		
@@ -59,7 +60,6 @@ export const AddressList = () => {
 												<button onClick= { () => actions.saveToDelete(item.id) } type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
 													Delete
 												</button>
-
 												<div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 													<div className="modal-dialog">
 														<div className="modal-content">

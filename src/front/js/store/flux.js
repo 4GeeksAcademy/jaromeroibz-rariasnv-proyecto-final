@@ -26,6 +26,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			services:[],
 			servicesApplied: [],
 			service:[],
+			auth: false,
+			users:[],
+			addressDetails:[]
 			serviceDetails:{},
 			auth: JSON.parse(localStorage.getItem("auth"))||false,
 			token: localStorage.getItem("token")||"",
@@ -194,7 +197,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 								'Authorization': `Bearer ${token}`},
 					body: JSON.stringify(data)
 				}
-			
+
 				let response = await fetch(process.env.BACKEND_URL +'api/add_address/', requestOptions)
 				let data = await response.json();
 				if (response.ok === 200){
@@ -754,6 +757,53 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  })
 				}
 
+			},
+			getAddressesDetails: async () => {
+				const store = getStore();
+				let response = await fetch(process.env.BACKEND_URL+'/api/addressdetails/')
+			
+				let data = await response.json()
+
+				if (response.ok){
+				  setStore({
+					addressDetails: data
+				  })
+				} 
+			},
+			addAddressDetails: (data) => {
+				const store = getStore();
+				console.log(data)
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', 'Origin': '*',
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*' },
+					body: JSON.stringify(data)
+				}
+				console.log(data)
+				fetch(process.env.BACKEND_URL +'/api/addressdetails/', requestOptions)
+				.then( (response) => response.json() )
+				.then( (data) => { getActions().getAddressesDetails()})
+			},
+			deleteAddressDetail: (item) => {
+				console.log(item)
+				const indexMap = getStore().idToDelete
+				console.log(indexMap)
+
+				var requestOptions = {
+					method: 'DELETE'
+				};
+				
+				fetch(process.env.BACKEND_URL +"/api/addressdetails/" + indexMap, requestOptions)
+					.then(response => response.json())
+					.then( () => {
+						fetch(process.env.BACKEND_URL+ '/api/addressdetails/')
+						.then((response) => response.json())
+						.then((data) => setStore({addressDetails: data}))
+					})
+					.catch(error => console.log('error', error));
+					
+				getActions().getAddressesDetails();
 			}
 
 		}
