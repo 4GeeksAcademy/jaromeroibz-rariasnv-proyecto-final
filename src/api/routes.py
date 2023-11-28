@@ -56,6 +56,9 @@ def add_address():
         state = body['state'],
         city = body['city'],
         county = body['county'],
+        country = body['country'],
+        latitude = body['latitude'],
+        longitude = body['longitude'],
         zipcode = body['zipcode'],
         petitioner_id= current_user
     )
@@ -68,6 +71,35 @@ def add_address():
     }
     
     return jsonify(response_body), 200
+
+@api.route('/addressdetails', methods =['POST'])
+@jwt_required()
+def add_address_details():
+    body = request.get_json()
+    current_user = get_jwt_identity()
+    petitioner_data = Petitioner.query.filter_by(id=current_user).all()
+    print(petitioner_data)
+    petitioner_id = petitioner_data.id
+    print(petitioner_id)
+
+    address_details = Address(
+        name = body['name'],
+        full_address = body['full_address'],
+        county = body['county'],
+        city = body['city'],
+        state = body['state'],
+        country = body['country'],
+        zipcode = body['zipcode'],
+        latitude = body['latitude'],
+        longitude = body['longitude'],
+        petitioner_id = petitioner_id
+    )
+    
+    db.session.add(address_details)
+    db.session.commit()
+    
+    return jsonify(address_details.serialize()), 200
+
 
 @api.route('/address/<int:address_id>', methods =['PUT'])
 def update_address(address_id):
@@ -355,6 +387,7 @@ def get_services_by_offerer(offerer_id):
 @api.route('/add_services', methods =['POST'])
 @jwt_required()
 def add_service():
+    
     print("band 1")
     current_user = get_jwt_identity()
     body = request.get_json()
@@ -368,7 +401,8 @@ def add_service():
         description = body['description'],
         date = body['date'],
         status = 'evaluating_proposal',
-        petitioner_id = current_user
+        petitioner_id = current_user,
+        address_id = body['address_id'] 
     )
     print("band 4")
     print(service)

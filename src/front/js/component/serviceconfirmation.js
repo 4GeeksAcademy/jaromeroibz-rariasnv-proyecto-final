@@ -22,24 +22,26 @@ export const ServiceConfirmation = () => {
         
         <div className="container">
 			<h1 className="py-3">Service accepted</h1>
-                <div className="d-block px-5">
-                    <h1>Check the details:</h1>
-                    Name:
-                    <p className="info">{store.serviceDetails.service_name}</p>
-                    Category:
-                    <p className="info">{store.serviceDetails.service_category}</p>
-                    Date:
-                    <p className="info">{store.serviceDetails.service_date}</p>
-                    Description:
-                    <p className="info">{store.serviceDetails.service_description}</p>
-                    Offerer:
-                    <p className="info">{store.serviceDetails.offerer_data[0].name}</p>
-                </div>               
-                <div>
-                    <Link to='/serviceform'>
-                        Add another task
-                    </Link>
-                </div>
+
+            <div className="cardserviceslist card-body servicelist-item my-1 my-3">
+                      <h3 className="h5">Name: {store.serviceDetails.service_name} </h3>
+                      <div className="d-flex flex-sm-nowrap flex-wrap align-items-center justify-content-between">
+                            <div className="d-flex align-items-center position-relative me-3">
+                                <img src="https://picsum.photos/200" className="rounded-circle me-3" width="48" alt="Avatar"/>
+                                <div>
+                                    <p>description: {store.serviceDetails.service_description}</p>
+                                    <p>category: {store.serviceDetails.service_category}</p>
+                                    <p>date: {store.serviceDetails.service_date}</p>
+                                    <p>offerer: {store.serviceDetails.offerer_data[0].name}</p>
+                                </div>
+                            </div>
+                        </div>               
+                        <div>
+                            <Link to='/serviceform'>
+                                <button className="btn btn-primary">Add another task</button>
+                            </Link>
+                        </div>
+            </div>
 		</div>
     )
 

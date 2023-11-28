@@ -17,36 +17,20 @@ export const AddressList = () => {
 				<div className="col-sm-7 addresslist p-3">	
 					{store.addresses.map((item) => 		
 						<div className="cardaddresslist card-body servicelist-item my-3" key= {item.id}>
-							<h3 className="h5">Address name: {item.name}</h3>					
+							<h3 className="h5">{item.name}</h3>					
 								<div className="d-flex flex-sm-nowrap flex-wrap align-items-center justify-content-between">
 									<div className="d-flex align-items-center position-relative me-3">
 										<img src="https://picsum.photos/200" className="rounded-circle me-3" width="48" alt="Avatar"></img>
 										<div className="">																							
 												<p className="info">Full address: {item.full_address}</p>
-												<p className="info">{item.state}</p>
 										</div>	
 									</div>
 									<div className="d-flex align-items-center position-relative me-3">
 										<div>
-											<p className="info">{item.city}</p>
-											<p className="info">{item.county}</p>
+											<p className="info">Latitude: {item.latitude}</p>
+											<p className="info">Longitude: {item.longitude}</p>
 										</div>
 									</div>
-									<div className="d-flex align-items-center position-relative me-3">
-										<div>
-											<p className="info">{item.details}</p>
-											<p className="info">{item.zipcode}</p>
-											<p className="info">{item.latitude}</p>
-											<p className="info">{item.longitude}</p>
-										</div>
-									</div>
-									<div className="d-flex align-items-center me-3">
-										<div className="bx bx-share-alt fs-lg me-1">
-											<Link to={`/address/${item.id}`}>
-												See details
-											</Link>
-										</div>
-									</div>	
 									<div className="d-flex align-items-center me-3">
 										<div className="bx bx-share-alt fs-lg me-1">
 											<Link to={`/editaddress/${item.id}`}>

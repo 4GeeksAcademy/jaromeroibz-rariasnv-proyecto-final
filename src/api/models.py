@@ -74,34 +74,6 @@ class Category(db.Model):
             "id": self.id,
             "category": self.category
         }
-        
-class Services(db.Model):
-    __tablename__ = 'services'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
-    description = db.Column(db.String(80), unique=False, nullable=False)
-    date = db.Column(db.String(80), unique=False, nullable=False)
-    status = db.Column(db.String(80), nullable = True, unique=False)
-    petitioner_id = db.Column(db.Integer, db.ForeignKey('petitioner.id'))
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-
-    petitioner = relationship(Petitioner)
-    category = relationship(Category)
-
-    def __repr__(self):
-        return f'<Services {self.name}>'
-
-    def serialize(self):    
-        return {
-            "id": self.id,
-            "petitioner_id": self.petitioner_id,
-            "name": self.name,
-            "category_id": self.category_id,
-            "description": self.description,
-            "date": self.date,
-            "status": self.status
-        }
-    
 
 class Address(db.Model):
     __tablename__ = 'address'
@@ -110,6 +82,7 @@ class Address(db.Model):
     state = db.Column(db.String(80), unique=False, nullable=False)
     city = db.Column(db.String(80), unique=False, nullable=False)
     county = db.Column(db.String(80), unique=False, nullable=False)
+    country = db.Column(db.String(80), unique=False, nullable=True)
     full_address = db.Column(db.String(80), unique=False, nullable=False)
     zipcode = db.Column(db.String(80), unique=False, nullable=False)
     latitude = db.Column(db.String(80), unique=False, nullable=True)
@@ -134,6 +107,35 @@ class Address(db.Model):
             "longitude": self.longitude
         }
             # do not serialize the password, its a security breach
+        
+class Services(db.Model):
+    __tablename__ = 'services'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
+    description = db.Column(db.String(80), unique=False, nullable=False)
+    date = db.Column(db.String(80), unique=False, nullable=False)
+    status = db.Column(db.String(80), nullable = True, unique=False)
+    address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
+    petitioner_id = db.Column(db.Integer, db.ForeignKey('petitioner.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    address = relationship(Address)
+    petitioner = relationship(Petitioner)
+    category = relationship(Category)
+
+    def __repr__(self):
+        return f'<Services {self.name}>'
+
+    def serialize(self):    
+        return {
+            "id": self.id,
+            "petitioner_id": self.petitioner_id,
+            "name": self.name,
+            "category_id": self.category_id,
+            "description": self.description,
+            "date": self.date,
+            "status": self.status
+        }
+    
 
 class Offerer(db.Model):
     __tablename__ = 'offerer'

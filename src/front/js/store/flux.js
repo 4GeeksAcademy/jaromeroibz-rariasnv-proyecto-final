@@ -182,9 +182,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			},
-			addAddress: async (result) => {
+			addAddress: async (addressInfo) => {
 				
-				console.log(result)
+				console.log(addressInfo)
 				const store = getStore();
 				let token = localStorage.getItem("token")
 
@@ -192,15 +192,43 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json',
 								'Authorization': `Bearer ${token}`},
-					body: JSON.stringify(data)
+					body: JSON.stringify(addressInfo)
 				}
 			
-				let response = await fetch(process.env.BACKEND_URL +'api/add_address/', requestOptions)
+				let response = await fetch(process.env.BACKEND_URL +'api/add_address', requestOptions)
 				let data = await response.json();
 				if (response.ok === 200){
 					getActions().getAddresses()
 				}
 				console.log(data)
+			},
+			addAddressDetails: (data) => {
+				const store = getStore();
+				let token = store.token
+
+				console.log(data)
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`},
+					body: JSON.stringify(data)
+				}
+				console.log(data)
+				fetch(process.env.BACKEND_URL +'api/addressdetails/', requestOptions)
+				.then( (response) => response.json() )
+				.then( (data) => { getActions().getAddressesDetails()})
+			},
+			getAddressesDetails: async () => {
+				const store = getStore();
+				let response = await fetch(process.env.BACKEND_URL+'api/addressdetails/')
+			
+				let data = await response.json()
+
+				if (response.ok){
+				  setStore({
+					addressDetails: data
+				  })
+				} 
 			},
 			editAddress: (address, theid) =>{
 				

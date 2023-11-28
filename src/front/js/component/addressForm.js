@@ -11,15 +11,73 @@ export const AddressForm = (item) => {
 	const navigate = useNavigate()
 	const [address,setAddress] = useState({
 		"name": "",
+		"county":"",
+		"city": "",
     	"state": "",
-    	"city": "",
-    	"county":"",
+    	"country": "",
+		"zipcode": "",
     	"full_address":"",
-        "details": "",
-    	"zipcode": "",
     	"latitude": "",
     	"longitude":""
 	});
+	const [addressDetails,setAddressDetails] = useState({
+		"name": "",
+		"county":"",
+		"city": "",
+    	"state": "",
+    	"country": "",
+		"zipcode": "",
+    	"full_address":"",
+    	"latitude": "",
+    	"longitude":""
+	});
+
+	var getLocation = function (location) {
+
+		var geocoder = new google.maps.Geocoder();
+		geocoder.geocode({ 'address': location }, function (results, status) {
+	
+		  if (status == google.maps.GeocoderStatus.OK) {
+			var latitude = results[0].geometry.location.lat();
+			var longitude = results[0].geometry.location.lng();
+			var full_address = results[0].formatted_address;
+			var county = results[0].address_components[3].long_name;
+			var city = results[0].address_components[4].long_name;
+			var state = results[0].address_components[5].long_name;
+			var country = results[0].address_components[6].long_name;
+			var zipcode = results[0].address_components[7].long_name;
+
+			console.log(results)
+			console.log(county)
+			console.log(city)
+			console.log(state)
+			console.log(country)
+			console.log(zipcode)
+			console.log(full_address)
+			console.log(latitude, longitude);
+
+			var addressInfo = {
+				"name": address.name,
+				"county": county,
+				"city": city,
+				"state": state,
+				"country": country,
+				"zipcode": zipcode,
+				"full_address": full_address,
+				"latitude": latitude,
+				"longitude": longitude
+			}
+
+			setAddressDetails({
+				...addressDetails, addressInfo
+			})
+			
+			
+			console.log(addressInfo)
+			actions.addAddress(addressInfo)
+		  }
+		});
+	  }
 
 	function handleChange (event){
 		setAddress({
@@ -30,18 +88,19 @@ export const AddressForm = (item) => {
 
 	function saveAddress (e) {
 		e.preventDefault()
-		actions.addAddress(address)
+		console.log(address)
+		getLocation(address.full_address);
 		setAddress(
 			{
-                "name": "",
-                "state": "",
-                "city": "",
-                "county":"",
-                "full_address":"",
-                "details": "",
-                "zipcode": "",
-                "latitude": "",
-                "longitude":""
+				"name": "",
+				"county":"",
+				"city": "",
+				"state": "",
+				"country": "",
+				"zipcode": "",
+				"full_address":"",
+				"latitude": "",
+				"longitude":""
 			}
 		)
 		navigate('/addresslist')
@@ -60,7 +119,7 @@ export const AddressForm = (item) => {
    					<input value={address.full_address} onChange={handleChange} name='full_address' type="text" className="form-control" id="full_address" placeholder="Enter Full Address" required/>
   				</div>
                 
-				<div className="row">
+				{/* <div className="row">
 					<div className="form-group py-1 mx-2 col">
 						<label>Select your state</label>
 						<select value={address.state} onChange={handleChange} name='state' className="form-select" aria-label="Default select example" required>
@@ -100,14 +159,15 @@ export const AddressForm = (item) => {
 						<label>Longitude</label>
 						<input value={address.longitude} onChange={handleChange} name='longitude' type="text" className="form-control" id="longitude" placeholder="Enter the longitude"></input>
 					</div>
-				</div>					
-			</form>
+				</div>					 */}
+			
 				<div className="my-3">
 				<button type="submit" className="btn btn-primary mx-2">Save Address</button>
 				<Link to="/addresslist">
 					<button className="btn btn-primary mx-2">Back home</button>
 				</Link>
-				</div>			
+				</div>
+			</form>			
 		</div>
 	);
 }

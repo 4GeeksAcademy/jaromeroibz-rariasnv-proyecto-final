@@ -39,6 +39,12 @@ export const Navbar = () => {
 					</>
 					}
 					<div className="px-3">
+					{ store.auth === true ? <Link to ="/servicelist"><button className="btn btn-primary">Services</button></Link> :null}
+					</div>
+					<div className="px-3">
+					{ store.auth === true ? <Link to ="/addresslist"><button className="btn btn-primary">Addresses</button></Link> :null}
+					</div>
+					<div className="px-3">
 					{ store.auth === true ? <button onClick={() => handleLogout()} className="btn btn-primary">Logout</button> :null}
 					</div>
 				</div>
